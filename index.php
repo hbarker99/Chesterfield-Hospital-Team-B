@@ -1,4 +1,9 @@
-<?php require("navBar.php")?>
+<?php require("navBar.php");
+include_once("dbString.php");
+
+?>
+
+
 
 <!doctype html>
 <html lang="en">
@@ -39,7 +44,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Get route</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Get route</button>
                 </div>
             </div>
         </div>
