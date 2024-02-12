@@ -1,6 +1,10 @@
 <?php require("navBar.php");
 include_once("dbString.php");
 
+
+
+
+
 ?>
 
 
@@ -25,8 +29,7 @@ include_once("dbString.php");
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Welcome! You are at: 
                         <?php 
-                        if(isset($_GET['location'])){ 
-                            echo $_GET['location'];}?> 
+                        echo $location?> 
                     </h1>
                 </div>
                 <div class="modal-body">
@@ -35,13 +38,12 @@ include_once("dbString.php");
                             <label for="end-location" class="col-form-label">Where are you heading?</label>
                             <input type="text" class="form-control" id="end-location">
                         </div>
+                        <div class="mb-4 form-switch">
+                            <input type="checkbox" class="form-check-input" role="switch" id="exampleCheck0">
+                            <label class="form-check-label" for="exampleCheck0">Check for accessibility information</label>
+                        </div>
                     </form> 
-                    <div class="mb-3 form-switch">
-                        <input type="checkbox" class="form-check-input" role="switch" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Check for accessibility information</label>
-                    </div>
-
-
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Get route</button>
