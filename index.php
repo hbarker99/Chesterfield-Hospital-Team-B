@@ -29,7 +29,8 @@ include_once("dbString.php");
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Welcome! You are at: 
                         <?php 
-                        echo $location?> 
+                        if (isset($_GET['location'])):  echo($_GET['location']); endif;?>
+
                     </h1>
                 </div>
                 <div class="modal-body">
