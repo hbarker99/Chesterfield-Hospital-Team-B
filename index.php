@@ -33,14 +33,13 @@
                     </form> 
                     <div class="mb-3 form-switch">
                         <input type="checkbox" class="form-check-input" role="switch" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Check for accessability information</label>
+                        <label class="form-check-label" for="exampleCheck1">Check for accessibility information</label>
                     </div>
 
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Get route</button>
                 </div>
             </div>
         </div>
