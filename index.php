@@ -1,10 +1,5 @@
 <?php require("navBar.php");
 include_once("dbString.php");
-
-
-
-
-
 ?>
 
 
@@ -53,8 +48,6 @@ include_once("dbString.php");
         </div>
     </div>
 
-    
-    
 
 </body>
 
