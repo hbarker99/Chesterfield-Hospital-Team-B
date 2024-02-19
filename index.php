@@ -36,7 +36,8 @@ require ("footer.php");
   </head>
 
 
-    <body>
+
+<body id="bootstrap-overrides">
     <h1>Hello world</h1>
 
     <!-- Modal -->
