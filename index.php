@@ -51,32 +51,31 @@ require ("footer.php");
                         <?php endif;?>
                     </h1>
                 </div>
-                <div class="modal-body">
-                    <form onsubmit="return false">
+
+                <form onsubmit="return false">
+                    <div class="modal-body">
                         <?php if(!isset($_GET['location'])): ?> 
                         <div class="form-floating">
-                            <select class="form-select" id="startLocation" aria-label="startLocation">
+                            <select class="form-select" id="startLocation" name="startLocation" aria-label="startLocation">
                                 <option selected>Where are you located?</option>
                                 <?php
                                 $locations = locationFill();
                                 foreach($locations as $location){
                                     echo '<option value="'.$location['name'].'">'.$location['name'].'</option>';
-                                }
-                                ?>
+                                } ?>
                             </select>
                             <label for="startLocation">Pick your location</label>
                         </div> 
                         <?php endif; ?>
- 
+                        
                         <div class="form-floating">
-                            <select class="form-select" id="endLocation" aria-label="endLocation">
+                            <select class="form-select" id="endLocation" name="endLocation" aria-label="endLocation">
                                 <option selected>Where are you headed?</option>
                                 <?php
                                 $locations = locationFill();
                                 foreach($locations as $location){
                                     echo '<option value="'.$location['name'].'">'.$location['name'].'</option>';
-                                }
-                                ?>
+                                } ?>
                             </select>
                             <label for="endLocation">Pick your goal location</label>
                         </div> 
@@ -85,13 +84,13 @@ require ("footer.php");
                             <input type="checkbox" class="form-check-input" role="switch" id="accessibilitySwitch">
                             <label class="form-check-label" for="exampleCheck0">Check for accessibility information</label>
                         </div>
-                </div>
+                    </div>
 
-                <div class="modal-footer">
-                    <button type="submit" onclick="getRoute()" class="btn btn-primary" data-bs-dismiss="modal">Get route</button>
-                </div>
-
+                    <div class="modal-footer">
+                        <button type="submit" onclick="getRoute()" class="btn btn-primary" data-bs-dismiss="modal">Get route</button>
+                    </div>
                 </form> 
+
             </div>
         </div>
     </body>
