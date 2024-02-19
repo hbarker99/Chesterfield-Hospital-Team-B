@@ -1,17 +1,18 @@
 <?php require("navBar.php");
 include_once("dbString.php");
 
+
 function locationFill(){
 
     $db = new SQLite3(get_string());
-    $stmt = $db->prepare('SELECT name FROM Node WHERE enpoint=1');
+    $stmt = $db->prepare('SELECT name FROM Node WHERE endpoint=1');
     $result = $stmt->execute();
     $rows_array = [];
     while ($row=$result->fetchArray())
     {
         $rows_array[]=$row;
     }
-    return $rows_array;           
+    return $rows_array;
 }
 
 function startLocation() {
@@ -22,9 +23,8 @@ function startLocation() {
     $data = $result->fetchArray(SQLITE3_ASSOC);    
     return $data['name'];
 }
-$startLocation = startLocation();
 
-echo $startLocation;
+require ("footer.php");
 ?>
 
 <!doctype html>
@@ -46,7 +46,8 @@ echo $startLocation;
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Welcome!
-                        <?php if(isset($_GET['location'])):?>
+                        <?php if(isset($_GET['location'])):
+                        $startLocation = startLocation(); ?>
                         You are at: <?php echo($startLocation);?>
                         <?php endif;?>
                     </h1>
@@ -56,20 +57,30 @@ echo $startLocation;
                     <div class="form-floating">
                         <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
                             <option selected>Where are you located?</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <?php
+                            $locations = locationFill();
+                            foreach($locations as $location){
+                                echo '<option value="'.$location['name'].'">'.$location['name'].'</option>';
+                            }
+                            ?>
                         </select>
-                        <label for="floatingSelect">Works with selects</label>
+                        <label for="floatingSelect">Pick your location</label>
                     </div> 
                     <?php endif; ?>
  
                     <form>
-                        <div class="mb-3">
-                            <label for="end-location" class="col-form-label">Where are you heading?</label>
-
-                            <input type="text" class="form-control" id="end-location">
-                        </div>
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                                <option selected>Where are you headed?</option>
+                                <?php
+                                $locations = locationFill();
+                                foreach($locations as $location){
+                                    echo '<option value="'.$location['name'].'">'.$location['name'].'</option>';
+                                }
+                                ?>
+                            </select>
+                            <label for="floatingSelect">Pick your goal location</label>
+                        </div> 
                         <div class="mb-4 form-switch">
                             <input type="checkbox" class="form-check-input" role="switch" id="exampleCheck0">
                             <label class="form-check-label" for="exampleCheck0">Check for accessibility information</label>
@@ -87,10 +98,9 @@ echo $startLocation;
 
 
     </body>
-
 </html>
 
-<?php require ("footer.php");?>
+
 <script>
     const myModal = new bootstrap.Modal(document.getElementById('myModal'));
     myModal.show();
