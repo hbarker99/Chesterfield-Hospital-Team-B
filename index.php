@@ -1,7 +1,6 @@
 <?php require("navBar.php");
 include_once("dbString.php");
 
-
 function locationFill(){
 
     $db = new SQLite3(get_string());
@@ -24,6 +23,7 @@ function startLocation() {
     return $data['name'];
 }
 $startLocation = startLocation();
+
 echo $startLocation;
 ?>
 
@@ -36,7 +36,7 @@ echo $startLocation;
   </head>
 
 
-<body>
+<body id="bootstrap-overrides">
     <h1>Hello world</h1>
 
     <!-- Modal -->
@@ -77,7 +77,7 @@ echo $startLocation;
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="button-primary" data-bs-dismiss="modal">Get route</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Get route</button>
 
 
                 </div>
