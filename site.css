@@ -1,3 +1,8 @@
+@font-face { font-family: "Frutiger Regular"; src: url('./fonts/Frutiger/Frutiger Regular/Frutiger Regular.ttf'); } 
+@font-face { font-family: "Frutiger Light"; src: url('./fonts/Frutiger/Frutiger Light/Frutiger Light.ttf'); } 
+@font-face { font-family: "Frutiger Roman"; src: url('./fonts/Frutiger/Frutiger Roman/Frutiger Roman.ttf'); } 
+
+
 :root {
     --primary-bright-blue: #0072CE;
     --primary-blue: #005EB8;
@@ -14,6 +19,10 @@
     --secondary-grey-2: #F6F8F8;
     --secondary-yellow-1: #FEF9CC;
     --secondary-yellow-2: #FEFCE5;
+}
+
+body {
+    font-family: "Frutiger Roman", "Arial Regular" !important
 }
 
 .modal-title {
