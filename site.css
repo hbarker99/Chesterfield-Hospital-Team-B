@@ -1,4 +1,54 @@
+:root {
+    --primary-bright-blue: #0072CE;
+    --primary-blue: #005EB8;
+    --primary-dark-blue: #003087;
+    --primary-yellow: #FAE100;
+    --primary-green: #007f3b;
+    --primary-dark-grey: #425563;
+    --primary-mid-grey: #768692;
+    --primary-light-grey: #E8EDEE;
 
+    --secondary-blue-1: #CCE3F5;
+    --secondary-blue-2: #E5F1FA;
+    --secondary-grey-1: #EDF1F1;
+    --secondary-grey-2: #F6F8F8;
+    --secondary-yellow-1: #FEF9CC;
+    --secondary-yellow-2: #FEFCE5;
+}
+
+.modal-title {
+    color: white;
+}
+
+.modal-header {
+    background-color: var(--primary-blue);
+    border-radius: 0 !important
+}
+
+.modal-content {
+    border-radius: 0 !important
+}
+
+.button-primary {
+    background-color: var(--primary-green);
+    border-radius: 0;
+    color: white;
+    border: 0.063rem solid black;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0 #00401e;
+    box-sizing: border-box;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+}
+
+.button-primary:hover {
+    background-image: linear-gradient(rgb(0 0 0/20%) 0 0);
+}
+
+.button-primary:focus {
+    background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
+    box-shadow: 0 0 0 #00401e;
+}
 
 .center{
     text-align:center;
@@ -7,7 +57,8 @@
     padding: 0.625rem;
     border-style: solid;
     border-width: 0.063rem;
-    border-radius: 0.25rem;  
+    border-radius: 0.25rem;
+    background-color: var(--primary-light-grey);
 }
 
 .footer {
@@ -19,5 +70,5 @@
     white-space: nowrap;
     color: black;
     line-height: 3.75rem; 
-    background-color: rgba(255, 255, 255, 0.637);
+    background-color: var(--primary-light-grey);
   }
