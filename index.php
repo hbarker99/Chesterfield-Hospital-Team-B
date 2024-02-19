@@ -1,7 +1,6 @@
 <?php require("navBar.php");
 include_once("dbString.php");
 
-
 function locationFill(){
 
     $db = new SQLite3(get_string());
@@ -39,6 +38,8 @@ require ("footer.php");
 
 <body id="bootstrap-overrides">
     <h1>Hello world</h1>
+
+    <?php include './components/dropdown/dropdown.php'; ?>
 
     <!-- Modal -->
     <div class="modal modal-xl fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModal" aria-hidden="true">
@@ -95,12 +96,9 @@ require ("footer.php");
                 </div>
             </div>
         </div>
-
-
     </body>
+
 </html>
-
-
 <script>
     const myModal = new bootstrap.Modal(document.getElementById('myModal'));
     myModal.show();

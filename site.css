@@ -31,11 +31,11 @@
 
 #bootstrap-overrides .modal-header {
     background-color: var(--primary-blue);
-    border-radius: 0
+    border-radius: 0;
 }
 
 #bootstrap-overrides .modal-content {
-    border-radius: 0
+    border-radius: 0;
 }
 
 #bootstrap-overrides .btn {

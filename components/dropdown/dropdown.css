@@ -1,0 +1,19 @@
+.dropdown-content {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.25rem;
+    box-shadow: var(--primary-light-grey) 0 1px 8px;
+}
+
+.dropdown-option {
+    padding: 1rem 0.75rem;
+    color: var(--primary-blue);
+    border-bottom: 1px solid var(--primary-light-grey);
+    text-decoration: underline;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.dropdown-option:hover {
+    text-decoration: none;
+}
