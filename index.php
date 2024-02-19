@@ -22,13 +22,22 @@ include_once("dbString.php");
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Welcome! You are at: 
-                        <?php 
-                        if (isset($_GET['location'])):  echo($_GET['location']); endif;?>
-
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Welcome!
+                        <?php if(isset($_GET['location'])): ?>
+                        You are at: 
+                        <?php echo($_GET['location']); endif; ?>
                     </h1>
                 </div>
                 <div class="modal-body">
+                    <?php if(!isset($_GET['location'])): ?> 
+                    <form>
+                        <div class="mb-3">
+                            <label for="start-location" class="col-form-label">Where are you located?</label>
+                            <input type="text" class="form-control" id="start-location">
+                        </div>
+                    </form>
+                    <?php endif; ?>
+ 
                     <form>
                         <div class="mb-3">
                             <label for="end-location" class="col-form-label">Where are you heading?</label>
