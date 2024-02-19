@@ -41,6 +41,7 @@
 #bootstrap-overrides .btn {
     box-sizing: border-box;
     padding: 0.75rem 1rem;
+    transition: none
 }
 
 #bootstrap-overrides .btn-primary {
@@ -53,15 +54,29 @@
     font-size: 1rem
 }
 
-#bootstrap-overrides .btn-primary:hover {
+#bootstrap-overrides .btn-secondary {
+    background-color: var(--primary-mid-grey);
+    border-radius: 0;
+    color: white;
+    border: 0.063rem solid black;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0 #00401e;
+    font-size: 1rem
+}
+
+#bootstrap-overrides .btn:hover {
     background-image: linear-gradient(rgb(0 0 0/20%) 0 0);
 }
 
-#bootstrap-overrides .btn-primary:focus {
+#bootstrap-overrides .btn:active {
+    background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
+    box-shadow: 0 0 0 #00401e;
+}
+
+#bootstrap-overrides .btn:focus {
     background-image: none;
     color: black;
     background-color: var(--primary-yellow);
-    box-shadow: 0 0 0 #00401e;
 }
 
 #bootstrap-overrides .form-control {
