@@ -35,6 +35,7 @@ echo $startLocation;
     <title>Chesterfield Group B</title>
   </head>
 
+
 <body>
     <h1>Hello world</h1>
 
@@ -76,14 +77,15 @@ echo $startLocation;
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Get route</button>
+                    <button type="button" class="button-primary" data-bs-dismiss="modal">Get route</button>
+
+
                 </div>
             </div>
         </div>
-    </div>
 
 
-</body>
+    </body>
 
 </html>
 
