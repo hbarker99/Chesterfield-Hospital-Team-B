@@ -98,10 +98,7 @@ require ("footer.php");
 
 
     </body>
+    
 </html>
 
 
-<script>
-    const myModal = new bootstrap.Modal(document.getElementById('myModal'));
-    myModal.show();
-</script>
