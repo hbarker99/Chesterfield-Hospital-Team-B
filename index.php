@@ -4,7 +4,7 @@ include_once("dbString.php");
 function locationFill(){
 
     $db = new SQLite3(get_string());
-    $stmt = $db->prepare('SELECT name FROM Node WHERE endpoint=1');
+    $stmt = $db->prepare('SELECT name, node_id FROM Node WHERE endpoint=1');
     $result = $stmt->execute();
     $rows_array = [];
     while ($row=$result->fetchArray())
@@ -61,7 +61,7 @@ require ("footer.php");
                             <?php
                             $locations = locationFill();
                             foreach($locations as $location){
-                                echo '<option value="'.$location['name'].'">'.$location['name'].'</option>';
+                                echo '<option value="'.$location['node_id'].'">'.$location['name'].'</option>';
                             }
                             ?>
                         </select>
@@ -76,7 +76,7 @@ require ("footer.php");
                                 <?php
                                 $locations = locationFill();
                                 foreach($locations as $location){
-                                    echo '<option value="'.$location['name'].'">'.$location['name'].'</option>';
+                                    echo '<option value="'.$location['node_id'].'">'.$location['name'].'</option>';
                                 }
                                 ?>
                             </select>

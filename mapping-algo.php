@@ -3,7 +3,7 @@ class Node
 {
     public $distance = PHP_INT_MAX;
     public $previous = null;
-    public $name;
+    public $nodeId;
     public $neighbours = [];
 
     public function __construct($name)
