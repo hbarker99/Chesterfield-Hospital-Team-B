@@ -1,27 +1,6 @@
 <?php require("navBar.php");
 include_once("dbString.php");
-
-function locationFill(){
-
-    $db = new SQLite3(get_string());
-    $stmt = $db->prepare('SELECT name, node_id FROM Node WHERE endpoint=1');
-    $result = $stmt->execute();
-    $rows_array = [];
-    while ($row=$result->fetchArray())
-    {
-        $rows_array[]=$row;
-    }
-    return $rows_array;
-}
-
-function startLocation() {
-    $db = new SQLite3(get_string());
-    $stmt = $db->prepare('SELECT name FROM Node WHERE node_id=:nodeId');
-    $stmt->bindParam(':nodeId', $_GET['location'], SQLITE3_INTEGER);
-    $result = $stmt->execute();
-    $data = $result->fetchArray(SQLITE3_ASSOC);    
-    return $data['name'];
-}
+include("./indexPHP/startLocation.php");
 
 require ("footer.php");
 ?>
@@ -34,10 +13,7 @@ require ("footer.php");
         <title>Chesterfield Group B</title>
     </head>
 
-
-
     <body id="bootstrap-overrides">
-        <?php include './components/dropdown/dropdown.php'; ?>
         <div>
             <h1>Welcome!
                 <?php if(isset($_GET['location'])):
@@ -46,67 +22,29 @@ require ("footer.php");
                 <?php endif;?>
             </h1>
         </div>
-        <div>
-            <?php if(!isset($_GET['location'])): ?> 
-
+        <div > 
             <form method="post" action="mapping-algo.php">
-                <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                        <option selected>Where are you located?</option>
-                        <?php
-                        $locations = locationFill();
-                        foreach($locations as $location){
-                            echo '<option value="'.$location['node_id'].'">'.$location['name'].'</option>';
-                        }
-                        ?>
-                    </select>
-                    <label for="floatingSelect">Pick your location</label>
-                </div> 
-                <?php endif; ?>
-
-                <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                        <option selected>Where are you headed?</option>
-                        <?php
-                        $locations = locationFill();
-                        foreach($locations as $location){
-                            echo '<option value="'.$location['node_id'].'">'.$location['name'].'</option>';
-                        }
-                        ?>
-                    </select>
-                    <label for="floatingSelect">Pick your goal location</label>
-                </div> 
-                <div class="mb-4 form-switch">
-                    <input type="checkbox" class="form-check-input" role="switch" id="exampleCheck0">
-                    <label class="form-check-label" for="exampleCheck0">Check for accessibility information</label>
-                </div>
-
-                <div>
-                    <button type="submit" class="btn btn-primary">Get route</button>
-                </div>
-            </form> 
-                
-            <form>
-
                 <div>
                     <p>Enter where you are</p>
-                    <?php include './components/dropdown/dropdown.php'; ?>
+                    <?php $DropdownId = 1; include './components/dropdown/dropdown.php'; ?>
                 </div>
                 <div>
-
                     <p>Enter where you want to go</p>
-                    <?php include './components/dropdown/dropdown.php'; ?>
+                    <?php $DropdownId = 2;include './components/dropdown/dropdown.php'; ?>
                 </div>
+
+                <input type="hidden" id="startPoint" name="startPoint">
+                <input type="hidden" id="endPoint" name="endPoint">
+
+                <div class="mb-4 form-switch">
+                    <input type="checkbox" class="form-check-input" role="switch" id="accessibilityCheck" name="accessibilityCheck">
+                    <label class="form-check-label" for="accessibilityCheck">Check for accessibility information</label>
+                </div>
+
                 <div>
                     <button type="submit" class="btn btn-primary">Get route</button>
                 </div>
-
-
             </form>
-
-
         </div>
-
     </body>
-
 </html>

@@ -3,6 +3,7 @@
 @font-face { font-family: "Frutiger Roman"; src: url('./fonts/Frutiger/Frutiger Roman/Frutiger Roman.ttf'); } 
 
 
+
 :root {
     --primary-bright-blue: #0072CE;
     --primary-blue: #005EB8;
@@ -92,7 +93,7 @@
 .center{
     text-align:center;
     margin: auto;
-    width: 100%;
+    width: 80%;
     padding: 0.625rem;
     border-style: solid;
     border-width: 0.063rem;
@@ -111,3 +112,20 @@
     line-height: 3.75rem; 
     background-color: var(--primary-light-grey);
   }
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+} 
+
+body {
+  margin-bottom: 60px;
+}
+
+body::after {
+  content: '';
+  display: block;
+  height: 100px;
+}

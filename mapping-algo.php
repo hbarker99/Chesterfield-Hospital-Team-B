@@ -1,4 +1,40 @@
 <?php
+
+
+#### testing post stuffs
+
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if startPoint and endPoint are set in the POST data
+    if (isset($_POST['startPoint']) && isset($_POST['endPoint'])) {
+        // Retrieve the values of startPoint and endPoint
+        $startPoint = $_POST['startPoint'];
+        $endPoint = $_POST['endPoint'];
+        
+        // Print out the form details
+        echo "Start Point: " . $startPoint . "<br>";
+        echo "End Point: " . $endPoint . "<br>";
+        
+        // Check if the accessibility check is set
+        if (isset($_POST['accessibilityCheck'])) {
+            // Accessibility check is checked
+            echo "Accessibility Check: Checked<br>";
+        } else {
+            // Accessibility check is not checked
+            echo "Accessibility Check: Not Checked<br>";
+        }
+        // You can perform further processing here based on the form data
+    } else {
+        echo "Error: startPoint and/or endPoint not set.";
+    }
+} else {
+    echo "Error: Form not submitted.";
+}
+
+
+
+#####
 class Node
 {
     public $distance = PHP_INT_MAX;

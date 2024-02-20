@@ -8,12 +8,10 @@ function Search(e) {
     var searchValue = e.type === 'keyup' ? this.value : '';
     var dropdownContent = this.parentNode.querySelector('.dropdown-content');
     fetch('components/dropdown/data.php?search=' + searchValue)
-        .then(response => response.json())
+        .then(response =>  response.json())
         .then(data => {
-            console.log(data)
             dropdownContent.innerHTML = '';
             data.forEach(item => {
-                console.log(item)
                 var selection = document.createElement('div');
                 selection.addEventListener('mousedown', SelectOption)
                 selection.className = 'dropdown-option';
@@ -25,7 +23,6 @@ function Search(e) {
             dropdownContent.style.display = 'flex';
         })
         .catch(error => console.error('Error fetching data:', error));
-
 }
 
 function Close(e) {
@@ -34,9 +31,14 @@ function Close(e) {
 }
 
 function SelectOption() {
-    var input = this.parentNode.parentNode.querySelector('.searchInput')
-    var inputId = this.parentNode.parentNode.querySelector('#dropdownValue')
-
-    input.value = this.innerHTML
-    inputId.value = this.id
+    // Find the search input associated with this dropdown
+    var input = this.closest('.dropdown').querySelector('.searchInput');
+    
+    // Find the ID of the hidden input field associated with this dropdown
+    var dropdownId = input.id;
+    var inputId = document.getElementById(dropdownId == '1' ? 'startPoint' : 'endPoint');
+    
+    // Update the value of the search input and the hidden input field
+    input.value = this.textContent; // Update the visible input with the selected name
+    inputId.value = this.id; // Update the hidden input with the selected node_id
 }
