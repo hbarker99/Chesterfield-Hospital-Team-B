@@ -19,11 +19,13 @@
     width: 100%;
 }
 
-.form-submit {
+.form-button {
     text-align: center;
+    margin-bottom: 1rem;
+    margin-top: 0.25rem;
 }
 
-.form-submit > .btn {
+.form-button > .btn {
     width: 100%;
 }
 
@@ -36,7 +38,7 @@
     display: block;
     position: relative;
     padding-left: 2.25rem;
-    margin-bottom: 12px;
+    margin-top: 0.25rem;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
