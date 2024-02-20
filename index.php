@@ -23,16 +23,22 @@ require ("footer.php");
         </div>
         <div> 
             <form method="post" action="mapping-algo.php">
+                <?php if(!isset($_GET['location'])):?>
                 <div>
                     <p>Enter where you are</p>
                     <?php $DropdownId = 1; include './components/dropdown/dropdown.php'; ?>
                 </div>
+                <?php endif;?>
                 <div>
                     <p>Enter where you want to go</p>
                     <?php $DropdownId = 2;include './components/dropdown/dropdown.php'; ?>
                 </div>
-
+                
+                <?php if (isset($_GET['location'])):?>
+                <input type="hidden" id="startPoint" name="startPoint" value="<?php echo $_GET['location']; ?>">
+                <?php else:?>
                 <input type="hidden" id="startPoint" name="startPoint">
+                <?php endif;?>
                 <input type="hidden" id="endPoint" name="endPoint">
 
                 <div class="mb-4 form-switch">
