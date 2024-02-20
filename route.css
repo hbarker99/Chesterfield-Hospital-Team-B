@@ -1,0 +1,117 @@
+.image-box {
+    display: block;
+    width: 100%;
+    border: 1px solid black;
+    height: 100vh;
+}
+
+.route-container {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    height: 100vh;
+    width: 100%;
+}
+
+.instruction-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.instruction-highlight {
+    width: 5px;
+    background-color: var(--primary-blue);
+    margin: 0 1rem;
+    padding: 1rem 0;
+}
+
+.info-box-container {
+    position: fixed;
+    box-shadow: 0px -4px 2px 0px rgba(0,0,0,0.5);
+    outline: 1px solid black;
+    border: 1px solid black;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: white;
+    width: 100%;
+    z-index: 10;
+    padding: 1rem 1rem 0 1rem;
+    transition: all ease 600ms;
+    bottom: 0;
+    transform: none;
+}
+
+
+.info-box-container.hidden {
+    transform: translateY(100%);
+    box-shadow: none;
+}
+
+.info-box {
+    position: relative;
+}
+
+.arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 6px;
+    transform: rotate(0);
+    transition: transform ease 600ms;
+}
+
+.arrow.down {
+    transform:  rotate(45deg);
+}
+
+.arrow.up {
+    transform: translateY(5px) rotate(-135deg);
+}
+
+
+#toggle-visibility {
+    position: absolute;
+    width: 35%;
+    height: 40px;
+    background-color: red;
+    top: calc(-1rem - 30px);
+    left: calc(50% - (35%/2));
+    background-color: white;
+    border: 2px solid black;
+    border-bottom: 0;
+
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    
+    box-shadow: 0px -2px 2px 0px rgba(0,0,0,0.5);
+
+    text-align: center;
+    padding: 5px;
+
+    cursor: pointer;
+
+    transition: all ease 600ms;
+}
+
+#toggle-visibility.hidden {
+    top: calc(-1rem - 40px);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+}
+
+@media only screen and (min-width: 768px) {
+    .button-container {
+        justify-content: normal;
+    }
+
+    .button-container > .btn {
+        margin-right: 1rem;
+    }
+}
