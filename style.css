@@ -88,8 +88,12 @@
     outline: 0.25rem solid var(--primary-yellow)
 }
 
-.center{
-    text-align:center;
+#bootstrap-overrides .page-title {
+    margin-bottom: 1.5rem;
+}
+
+.center {
+    text-align: center;
     margin: auto;
     width: 100%;
     padding: 0.625rem;

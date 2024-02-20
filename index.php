@@ -1,4 +1,4 @@
-<?php require("navBar.php");
+<?
 include_once("dbString.php");
 include("./components/indexPHP/startLocation.php");
 require ("footer.php");
@@ -10,46 +10,50 @@ require ("footer.php");
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Chesterfield Group B</title>
+        <link rel="stylesheet" href="style.css"/>
+        <link rel="stylesheet" href="route-picker.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        
     </head>
 
     <body id="bootstrap-overrides">
-        <div>
-            <h1>Welcome!
-                <?php if(isset($_GET['location'])):
-                $startLocation = startLocation(); ?>
-                You are at: <?php echo($startLocation);?>
-                <?php endif;?>
-            </h1>
-        </div>
-        <div> 
-            <form method="post" action="mapping-algo.php">
-                <?php if(!isset($_GET['location'])):?>
-                <div>
-                    <p>Enter where you are</p>
-                    <?php $DropdownId = 1; include './components/dropdown/dropdown.php'; ?>
-                </div>
-                <?php endif;?>
-                <div>
-                    <p>Enter where you want to go</p>
-                    <?php $DropdownId = 2;include './components/dropdown/dropdown.php'; ?>
-                </div>
+        <div class="page-container">
+            <div> 
+                <h1 class="page-title">Plan your route</h1>
+                <form method="post" action="mapping-algo.php" autocomplete="off">
+                    <div class="form-container">
+                        <?php if(!isset($_GET['location'])):?>
+                        <div class="location-input form-item">
+                            <label>Choose where you are</label>
+                            <?php $DropdownId = 1; include './components/dropdown/dropdown.php'; ?>
+                        </div>
+                        <?php endif;?>
+                        <div class="location-input form-item">
+                            <label>Choose where you want to go</label>
+                            <?php $DropdownId = 2;include './components/dropdown/dropdown.php'; ?>
+                        </div>
                 
-                <?php if (isset($_GET['location'])):?>
-                <input type="hidden" id="startPoint" name="startPoint" value="<?php echo $_GET['location']; ?>">
-                <?php else:?>
-                <input type="hidden" id="startPoint" name="startPoint">
-                <?php endif;?>
-                <input type="hidden" id="endPoint" name="endPoint">
+                        <?php if (isset($_GET['location'])):?>
+                        <input type="hidden" id="startPoint" name="startPoint" value="<?php echo $_GET['location']; ?>">
+                        <?php else:?>
+                        <input type="hidden" id="startPoint" name="startPoint">
+                        <?php endif;?>
+                        <input type="hidden" id="endPoint" name="endPoint">
 
-                <div class="mb-4 form-switch">
-                    <input type="checkbox" class="form-check-input" role="switch" id="accessibilityCheck" name="accessibilityCheck">
-                    <label class="form-check-label" for="accessibilityCheck">Check for accessibility information</label>
-                </div>
+                        <label class="mb-4 form-item checkbox-container"> Check for accessibility information
+                            <input type="checkbox" id="accessibilityCheck" name="accessibilityCheck" checked="checked" />
+                            <span class="checkmark"></span>
+                        </label>
 
-                <div>
-                    <button type="submit" class="btn btn-primary">Get route</button>
-                </div>
-            </form>
+                        <div class="form-item form-submit">
+                            <button type="submit" class="btn btn-primary">Get route</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </body>
 </html>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
