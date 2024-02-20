@@ -1,8 +1,17 @@
+.dropdown {
+    position: relative;
+}
+
 .dropdown-content {
-    display: flex;
+    display: none;
+    position: absolute;
+    overflow: auto;
     flex-direction: column;
     border-radius: 0.25rem;
-    box-shadow: var(--primary-light-grey) 0 1px 8px;
+    box-shadow: var(--primary-dark-grey) 0 1px 8px;
+    z-index: 1000;
+    background-color: white;
+    width: 100%;
 }
 
 .dropdown-option {

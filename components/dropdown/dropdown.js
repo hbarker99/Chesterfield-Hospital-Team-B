@@ -13,7 +13,7 @@ function Search(e) {
             dropdownContent.innerHTML = '';
             data.forEach(item => {
                 var selection = document.createElement('div');
-                selection.addEventListener('click', SelectOption)
+                selection.addEventListener('mousedown', SelectOption)
                 selection.className = 'dropdown-option';
                 selection.textContent = item;
                 dropdownContent.appendChild(selection);
@@ -26,13 +26,7 @@ function Search(e) {
 
 function Close(e) {
     var dropdownContent = this.parentNode.querySelector('.dropdown-content');
-    var containedElements = dropdownContent.querySelectorAll('.dropdown-option');
-
-    setTimeout(function () {
-        dropdownContent.style.display = 'none';
-    }, 100);
-
-
+    dropdownContent.style.display = 'none';
 }
 
 function SelectOption() {
