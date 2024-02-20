@@ -41,12 +41,15 @@ require ("footer.php");
                         <input type="hidden" id="endPoint" name="endPoint">
 
                         <label class="mb-4 form-item checkbox-container"> Check for accessibility information
-                            <input type="checkbox" id="accessibilityCheck" name="accessibilityCheck" checked="checked" />
+                            <input type="checkbox" id="accessibilityCheck" name="accessibilityCheck" />
                             <span class="checkmark"></span>
                         </label>
 
-                        <div class="form-item form-submit">
+                        <div class="form-item form-button">
                             <button type="submit" class="btn btn-primary">Get route</button>
+                        </div>
+                        <div class="form-item form-button">
+                            <button type="submit" class="btn btn-primary">Get route as a PDF</button>
                         </div>
                     </div>
                 </form>
