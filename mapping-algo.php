@@ -173,27 +173,6 @@ $node5 = new Node("5");
         }
 ?>
 
-       
-<!-- <form action="" method="post">
-    <label for="start">Start Node:</label>
-    <select name="start" id="start">
-        <?#php foreach ($nodeObjects as $node): ?>
-            <option value="<?#php echo $node->nodeId; ?>"><?#php echo $node->nodeId; ?></option>
-        <?#php endforeach; ?>
-    </select>
-
-    <label for="end">End Node:</label>
-    <select name="end" id="end">
-        <?#php foreach ($nodeObjects as $node): ?>
-            <option value="<?#php echo $node->nodeId; ?>"><?#php echo $node->nodeId; ?></option>
-        <?#php endforeach; ?>
-    </select>
-
-    <input type="submit" value="Submit">
-</form>
-        commenting out html+php combo is a pain-->
-
-
 
 <?php
 
