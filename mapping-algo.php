@@ -75,8 +75,14 @@ class Dijkstra
     foreach ($rows_array as $row) {
         $node_id = $row['node_id'];
         $nodeObjects['node_' . $node_id] = new Node($node_id);
+        //echo nl2br('node_' . $node_id."\n");
 }
 
+$node1 = new Node("Main Entrance");
+$node2 = new Node("2");
+$node3 = new Node("3");
+$node4 = new Node("4");
+$node5 = new Node("5");
 
 // EDGE SCOPE
 
@@ -128,6 +134,9 @@ class Dijkstra
 </form>
 <?php
 
+$solutions = [];
+
+    
     foreach ($nodeObjects as $n) {
         $n->distance = PHP_INT_MAX;
         $n->previous = null;
@@ -137,10 +146,17 @@ class Dijkstra
 
     $nodeObjects['node_'.$start]->distance = 0; // Set the starting node's distance to 0
     $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$start], $nodeObjects['node_'.$end]);
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of b8ceec3 (removing old items)
     echo nl2br("Start at " . $path[0]->name . "\n");
     for ($i = 1; $i < count($path); $i++) {
         echo nl2br("Go to " . $path[$i]->name . "\n");
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of b8ceec3 (removing old items)
     }
 }
 ?>
