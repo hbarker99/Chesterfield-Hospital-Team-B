@@ -13,7 +13,7 @@ function fetchData() {
 
 function locationFill(){
     $db = new SQLite3("../../database.db");
-    $stmt = $db->prepare('SELECT name FROM Node WHERE endpoint=1');
+    $stmt = $db->prepare('SELECT * FROM Node WHERE endpoint=1');
     $result = $stmt->execute();
     $rows_array = [];
     while ($row=$result->fetchArray())
@@ -26,6 +26,8 @@ function locationFill(){
 if (isset($_GET['search'])) {
     $search = $_GET['search'];
     $data = fetchData();
+    echo( json_encode(array_values($data)));
+    return;
     $filteredData = array_filter($data, function($item) use ($search) {
         return stripos($item, $search) !== false;
     });

@@ -10,12 +10,16 @@ function Search(e) {
     fetch('components/dropdown/data.php?search=' + searchValue)
         .then(response => response.json())
         .then(data => {
+            console.log(data)
             dropdownContent.innerHTML = '';
             data.forEach(item => {
+                console.log(item)
                 var selection = document.createElement('div');
                 selection.addEventListener('mousedown', SelectOption)
                 selection.className = 'dropdown-option';
-                selection.textContent = item;
+
+                selection.textContent = item.name;
+                selection.id = item.node_id;
                 dropdownContent.appendChild(selection);
             });
             dropdownContent.style.display = 'flex';
@@ -30,6 +34,9 @@ function Close(e) {
 }
 
 function SelectOption() {
-    var input = this.parentNode.parentNode.querySelectorAll('.searchInput')[0]
+    var input = this.parentNode.parentNode.querySelector('.searchInput')
+    var inputId = this.parentNode.parentNode.querySelector('#dropdownValue')
+
     input.value = this.innerHTML
+    inputId.value = this.id
 }

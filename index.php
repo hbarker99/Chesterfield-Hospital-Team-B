@@ -85,6 +85,26 @@ require ("footer.php");
                     <button type="submit" class="btn btn-primary">Get route</button>
                 </div>
             </form> 
+                
+            <form>
+
+                <div>
+                    <p>Enter where you are</p>
+                    <?php include './components/dropdown/dropdown.php'; ?>
+                </div>
+                <div>
+
+                    <p>Enter where you want to go</p>
+                    <?php include './components/dropdown/dropdown.php'; ?>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Get route</button>
+                </div>
+
+
+            </form>
+
+
         </div>
 
     </body>
