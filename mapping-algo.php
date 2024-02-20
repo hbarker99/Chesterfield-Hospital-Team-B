@@ -3,7 +3,7 @@ class Node
 {
     public $distance = PHP_INT_MAX;
     public $previous = null;
-    public $name;
+    public $nodeId;
     public $neighbours = [];
 
     public function __construct($name)
@@ -20,7 +20,6 @@ class Node
 
 class Dijkstra
 {
-    private static $paths = [];
 
     public static function calculateShortestPathFrom($startNode, $endNode)
     {
@@ -57,13 +56,26 @@ class Dijkstra
         return $path;
     }
 }
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Form was submitted, process the data
-    $start = $_POST['start'];
-    echo nl2br("start index as: $start\n");
-    $end = $_POST['end'];
-    echo nl2br("end index as: $end\n");
-   
+
+
+// NODE SCOPE
+{
+    $db = new SQLite3("database.db");
+    $stmt = $db->prepare('SELECT node_id FROM Node');
+
+
+    $result = $stmt->execute();
+
+    $rows_array = [];
+    
+    while ($row = $result->fetchArray()) {
+        $rows_array[] = $row;
+    }
+
+    foreach ($rows_array as $row) {
+        $node_id = $row['node_id'];
+        $nodeObjects['node_' . $node_id] = new Node($node_id);
+        //echo nl2br('node_' . $node_id."\n");
 }
 
 $node1 = new Node("Main Entrance");
@@ -72,31 +84,49 @@ $node3 = new Node("3");
 $node4 = new Node("4");
 $node5 = new Node("5");
 
-$node1->addNeighbour($node2, 2);
-$node2->addNeighbour($node3, 1);
-$node2->addNeighbour($node4, 3);
-
-$node1->addNeighbour($node5, 10);
-
-$node4->addNeighbour($node5, 1);
-
-$nodes = [$node1, $node2, $node3, $node4, $node5];
+// EDGE SCOPE
 
 
+        $db = new SQLite3("database.db");
+        $stmt = $db->prepare('SELECT start_node_id, end_node_id, distance FROM Edges');
+
+        $edgesResult = $stmt->execute();
+
+    
+        while ($row = $edgesResult->fetchArray()) {
+            $edgesResult_array[] = $row;
+        }
+    
+        foreach ($edgesResult_array as $row) {
+
+            $startNode = $nodeObjects['node_'.$row['start_node_id']];
+
+            $endNode = $nodeObjects['node_'.$row['end_node_id']];
+
+            $nodeObjects['node_'.$row['start_node_id']]->addNeighbour($nodeObjects['node_'.$row['end_node_id']], $row['distance']);
+        }
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Form was submitted, process the data
+            $start = $_POST['start'];
+            echo nl2br("start index as: $start\n");
+            $end = $_POST['end'];
+            echo nl2br("end index as: $end\n");
+           
+        }
 ?>
 
 <form action="" method="post">
     <label for="start">Start Node:</label>
     <select name="start" id="start">
-        <?php foreach ($nodes as $index => $node): ?>
-            <option value="<?php echo $index; ?>"><?php echo $node->name; ?></option>
+        <?php foreach ($nodeObjects as $node): ?>
+            <option value="<?php echo $node->name; ?>"><?php echo $node->name; ?></option>
         <?php endforeach; ?>
     </select>
 
     <label for="end">End Node:</label>
     <select name="end" id="end">
-        <?php foreach ($nodes as $index => $node): ?>
-            <option value="<?php echo $index; ?>"><?php echo $node->name; ?></option>
+        <?php foreach ($nodeObjects as $node): ?>
+            <option value="<?php echo $node->name; ?>"><?php echo $node->name; ?></option>
         <?php endforeach; ?>
     </select>
 
@@ -106,15 +136,16 @@ $nodes = [$node1, $node2, $node3, $node4, $node5];
 
 $solutions = [];
 
-    foreach ($nodes as $n) {
+    
+    foreach ($nodeObjects as $n) {
         $n->distance = PHP_INT_MAX;
         $n->previous = null;
     }
-
+    
     // Calculate shortest path
 
-    $nodes[$start]->distance = 0; // Set the starting node's distance to 0
-    $path = Dijkstra::calculateShortestPathFrom($nodes[$start], $nodes[$end]);
+    $nodeObjects['node_'.$start]->distance = 0; // Set the starting node's distance to 0
+    $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$start], $nodeObjects['node_'.$end]);
 
     echo nl2br("Start at " . $path[0]->name . "\n");
     for ($i = 1; $i < count($path); $i++) {
@@ -122,4 +153,5 @@ $solutions = [];
         // echo "Go " . $n->dir . " to " . $n->name . "\n";
         echo nl2br("Go to " . $path[$i]->name . "\n");
     }
+}
 ?>
