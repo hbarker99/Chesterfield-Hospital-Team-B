@@ -137,18 +137,10 @@ class Dijkstra
 
     $nodeObjects['node_'.$start]->distance = 0; // Set the starting node's distance to 0
     $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$start], $nodeObjects['node_'.$end]);
-<<<<<<< Updated upstream
-
     echo nl2br("Start at " . $path[0]->name . "\n");
     for ($i = 1; $i < count($path); $i++) {
-        // Print the direction and the node name
-        // echo "Go " . $n->dir . " to " . $n->name . "\n";
         echo nl2br("Go to " . $path[$i]->name . "\n");
-=======
-    echo nl2br("Start at " . $path[0]->nodeId . "\n");
-    for ($i = 1; $i < count($path); $i++) {
-        echo nl2br("Go to " . $path[$i]->nodeId . "\n");
->>>>>>> Stashed changes
+
     }
 }
 ?>
