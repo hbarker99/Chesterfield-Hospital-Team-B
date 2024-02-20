@@ -1,3 +1,33 @@
+<?php 
+
+$db = new SQLite3("admin_database.db");
+$stmt = $db->prepare('SELECT username, password FROM Login WHERE username=:username AND password=:password');
+
+$stmt->bindParam(':username', $_POST['username'], SQLITE3_TEXT);
+$stmt->bindParam(':password', $_POST['password'], SQLITE3_TEXT);
+
+$result = $stmt->execute();
+
+$users = [];
+
+while($row = $result->fetchArray()){
+    $users[] = $row;
+}
+
+if(isset($_POST['login'])){
+    if($users != null){
+        header("Location: admincrud.php");
+    }
+    else{
+        // use bootstrap alert to display failed login
+    }
+}
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,12 +47,12 @@
             <form method="post">
                 <div class="form-group">
                     <label for="Username">Username</label>
-                    <input required type="text" name="Username" id="Username" />
+                    <input required type="text" name="username" id="username" />
                 </div>
 
                 <div class="form-group">
                     <label for="Password">Password</label>
-                    <input required type="password" name="Password" id="Password" />
+                    <input required type="password" name="password" id="password" />
                 </div>
 
                 <div class="form-actions">
