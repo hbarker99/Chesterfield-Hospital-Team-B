@@ -1,5 +1,4 @@
 <?php
-include_once("../../dbString.php");
 session_start();
 
 function fetchData() {
