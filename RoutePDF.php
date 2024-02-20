@@ -1,3 +1,26 @@
 <?php
+session_start();
 
-echo"this page can be the pdf view of the route";
+// Check if the session data exists and is not empty
+if(isset($_SESSION['routeInfo']) && !empty($_SESSION['routeInfo'])) {
+    // Retrieve the POST data stored in the session
+    $routeInfo = $_SESSION['routeInfo'];
+    
+    // Now you can access the POST data as needed
+    $startPoint = $routeInfo['startPoint'];
+    $endPoint = $routeInfo['endPoint'];
+    // Check if the 'accessibilityCheck' key exists in the array before accessing it
+    $accessibilityCheck = isset($routeInfo['accessibilityCheck']) ? $routeInfo['accessibilityCheck'] : ''; 
+     
+    // Now you can process the data further or use it as required
+    
+    // Don't forget to unset or clear the session data if it's no longer needed
+    // unset($_SESSION['routeInfo']);
+} else {
+    // Handle the case where session data is not available
+    echo "Session data not found!";
+}
+
+echo "start point " . $startPoint . "\n";
+echo "end point " . $endPoint . "\n";
+echo "accessibility check " . $accessibilityCheck . "\n"; 
