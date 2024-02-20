@@ -1,59 +1,92 @@
-<?php require("navBar.php")?>
+<?php require("navBar.php");
+include_once("dbString.php");
+
+function locationFill(){
+
+    $db = new SQLite3(get_string());
+    $stmt = $db->prepare('SELECT name, node_id FROM Node WHERE endpoint=1');
+    $result = $stmt->execute();
+    $rows_array = [];
+    while ($row=$result->fetchArray())
+    {
+        $rows_array[]=$row;
+    }
+    return $rows_array;
+}
+
+function startLocation() {
+    $db = new SQLite3(get_string());
+    $stmt = $db->prepare('SELECT name FROM Node WHERE node_id=:nodeId');
+    $stmt->bindParam(':nodeId', $_GET['location'], SQLITE3_INTEGER);
+    $result = $stmt->execute();
+    $data = $result->fetchArray(SQLITE3_ASSOC);    
+    return $data['name'];
+}
+
+require ("footer.php");
+?>
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chesterfield Group B</title>
-    
-  </head>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Chesterfield Group B</title>
+    </head>
 
 
-<body>
-    <h1>Hello world</h1>
 
-    <!-- Modal -->
-    <div class="modal modal-xl fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Welcome! You are at: 
-                        <?php 
-                        if(isset($_GET['location'])){ 
-                            echo $_GET['location'];}?> 
-                    </h1>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="end-location" class="col-form-label">Where are you heading?</label>
-                            <input type="text" class="form-control" id="end-location">
-                        </div>
-                    </form> 
-                    <div class="mb-3 form-switch">
-                        <input type="checkbox" class="form-check-input" role="switch" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Check for accessibility information</label>
-                    </div>
-
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Get route</button>
-                </div>
-            </div>
+    <body id="bootstrap-overrides">
+        <?php include './components/dropdown/dropdown.php'; ?>
+        <div>
+            <h1>Welcome!
+                <?php if(isset($_GET['location'])):
+                $startLocation = startLocation(); ?>
+                You are at: <?php echo($startLocation);?>
+                <?php endif;?>
+            </h1>
         </div>
-    </div>
+        <div>
+            <?php if(!isset($_GET['location'])): ?> 
 
-    
-    
+            <form method="post" action="mapping-algo.php">
+                <div class="form-floating">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected>Where are you located?</option>
+                        <?php
+                        $locations = locationFill();
+                        foreach($locations as $location){
+                            echo '<option value="'.$location['node_id'].'">'.$location['name'].'</option>';
+                        }
+                        ?>
+                    </select>
+                    <label for="floatingSelect">Pick your location</label>
+                </div> 
+                <?php endif; ?>
 
-</body>
+                <div class="form-floating">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected>Where are you headed?</option>
+                        <?php
+                        $locations = locationFill();
+                        foreach($locations as $location){
+                            echo '<option value="'.$location['node_id'].'">'.$location['name'].'</option>';
+                        }
+                        ?>
+                    </select>
+                    <label for="floatingSelect">Pick your goal location</label>
+                </div> 
+                <div class="mb-4 form-switch">
+                    <input type="checkbox" class="form-check-input" role="switch" id="exampleCheck0">
+                    <label class="form-check-label" for="exampleCheck0">Check for accessibility information</label>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary">Get route</button>
+                </div>
+            </form> 
+        </div>
+
+    </body>
 
 </html>
-
-<?php require ("footer.php");?>
-<script>
-    const myModal = new bootstrap.Modal(document.getElementById('myModal'));
-    myModal.show();
-</script>

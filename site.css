@@ -1,21 +1,113 @@
+@font-face { font-family: "Frutiger Regular"; src: url('./fonts/Frutiger/Frutiger Regular/Frutiger Regular.ttf'); } 
+@font-face { font-family: "Frutiger Light"; src: url('./fonts/Frutiger/Frutiger Light/Frutiger Light.ttf'); } 
+@font-face { font-family: "Frutiger Roman"; src: url('./fonts/Frutiger/Frutiger Roman/Frutiger Roman.ttf'); } 
+
+
+:root {
+    --primary-bright-blue: #0072CE;
+    --primary-blue: #005EB8;
+    --primary-dark-blue: #003087;
+    --primary-yellow: #FAE100;
+    --primary-green: #007f3b;
+    --primary-dark-grey: #425563;
+    --primary-mid-grey: #768692;
+    --primary-light-grey: #E8EDEE;
+
+    --secondary-blue-1: #CCE3F5;
+    --secondary-blue-2: #E5F1FA;
+    --secondary-grey-1: #EDF1F1;
+    --secondary-grey-2: #F6F8F8;
+    --secondary-yellow-1: #FEF9CC;
+    --secondary-yellow-2: #FEFCE5;
+}
+
+#bootstrap-overrides body {
+    font-family: "Frutiger Roman",
+}
+
+#bootstrap-overrides .modal-title {
+    color: white;
+}
+
+#bootstrap-overrides .modal-header {
+    background-color: var(--primary-blue);
+    border-radius: 0;
+}
+
+#bootstrap-overrides .modal-content {
+    border-radius: 0;
+}
+
+#bootstrap-overrides .btn {
+    box-sizing: border-box;
+    padding: 0.75rem 1rem;
+    transition: none
+}
+
+#bootstrap-overrides .btn-primary {
+    background-color: var(--primary-green);
+    border-radius: 0;
+    color: white;
+    border: 0.063rem solid black;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0 #00401e;
+    font-size: 1rem
+}
+
+#bootstrap-overrides .btn-secondary {
+    background-color: var(--primary-mid-grey);
+    border-radius: 0;
+    color: white;
+    border: 0.063rem solid black;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0 #00401e;
+    font-size: 1rem
+}
+
+#bootstrap-overrides .btn:hover {
+    background-image: linear-gradient(rgb(0 0 0/20%) 0 0);
+}
+
+#bootstrap-overrides .btn:active {
+    background-image: linear-gradient(rgb(0 0 0/40%) 0 0);
+    box-shadow: 0 0 0 #00401e;
+}
+
+#bootstrap-overrides .btn:focus {
+    background-image: none;
+    color: black;
+    background-color: var(--primary-yellow);
+}
+
+#bootstrap-overrides .form-control {
+    border-radius: 0;
+    border: 0.125rem solid var(--primary-dark-grey);
+}
+
+#bootstrap-overrides .form-control:focus {
+    border: 0.125rem solid black;
+    outline: 0.25rem solid var(--primary-yellow)
+}
+
 .center{
     text-align:center;
     margin: auto;
     width: 100%;
-    padding: 10px;
+    padding: 0.625rem;
     border-style: solid;
-    border-width: 2px;
-    border-radius: 5px;  
+    border-width: 0.063rem;
+    border-radius: 0.25rem;
+    background-color: var(--primary-light-grey);
 }
 
 .footer {
-    height: 60px;
+    height: 3.75rem;
     text-align: center;
     position: absolute;
     bottom: 0;
     width: 100%;
     white-space: nowrap;
     color: black;
-    line-height: 60px; 
-    background-color: rgba(255, 255, 255, 0.637);
+    line-height: 3.75rem; 
+    background-color: var(--primary-light-grey);
   }
