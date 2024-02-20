@@ -20,7 +20,7 @@ require ("footer.php");
         <div class="page-container">
             <div> 
                 <h1 class="page-title">Plan your route</h1>
-                <form method="post" action="mapping-algo.php" autocomplete="off">
+                <form method="post" action="indexRedirect.php" autocomplete="off">
                     <div class="form-container">
                         <?php if(!isset($_GET['location'])):?>
                         <div class="location-input form-item">
@@ -46,10 +46,10 @@ require ("footer.php");
                         </label>
 
                         <div class="form-item form-button">
-                            <button type="submit" class="btn btn-primary">Get route</button>
+                            <button type="submit" name="getRoute" class="btn btn-primary">Get route</button>
                         </div>
                         <div class="form-item form-button">
-                            <button type="submit" class="btn btn-primary">Get route as a PDF</button>
+                            <button type="submit" name="getRoutePDF"class="btn btn-primary">Get route as a PDF</button>
                         </div>
                     </div>
                 </form>
