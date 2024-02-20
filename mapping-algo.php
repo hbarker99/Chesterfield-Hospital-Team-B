@@ -221,6 +221,5 @@ $solutions = [];
 <?php
         echo nl2br("IMG: ".$final_path[$i]['image']."\n");
     }
-
 }
 ?>
