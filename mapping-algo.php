@@ -142,31 +142,36 @@ $node5 = new Node("5");
         }
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Form was submitted, process the data
-            $start = $_POST['start'];
+            $start = $_POST['startPoint'];
             echo nl2br("start index as: $start\n");
-            $end = $_POST['end'];
+            $end = $_POST['endPoint'];
             echo nl2br("end index as: $end\n");
            
         }
 ?>
 
-<form action="" method="post">
+       
+<!-- <form action="" method="post">
     <label for="start">Start Node:</label>
     <select name="start" id="start">
-        <?php foreach ($nodeObjects as $node): ?>
-            <option value="<?php echo $node->nodeId; ?>"><?php echo $node->nodeId; ?></option>
-        <?php endforeach; ?>
+        <?#php foreach ($nodeObjects as $node): ?>
+            <option value="<?#php echo $node->nodeId; ?>"><?#php echo $node->nodeId; ?></option>
+        <?#php endforeach; ?>
     </select>
 
     <label for="end">End Node:</label>
     <select name="end" id="end">
-        <?php foreach ($nodeObjects as $node): ?>
-            <option value="<?php echo $node->nodeId; ?>"><?php echo $node->nodeId; ?></option>
-        <?php endforeach; ?>
+        <?#php foreach ($nodeObjects as $node): ?>
+            <option value="<?#php echo $node->nodeId; ?>"><?#php echo $node->nodeId; ?></option>
+        <?#php endforeach; ?>
     </select>
 
     <input type="submit" value="Submit">
 </form>
+        commenting out html+php combo is a pain-->
+
+
+
 <?php
 
 $solutions = [];
