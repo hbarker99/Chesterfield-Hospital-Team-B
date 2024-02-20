@@ -3,12 +3,12 @@ class Node
 {
     public $distance = PHP_INT_MAX;
     public $previous = null;
-    public $name;
+    public $nodeId;
     public $neighbours = [];
 
     public function __construct($name)
     {
-        $this->name = $name;
+        $this->nodeId = $name;
     }
 
     public function addNeighbour($node, $distance)
@@ -119,14 +119,14 @@ $node5 = new Node("5");
     <label for="start">Start Node:</label>
     <select name="start" id="start">
         <?php foreach ($nodeObjects as $node): ?>
-            <option value="<?php echo $node->name; ?>"><?php echo $node->name; ?></option>
+            <option value="<?php echo $node->nodeId; ?>"><?php echo $node->nodeId; ?></option>
         <?php endforeach; ?>
     </select>
 
     <label for="end">End Node:</label>
     <select name="end" id="end">
         <?php foreach ($nodeObjects as $node): ?>
-            <option value="<?php echo $node->name; ?>"><?php echo $node->name; ?></option>
+            <option value="<?php echo $node->nodeId; ?>"><?php echo $node->nodeId; ?></option>
         <?php endforeach; ?>
     </select>
 
@@ -146,17 +146,12 @@ $solutions = [];
 
     $nodeObjects['node_'.$start]->distance = 0; // Set the starting node's distance to 0
     $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$start], $nodeObjects['node_'.$end]);
-<<<<<<< HEAD
-=======
 
->>>>>>> parent of b8ceec3 (removing old items)
-    echo nl2br("Start at " . $path[0]->name . "\n");
+    echo nl2br("Start at " . $path[0]->nodeId . "\n");
     for ($i = 1; $i < count($path); $i++) {
-        echo nl2br("Go to " . $path[$i]->name . "\n");
-<<<<<<< HEAD
-
-=======
->>>>>>> parent of b8ceec3 (removing old items)
+        // Print the direction and the node name
+        // echo "Go " . $n->dir . " to " . $n->name . "\n";
+        echo nl2br("Go to " . $path[$i]->nodeId . "\n");
     }
 }
 ?>
