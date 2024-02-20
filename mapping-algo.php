@@ -1,3 +1,19 @@
+<style>
+  .image-box {
+    width: 400px;
+    height: 800px;
+    overflow: hidden; /* To crop excess content */
+  }
+
+  .image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Choose the desired value */
+  }
+</style>
+
+
+
 <?php
 class Node
 {
@@ -11,10 +27,10 @@ class Node
         $this->nodeId = $name;
     }
 
-    public function addNeighbour($node, $distance)
+    public function addNeighbour($node, $distance, $edgeId)
     {
-        $this->neighbours[] = ["node" => $node, "distance" => $distance];
-        $node->neighbours[] = ["node" => $this, "distance" => $distance];
+        $this->neighbours[] = ["node" => $node, "distance" => $distance, "edgeId" => $edgeId];
+        //$node->neighbours[] = ["node" => $this, "distance" => $distance, "edgeId" => $edgeId];
     }
 }
 
@@ -38,6 +54,7 @@ class Dijkstra
                 if ($altDistance < $neighbour["node"]->distance) {
                     $neighbour["node"]->distance = $altDistance;
                     $neighbour["node"]->previous = $currentNode;
+                    $neighbour["node"]->previousEdgeId = $neighbour["edgeId"];
                     array_push($queue, $neighbour["node"]);
                 }
             }
@@ -47,12 +64,18 @@ class Dijkstra
         $path = [];
 
         while ($node !== null) {
-            array_push($path, $node);
+            if(isset($node->previousEdgeId)){
+            array_push($path, $node->previousEdgeId);
+            }
+            else{
+                array_push($path, 0);
+            }
             $node = $node->previous;
         }
-
+        array_pop($path);
         $path = array_reverse($path);
-        //self::$paths[[$startNode, $endNode]] = $path;
+
+        
         return $path;
     }
 }
@@ -88,7 +111,7 @@ $node5 = new Node("5");
 
 
         $db = new SQLite3("database.db");
-        $stmt = $db->prepare('SELECT start_node_id, end_node_id, distance FROM Edges');
+        $stmt = $db->prepare('SELECT edge_id, start_node_id, end_node_id, distance FROM Edges');
 
         $edgesResult = $stmt->execute();
 
@@ -103,7 +126,7 @@ $node5 = new Node("5");
 
             $endNode = $nodeObjects['node_'.$row['end_node_id']];
 
-            $nodeObjects['node_'.$row['start_node_id']]->addNeighbour($nodeObjects['node_'.$row['end_node_id']], $row['distance']);
+            $nodeObjects['node_'.$row['start_node_id']]->addNeighbour($nodeObjects['node_'.$row['end_node_id']], $row['distance'], $row['edge_id']);
         }
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Form was submitted, process the data
@@ -147,11 +170,57 @@ $solutions = [];
     $nodeObjects['node_'.$start]->distance = 0; // Set the starting node's distance to 0
     $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$start], $nodeObjects['node_'.$end]);
 
-    echo nl2br("Start at " . $path[0]->nodeId . "\n");
+    /*echo nl2br("Start at " . $path[1]->nodeId . "\n");
     for ($i = 1; $i < count($path); $i++) {
         // Print the direction and the node name
         // echo "Go " . $n->dir . " to " . $n->name . "\n";
         echo nl2br("Go to " . $path[$i]->nodeId . "\n");
     }
+    echo nl2br("Total Edges: ".count($path)."\n");
+
+    for ($i = 0; $i < count($path); $i++) {
+        echo nl2br("Edge: ".$path[$i]."\n");
+    }*/
+
+
+    $db = new SQLite3("database.db");
+    $stmt = $db->prepare("SELECT image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).")");
+
+    $edgesResult = $stmt->execute();
+
+    $final_path = [];
+    while ($row = $edgesResult->fetchArray()) {
+        $final_path[] = $row;
+    }
+    echo nl2br("final path steps: ". count($final_path)."\n");
+    for ($i = 0; $i < count($final_path); $i++) {
+        echo nl2br("Step ".($i+1)."\n");
+        if($i+1 <= count($final_path)){
+        //if($i+1 < count($final_path)){
+
+            //$direction = $final_path[$i]['direction']-$final_path[$i+1]['direction'];
+            $direction = $final_path[$i]['direction']-$final_path[$i+1]['direction'];
+            switch($direction){
+                case 0: 
+                    echo 'straight';
+                    break;
+                case 1:
+                case -3:
+                    echo 'left';
+                    break;
+                case -1:
+                case 3:
+                    echo 'right';
+                    break;
+            }
+            echo nl2br($direction."\n");
+        }?>
+<div class="image-box">
+  <img src="./img/<?php echo $final_path[$i]['image'];?>" alt="Your Image">
+</div>
+<?php
+        echo nl2br("IMG: ".$final_path[$i]['image']."\n");
+    }
+
 }
 ?>
