@@ -1,3 +1,16 @@
+<?php 
+    $db = new SQLite3("../database.db");
+    $stmt = $db->prepare('SELECT node_id, name FROM Node');
+
+
+    $result = $stmt->execute();
+
+    $rows_array = [];
+    
+    while ($row = $result->fetchArray()) {
+        $rows_array[] = $row;
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,14 +56,16 @@
                     </tr>
                 </thead>
                 <tbody>
+                <?php for ($i = 0; $i < count($rows_array); $i++):?>
                     <tr>
-                        <td>1</td>
-                        <td>Main Entrance</td>
+                        <td><?php echo $rows_array[$i][0] ?></td>
+                        <td><?php echo $rows_array[$i][1] ?></td>
                         <td>
                             <button class="action-btn">Edit</button>
                             <button class="action-btn">Delete</button>
                         </td>
                     </tr>
+                    <?php endfor; ?>
                 </tbody>
             </table>
         </section>
