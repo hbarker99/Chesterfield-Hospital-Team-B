@@ -1,13 +1,21 @@
 <?php
+session_start();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Check if the checkbox is checked
-    if (isset($_POST['pdfCheckbox']) && $_POST['pdfCheckbox'] == 'on') { # might need to change from 'on' to checked
-        // If checked, redirect to a different page
-        header('Location: directionPDF.php'); #dno where its going yet 
-        exit;
-    } else {
-        // If not checked, redirect to another page
-        header('Location: route.php');
-        exit;
+    if (isset($_POST['getRoute'])) {
+        // Store POST data in session
+        $_SESSION['routeInfo'] = $_POST;
+        header("Location: route.php"); // Redirect to your desired page
+        exit; // Ensure that no other code is executed after redirection
     }
+    if (isset($_POST['getRoutePDF'])) {
+        // Store POST data in session
+        $_SESSION['routeInfo'] = $_POST;
+        header("Location: routePDF.php"); // Redirect to your desired page
+        exit; // Ensure that no other code is executed after redirection
+    } 
 }
+# route info:
+# startPoint -> starting node_id
+# endPoint -> ending node_id
+# accessibilityCheck -> tickbox for accessibility info
