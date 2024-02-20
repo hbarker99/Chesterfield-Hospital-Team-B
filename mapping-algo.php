@@ -29,16 +29,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $endPoint = $_POST['endPoint'];
         
         // Print out the form details
-        echo "Start Point: " . $startPoint . "<br>";
-        echo "End Point: " . $endPoint . "<br>";
+        //echo "Start Point: " . $startPoint . "<br>";
+        //echo "End Point: " . $endPoint . "<br>";
         
         // Check if the accessibility check is set
         if (isset($_POST['accessibilityCheck'])) {
             // Accessibility check is checked
-            echo "Accessibility Check: Checked<br>";
+            //echo "Accessibility Check: Checked<br>";
         } else {
             // Accessibility check is not checked
-            echo "Accessibility Check: Not Checked<br>";
+            // echo "Accessibility Check: Not Checked<br>";
         }
         // You can perform further processing here based on the form data
     } else {
@@ -161,9 +161,9 @@ class Dijkstra
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Form was submitted, process the data
             $start = $_POST['startPoint'];
-            echo nl2br("start index as: $start\n");
+            //echo nl2br("start index as: $start\n");
             $end = $_POST['endPoint'];
-            echo nl2br("end index as: $end\n");
+            //echo nl2br("end index as: $end\n");
            
         }
     
@@ -187,34 +187,35 @@ class Dijkstra
     while ($row = $edgesResult->fetchArray()) {
         $final_path[] = $row;
     }
-    echo nl2br("final path steps: ". count($final_path)."\n");
+    //echo nl2br("final path steps: ". count($final_path)."\n");
     for ($i = 0; $i < count($final_path); $i++) {
-        echo nl2br("Step ".($i+1)."\n");
-        if($i+1 <= count($final_path)){
-        //if($i+1 < count($final_path)){
-
-            //$direction = $final_path[$i]['direction']-$final_path[$i+1]['direction'];
+        //echo nl2br("Step ".($i+1)."\n");
+        if($i+1 < count($final_path)){ // Changed condition here
+    
             $direction = $final_path[$i]['direction']-$final_path[$i+1]['direction'];
             switch($direction){
                 case 0: 
-                    echo 'straight';
+                    //echo 'straight';
                     break;
                 case 1:
                 case -3:
-                    echo 'left';
+                    //echo 'left';
                     break;
                 case -1:
                 case 3:
-                    echo 'right';
+                    //echo 'right';
                     break;
             }
-            echo nl2br($direction."\n");
-        }?>
+            //echo nl2br($direction."\n");
+        }
+    }
+    ?>
+        <!-- 
 <div class="image-box">
   <img src="./img/<?php echo $final_path[$i]['image'];?>" alt="Your Image">
-</div>
+</div>!--> 
 <?php
-        echo nl2br("IMG: ".$final_path[$i]['image']."\n");
+        //echo nl2br("IMG: ".$final_path[$i]['image']."\n");
     }
-}
+
 ?>
