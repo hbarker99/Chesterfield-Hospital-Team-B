@@ -1,48 +1,36 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chesterfield Royal Hospital Admin Login</title>
+    <link rel="stylesheet" href="../adminlogin.css">
 </head>
-
 <body>
-<h1> Admin Login </h1>
-    <div class="text-block" id="home">
-        <div class="text-block">
+    <div class="login-wrapper">
+        <h1>Admin Login</h1>
+        <div class="login-form">
             <?php
-    include("../class/adminconnections.php");
-    if (($_SERVER["REQUEST_METHOD"] == "POST") && (isset($_POST['login']))) {
-        $username = $_POST['Username'];
-        $password = $_POST['Password'];
+            // Placeholder for server-side logic
+            ?>
 
-        $result = admin_login($Username, $Password);
-        if ($result) {
-            header("Location: ../Admin/adminhome.php?uname=".$Username);
-        } else {
-            echo "invalid credintials";
-        }
-
-    }
-    ?>
-
-<form method="post">
-                <div>
-                    <label>Username</label>
-                    <input required type="username" name="username" id="username" />
+            <form method="post">
+                <div class="form-group">
+                    <label for="Username">Username</label>
+                    <input required type="text" name="Username" id="Username" />
                 </div>
 
-                <div>
-                    <label> Password </label>
-                    <input required type="password" name="password" id="password" />
-                    <br />
-                    <a href="./forgot_password.php"> Forgot Password ? </a>
+                <div class="form-group">
+                    <label for="Password">Password</label>
+                    <input required type="password" name="Password" id="Password" />
                 </div>
 
-                <div>
+                <div class="form-actions">
                     <input type="submit" value="Login" name="login" id="login" />
+                    <a href="./forgot_password.php">Forgot Password?</a>
                 </div>
             </form>
-    
-
-
+        </div>
+    </div>
 </body>
-
 </html>
