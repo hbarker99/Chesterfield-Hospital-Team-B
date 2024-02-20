@@ -18,7 +18,7 @@ function locationFill(){
     $rows_array = [];
     while ($row=$result->fetchArray())
     {
-        $rows_array[]=$row['name'];
+        $rows_array[]=$row;
     }
     return $rows_array;
 }
