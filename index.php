@@ -1,7 +1,6 @@
 <?php require("navBar.php");
 include_once("dbString.php");
-include("./indexPHP/startLocation.php");
-
+include("./components/indexPHP/startLocation.php");
 require ("footer.php");
 ?>
 
@@ -22,7 +21,7 @@ require ("footer.php");
                 <?php endif;?>
             </h1>
         </div>
-        <div > 
+        <div> 
             <form method="post" action="mapping-algo.php">
                 <div>
                     <p>Enter where you are</p>
