@@ -95,8 +95,24 @@
     transition: all ease 600ms;
 }
 
+#toggle-visibility::after {
+    content: "";
+    position: absolute;
+    background-color: white;
+    width: calc(100% + 8px);
+    height: 10px;
+    left: -4px;
+    bottom: 0;
+
+    transition: all ease 600ms;
+}
+
 #toggle-visibility.hidden {
     top: calc(-1rem - 40px);
+}
+
+#toggle-visibility.hidden::after {
+    transform: translateY(10px);
 }
 
 .button-container {
