@@ -133,14 +133,9 @@ class Dijkstra
     foreach ($rows_array as $row) {
         $node_id = $row['node_id'];
         $nodeObjects['node_' . $node_id] = new Node($node_id);
-        //echo nl2br('node_' . $node_id."\n");
+
 }
 
-$node1 = new Node("Main Entrance");
-$node2 = new Node("2");
-$node3 = new Node("3");
-$node4 = new Node("4");
-$node5 = new Node("5");
 
 // EDGE SCOPE
 
@@ -171,13 +166,6 @@ $node5 = new Node("5");
             echo nl2br("end index as: $end\n");
            
         }
-?>
-
-
-<?php
-
-$solutions = [];
-
     
     foreach ($nodeObjects as $n) {
         $n->distance = PHP_INT_MAX;
@@ -188,18 +176,6 @@ $solutions = [];
 
     $nodeObjects['node_'.$start]->distance = 0; // Set the starting node's distance to 0
     $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$start], $nodeObjects['node_'.$end]);
-
-    /*echo nl2br("Start at " . $path[1]->nodeId . "\n");
-    for ($i = 1; $i < count($path); $i++) {
-        // Print the direction and the node name
-        // echo "Go " . $n->dir . " to " . $n->name . "\n";
-        echo nl2br("Go to " . $path[$i]->nodeId . "\n");
-    }
-    echo nl2br("Total Edges: ".count($path)."\n");
-
-    for ($i = 0; $i < count($path); $i++) {
-        echo nl2br("Edge: ".$path[$i]."\n");
-    }*/
 
 
     $db = new SQLite3("database.db");
