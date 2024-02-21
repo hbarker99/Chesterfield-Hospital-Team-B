@@ -1,5 +1,5 @@
 <?php 
-    $db = new SQLite3("../database.db");
+    $db = new SQLite3("databasepractice.db");
     $stmt = $db->prepare('SELECT node_id, name FROM Node');
 
 
@@ -9,6 +9,15 @@
     
     while ($row = $result->fetchArray()) {
         $rows_array[] = $row;
+    }
+
+    if(isset($_POST['edit'])){
+        if($users != null){
+            header("Location: admincrud.php");
+        }
+        else{
+            echo Wrong;// use bootstrap alert to display failed login
+        }
     }
 ?>
 <!DOCTYPE html>
@@ -61,8 +70,12 @@
                         <td><?php echo $rows_array[$i][0] ?></td>
                         <td><?php echo $rows_array[$i][1] ?></td>
                         <td>
-                            <button class="action-btn">Edit</button>
-                            <button class="action-btn">Delete</button>
+                        <form action="editEdges.php" method="post">
+                            <input type="hidden" name="node_id" value="<?php echo $rows_array[$i]['node_id']; ?>">
+                            <button type="submit" name="edit" class="action-btn">Edit</button>
+                        </form action="deletenode.php" method="post">
+                            <input type="hidden" name="delete" value="havent decided yet">
+                            <button type="submit" name="delete" class="action-btn">Delete</button>
                         </td>
                     </tr>
                     <?php endfor; ?>
