@@ -13,43 +13,9 @@
 </style>
 
 
-
 <?php
 
 
-#### testing post stuffs
-
-
-// Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Check if startPoint and endPoint are set in the POST data
-    if (isset($_POST['startPoint']) && isset($_POST['endPoint'])) {
-        // Retrieve the values of startPoint and endPoint
-        $startPoint = $_POST['startPoint'];
-        $endPoint = $_POST['endPoint'];
-        
-        // Print out the form details
-        //echo "Start Point: " . $startPoint . "<br>";
-        //echo "End Point: " . $endPoint . "<br>";
-        
-        // Check if the accessibility check is set
-        if (isset($_POST['accessibilityCheck'])) {
-            // Accessibility check is checked
-            //echo "Accessibility Check: Checked<br>";
-        } else {
-            // Accessibility check is not checked
-            // echo "Accessibility Check: Not Checked<br>";
-        }
-        // You can perform further processing here based on the form data
-    } else {
-        echo "Error: startPoint and/or endPoint not set.";
-    }
-} else {
-    echo "Error: Form not submitted.";
-}
-
-
-#####
 class Node
 {
     public $distance = PHP_INT_MAX;
@@ -113,20 +79,18 @@ class Dijkstra
         return $path;
     }
 }
-$startPoint = 1;
-$endPoint = 3;
 function check_for_precalculated_path($startPoint, $endPoint)
 {
     $db = new SQLite3("database.db");
-    $stmt = $db->prepare('SELECT path_id FROM Path WHERE (start_node_id = $start) AND (end_node_id = $end)');
+    $stmt = $db->prepare("SELECT path_id FROM Path WHERE (start_node_id = $startPoint) AND (end_node_id = $endPoint)");
     $result = $stmt->execute();
 
-    return $result;
+    $data = $result->fetchArray(SQLITE3_ASSOC);    
+    return $data;
 }
 
 $exists = check_for_precalculated_path($startPoint, $endPoint);
-
-if(!isset($exists))
+if($exists== null)
 {
     echo 'path not found';
     // Path does not exist in the database, calculate new path
