@@ -43,7 +43,13 @@ if(isset($_POST['next'])){
                     <h4>Instruction</h4>
                     <div class="instruction-container">
                         <div class="instruction-highlight"></div>
-                        <div class="instruction-text">At the next junction turn <b><?php echo $final_path[$_SESSION['current_step']]['direction'];?></b></div>
+                        <?php if($_SESSION['current_step'] == count($final_path) - 1) {?>
+                            <div class="instruction-text">You have reached your destination.</div>
+                        <?php } elseif($_SESSION['current_step'] == 0) { ?>
+                            <div class="instruction-text">Begin facing the same direction as the image. Then continue forwards.</div>
+                        <?php } else { ?>
+                            <div class="instruction-text">At the next junction turn <b><?php echo $final_path[$_SESSION['current_step']]['direction'];?></b></div>
+                        <?php } ?>
                     </div>
                     <?php if(true) : ?>
                         <p>Additional notes</p>
