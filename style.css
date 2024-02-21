@@ -83,6 +83,10 @@
     border: 0.125rem solid var(--primary-dark-grey);
 }
 
+#bootstrap-overrides .error {
+    border: 0.125rem solid red;
+}
+
 #bootstrap-overrides .form-control:focus {
     border: 0.125rem solid black;
     outline: 0.25rem solid var(--primary-yellow)

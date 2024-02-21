@@ -1,5 +1,5 @@
-<div class="dropdown">
-    <input type="text" class="form-control searchInput" id="<?php echo $DropdownId ?>" placeholder="Search...">
+<div class="dropdown" id="<?php echo $DropdownId ?>">
+    <input type="text" class="form-control searchInput" placeholder="Search...">
     <div class="clear-button"></div>
     <input type="hidden" id="dropdownValue">
     <div class="dropdown-content"></div>
