@@ -1,28 +1,6 @@
-<?php require("navBar.php");
+<?
 include_once("dbString.php");
-
-function locationFill(){
-
-    $db = new SQLite3(get_string());
-    $stmt = $db->prepare('SELECT name, node_id FROM Node WHERE endpoint=1');
-    $result = $stmt->execute();
-    $rows_array = [];
-    while ($row=$result->fetchArray())
-    {
-        $rows_array[]=$row;
-    }
-    return $rows_array;
-}
-
-function startLocation() {
-    $db = new SQLite3(get_string());
-    $stmt = $db->prepare('SELECT name FROM Node WHERE node_id=:nodeId');
-    $stmt->bindParam(':nodeId', $_GET['location'], SQLITE3_INTEGER);
-    $result = $stmt->execute();
-    $data = $result->fetchArray(SQLITE3_ASSOC);    
-    return $data['name'];
-}
-
+include("./components/indexPHP/startLocation.php");
 require ("footer.php");
 ?>
 
@@ -32,81 +10,53 @@ require ("footer.php");
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Chesterfield Group B</title>
+        <link rel="stylesheet" href="style.css"/>
+        <link rel="stylesheet" href="route-picker.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        
     </head>
 
-
-
     <body id="bootstrap-overrides">
-        <?php include './components/dropdown/dropdown.php'; ?>
-        <div>
-            <h1>Welcome!
-                <?php if(isset($_GET['location'])):
-                $startLocation = startLocation(); ?>
-                You are at: <?php echo($startLocation);?>
-                <?php endif;?>
-            </h1>
-        </div>
-        <div>
-            <?php if(!isset($_GET['location'])): ?> 
-
-            <form method="post" action="mapping-algo.php">
-                <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                        <option selected>Where are you located?</option>
-                        <?php
-                        $locations = locationFill();
-                        foreach($locations as $location){
-                            echo '<option value="'.$location['node_id'].'">'.$location['name'].'</option>';
-                        }
-                        ?>
-                    </select>
-                    <label for="floatingSelect">Pick your location</label>
-                </div> 
-                <?php endif; ?>
-
-                <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                        <option selected>Where are you headed?</option>
-                        <?php
-                        $locations = locationFill();
-                        foreach($locations as $location){
-                            echo '<option value="'.$location['node_id'].'">'.$location['name'].'</option>';
-                        }
-                        ?>
-                    </select>
-                    <label for="floatingSelect">Pick your goal location</label>
-                </div> 
-                <div class="mb-4 form-switch">
-                    <input type="checkbox" class="form-check-input" role="switch" id="exampleCheck0">
-                    <label class="form-check-label" for="exampleCheck0">Check for accessibility information</label>
-                </div>
-
-                <div>
-                    <button type="submit" class="btn btn-primary">Get route</button>
-                </div>
-            </form> 
+        <div class="page-container">
+            <div> 
+                <h1 class="page-title">Plan your route</h1>
+                <form method="post" action="indexRedirect.php" autocomplete="off">
+                    <div class="form-container">
+                        <?php if(!isset($_GET['location'])):?>
+                        <div class="location-input form-item">
+                            <label>Choose where you are</label>
+                            <?php $DropdownId = 1; include './components/dropdown/dropdown.php'; ?>
+                        </div>
+                        <?php endif;?>
+                        <div class="location-input form-item">
+                            <label>Choose where you want to go</label>
+                            <?php $DropdownId = 2;include './components/dropdown/dropdown.php'; ?>
+                        </div>
                 
-            <form>
+                        <?php if (isset($_GET['location'])):?>
+                        <input type="hidden" id="startPoint" name="startPoint" value="<?php echo $_GET['location']; ?>">
+                        <?php else:?>
+                        <input type="hidden" id="startPoint" name="startPoint">
+                        <?php endif;?>
+                        <input type="hidden" id="endPoint" name="endPoint">
 
-                <div>
-                    <p>Enter where you are</p>
-                    <?php include './components/dropdown/dropdown.php'; ?>
-                </div>
-                <div>
+                        <label class="mb-4 form-item checkbox-container"> Check for accessibility information
+                            <input type="checkbox" id="accessibilityCheck" name="accessibilityCheck" />
+                            <span class="checkmark"></span>
+                        </label>
 
-                    <p>Enter where you want to go</p>
-                    <?php include './components/dropdown/dropdown.php'; ?>
-                </div>
-                <div>
-                    <button type="submit" class="btn btn-primary">Get route</button>
-                </div>
-
-
-            </form>
-
-
+                        <div class="form-item form-button">
+                            <button type="submit" name="getRoute" class="btn btn-primary">Get route</button>
+                        </div>
+                        <div class="form-item form-button">
+                            <button type="submit" name="getRoutePDF"class="btn btn-primary">Get route as a PDF</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-
     </body>
-
 </html>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>

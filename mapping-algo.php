@@ -15,6 +15,41 @@
 
 
 <?php
+
+
+#### testing post stuffs
+
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if startPoint and endPoint are set in the POST data
+    if (isset($_POST['startPoint']) && isset($_POST['endPoint'])) {
+        // Retrieve the values of startPoint and endPoint
+        $startPoint = $_POST['startPoint'];
+        $endPoint = $_POST['endPoint'];
+        
+        // Print out the form details
+        //echo "Start Point: " . $startPoint . "<br>";
+        //echo "End Point: " . $endPoint . "<br>";
+        
+        // Check if the accessibility check is set
+        if (isset($_POST['accessibilityCheck'])) {
+            // Accessibility check is checked
+            //echo "Accessibility Check: Checked<br>";
+        } else {
+            // Accessibility check is not checked
+            // echo "Accessibility Check: Not Checked<br>";
+        }
+        // You can perform further processing here based on the form data
+    } else {
+        echo "Error: startPoint and/or endPoint not set.";
+    }
+} else {
+    echo "Error: Form not submitted.";
+}
+
+
+#####
 class Node
 {
     public $distance = PHP_INT_MAX;
@@ -98,14 +133,9 @@ class Dijkstra
     foreach ($rows_array as $row) {
         $node_id = $row['node_id'];
         $nodeObjects['node_' . $node_id] = new Node($node_id);
-        //echo nl2br('node_' . $node_id."\n");
+
 }
 
-$node1 = new Node("Main Entrance");
-$node2 = new Node("2");
-$node3 = new Node("3");
-$node4 = new Node("4");
-$node5 = new Node("5");
 
 // EDGE SCOPE
 
@@ -130,35 +160,12 @@ $node5 = new Node("5");
         }
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Form was submitted, process the data
-            $start = $_POST['start'];
-            echo nl2br("start index as: $start\n");
-            $end = $_POST['end'];
-            echo nl2br("end index as: $end\n");
+            $start = $_POST['startPoint'];
+            //echo nl2br("start index as: $start\n");
+            $end = $_POST['endPoint'];
+            //echo nl2br("end index as: $end\n");
            
         }
-?>
-
-<form action="" method="post">
-    <label for="start">Start Node:</label>
-    <select name="start" id="start">
-        <?php foreach ($nodeObjects as $node): ?>
-            <option value="<?php echo $node->nodeId; ?>"><?php echo $node->nodeId; ?></option>
-        <?php endforeach; ?>
-    </select>
-
-    <label for="end">End Node:</label>
-    <select name="end" id="end">
-        <?php foreach ($nodeObjects as $node): ?>
-            <option value="<?php echo $node->nodeId; ?>"><?php echo $node->nodeId; ?></option>
-        <?php endforeach; ?>
-    </select>
-
-    <input type="submit" value="Submit">
-</form>
-<?php
-
-$solutions = [];
-
     
     foreach ($nodeObjects as $n) {
         $n->distance = PHP_INT_MAX;
@@ -170,18 +177,6 @@ $solutions = [];
     $nodeObjects['node_'.$start]->distance = 0; // Set the starting node's distance to 0
     $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$start], $nodeObjects['node_'.$end]);
 
-    /*echo nl2br("Start at " . $path[1]->nodeId . "\n");
-    for ($i = 1; $i < count($path); $i++) {
-        // Print the direction and the node name
-        // echo "Go " . $n->dir . " to " . $n->name . "\n";
-        echo nl2br("Go to " . $path[$i]->nodeId . "\n");
-    }
-    echo nl2br("Total Edges: ".count($path)."\n");
-
-    for ($i = 0; $i < count($path); $i++) {
-        echo nl2br("Edge: ".$path[$i]."\n");
-    }*/
-
 
     $db = new SQLite3("database.db");
     $stmt = $db->prepare("SELECT image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).")");
@@ -192,34 +187,35 @@ $solutions = [];
     while ($row = $edgesResult->fetchArray()) {
         $final_path[] = $row;
     }
-    echo nl2br("final path steps: ". count($final_path)."\n");
+    //echo nl2br("final path steps: ". count($final_path)."\n");
     for ($i = 0; $i < count($final_path); $i++) {
-        echo nl2br("Step ".($i+1)."\n");
-        if($i+1 <= count($final_path)){
-        //if($i+1 < count($final_path)){
-
-            //$direction = $final_path[$i]['direction']-$final_path[$i+1]['direction'];
+        //echo nl2br("Step ".($i+1)."\n");
+        if($i+1 < count($final_path)){ // Changed condition here
+    
             $direction = $final_path[$i]['direction']-$final_path[$i+1]['direction'];
             switch($direction){
                 case 0: 
-                    echo 'straight';
+                    //echo 'straight';
                     break;
                 case 1:
                 case -3:
-                    echo 'left';
+                    //echo 'left';
                     break;
                 case -1:
                 case 3:
-                    echo 'right';
+                    //echo 'right';
                     break;
             }
-            echo nl2br($direction."\n");
-        }?>
+            //echo nl2br($direction."\n");
+        }
+    }
+    ?>
+        <!-- 
 <div class="image-box">
   <img src="./img/<?php echo $final_path[$i]['image'];?>" alt="Your Image">
-</div>
+</div>!--> 
 <?php
-        echo nl2br("IMG: ".$final_path[$i]['image']."\n");
+        //echo nl2br("IMG: ".$final_path[$i]['image']."\n");
     }
-}
+
 ?>

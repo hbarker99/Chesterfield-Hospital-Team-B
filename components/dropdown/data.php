@@ -26,12 +26,11 @@ function locationFill(){
 if (isset($_GET['search'])) {
     $search = $_GET['search'];
     $data = fetchData();
-    echo( json_encode(array_values($data)));
-    return;
     $filteredData = array_filter($data, function($item) use ($search) {
-        return stripos($item, $search) !== false;
+        return stripos($item['name'], $search) !== false;
     });
     echo json_encode(array_values($filteredData));
+    
 }
 error_log('Unexpected case reached in data.php');
 ?>
