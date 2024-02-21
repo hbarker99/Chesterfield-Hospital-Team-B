@@ -138,10 +138,65 @@ if($exists == null)
     $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$startPoint], $nodeObjects['node_'.$endPoint]);
 
 
-    $db = new SQLite3("database.db");
+    $dbFile = 'database.db'; // Replace with your actual database file path
+    $dsn = "sqlite:$dbFile";
+
+    try {
+        $pdo = new PDO($dsn);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Using implode to add every edge_id from the $path variable
+        $stmt = $db->prepare("SELECT edge_id, image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).")");
+        
+        $edgesResult = $stmt->execute();
+
+        $final_path = [];
+        while ($row = $edgesResult->fetchArray()) {
+            $final_path[] = $row;
+    }
+    } catch (PDOException $e) {
+        echo "Error selecting data: " . $e->getMessage();
+    }
+
+    // Add new path to path and steps tables
     
-    // Using implode to add every edge_id from the $path variable
-    $stmt = $db->prepare("SELECT image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).")");
+    $stmt = $pdo->prepare("INSERT INTO path (start_node_id, end_node_id) VALUES (?, ?)");
+
+    try {
+        $stmt->execute([$startPoint, $endPoint]);
+        $path_id = $pdo->lastInsertId();
+
+    } catch (PDOException $e) {
+        echo "Error inserting data: " . $e->getMessage();
+    }
+
+    
+    foreach ($final_path as $position => $step) {
+        $edge_id = $step['edge_id'];
+    
+        // Prepare and execute the INSERT statement
+        $stmt = $pdo->prepare("INSERT INTO Steps (path_id, edge_id, position_in_path) VALUES (?, ?, ?)");
+        $stmt->execute([$path_id, $edge_id, $position]);
+    }
+}
+
+else
+{
+    // path already exists in database, use that instead
+    echo 'path exists';
+    // query steps table with path_id to build edge array
+    $db = new SQLite3("database.db");
+
+    //$stmt = $db->prepare('SELECT edge_id, position_in_path FROM Path INNER JOIN Edges on ');
+    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes
+    FROM Steps
+    INNER JOIN Edges ON Steps.edge_id = Edges.edge_id
+    WHERE Steps.path_id = :path_id
+    ORDER BY Steps.position_in_path");
+
+    // bind params to avoid sql injection
+    $stmt->bindParam(':path_id', $exists['path_id'], PDO::PARAM_INT);
+
 
     $edgesResult = $stmt->execute();
 
@@ -150,12 +205,8 @@ if($exists == null)
         $final_path[] = $row;
     }
     
-}
-
-else
-{
-    // path already exists in database, use that instead
-    echo 'path exists';
+    $edgesResult->finalize(); // Close the result set
+    $db->close(); // Close the database connection
 }
 
     function calculate_relative_directions($path)
