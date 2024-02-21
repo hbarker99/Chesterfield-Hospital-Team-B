@@ -50,8 +50,8 @@ if(isset($_POST['next'])){
                     <?php endif ?>
                     <form method="post">
                         <div class="button-container">
-                            <input type="submit" class="btn btn-primary" name="previous" value="Previous Step" />
-                            <input type="submit" class="btn btn-primary" name="next" value="Next Step" />
+                            <input <?php if($_SESSION['current_step'] == 0) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="previous" value="Previous Step" />
+                            <input <?php if($_SESSION['current_step'] == count($final_path) - 1) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="next" value="Next Step" />
                         </div>
                     </form>
                 </div>
