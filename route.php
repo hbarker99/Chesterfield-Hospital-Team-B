@@ -26,7 +26,6 @@ if(isset($_POST['next'])){
     </head>
 
     <body id="bootstrap-overrides">
-        <div><?php echo $_SESSION['current_step'] ?></div>
         <div class="route-container">
             <div class="header-container">
                 <a href="index.php" class="back-btn">Pick another route</a>
@@ -44,7 +43,7 @@ if(isset($_POST['next'])){
                     <h4>Instruction</h4>
                     <div class="instruction-container">
                         <div class="instruction-highlight"></div>
-                        <div class="instruction-text">At the next junction turn <b>Left</b></div>
+                        <div class="instruction-text">At the next junction turn <b><?php echo $final_path[$_SESSION['current_step']]['direction'];?></b></div>
                     </div>
                     <?php if(true) : ?>
                         <p>Additional notes</p>

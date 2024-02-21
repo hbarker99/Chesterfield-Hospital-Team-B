@@ -14,8 +14,6 @@
 
 
 <?php
-
-
 class Node
 {
     public $distance = PHP_INT_MAX;
@@ -92,7 +90,6 @@ function check_for_precalculated_path($startPoint, $endPoint)
 $exists = check_for_precalculated_path($startPoint, $endPoint);
 if($exists== null)
 {
-    echo 'path not found';
     // Path does not exist in the database, calculate new path
 
     // NODE SCOPE
@@ -137,14 +134,6 @@ if($exists== null)
 
         $nodeObjects['node_'.$row['start_node_id']]->addNeighbour($nodeObjects['node_'.$row['end_node_id']], $row['distance'], $row['edge_id']);
         }
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Form was submitted, process the data
-        $start = $_POST['startPoint'];
-        //echo nl2br("start index as: $start\n");
-        $end = $_POST['endPoint'];
-        //echo nl2br("end index as: $end\n");
-
-        }
     }
 
     foreach ($nodeObjects as $n) {
@@ -170,13 +159,7 @@ if($exists== null)
     
     }
 }
-else
-{
-    // path already exists in database, use that instead
-    echo 'path exists';
-}
-
-    calculate_relative_directions($final_path);
+   
     function calculate_relative_directions($path)
     {
         // Using compass directions to calculate the relative direction of the instruction
@@ -194,17 +177,18 @@ else
                         break;
                     case 1:
                     case -3:
-                        $path[$i]['direction'] = 'left';
+                        $path[$i]['direction'] = '<- left';
                         break;
                     case -1:
                     case 3:
-                        $path[$i]['direction'] = 'right';
+                        $path[$i]['direction'] = 'right ->';
                         break;
                 }
             }
         }
+        return $path;
     }
-    
+     $final_path = calculate_relative_directions($final_path);
     ?>
         <!-- 
 <div class="image-box">
