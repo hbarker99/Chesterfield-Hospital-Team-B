@@ -1,8 +1,15 @@
 .image-box {
+    position: relative;
+    z-index: -1;
     display: block;
     width: 100%;
-    border: 1px solid black;
-    height: 100vh;
+    height: calc(100vh - 7%);
+}
+
+.image-box img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
 
 .route-container {
@@ -30,11 +37,9 @@
 .info-box-container {
     position: fixed;
     box-shadow: 0px -4px 2px 0px rgba(0,0,0,0.5);
-    outline: 1px solid black;
-    border: 1px solid black;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    background-color: white;
+    background-color: var(--primary-light-grey);
     width: 100%;
     z-index: 10;
     padding: 1rem 1rem 0 1rem;
@@ -74,41 +79,26 @@
 #toggle-visibility {
     position: absolute;
     width: 35%;
-    height: 40px;
+    height: 32px;
     background-color: red;
     top: calc(-1rem - 30px);
     left: calc(50% - (35%/2));
-    background-color: white;
+    background-color: var(--primary-light-grey);
     border: 2px solid black;
-    border-bottom: 0;
-
+    border-bottom: none;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
-    
     box-shadow: 0px -2px 2px 0px rgba(0,0,0,0.5);
-
     text-align: center;
     padding: 5px;
-
     cursor: pointer;
-
-    transition: all ease 600ms;
-}
-
-#toggle-visibility::after {
-    content: "";
-    position: absolute;
-    background-color: white;
-    width: calc(100% + 8px);
-    height: 10px;
-    left: -4px;
-    bottom: 0;
-
     transition: all ease 600ms;
 }
 
 #toggle-visibility.hidden {
+    height: 42px;
     top: calc(-1rem - 40px);
+    padding: 7px;
 }
 
 #toggle-visibility.hidden::after {
@@ -130,4 +120,41 @@
     .button-container > .btn {
         margin-right: 1rem;
     }
+}
+
+.header-container {
+    width: 100%;
+    height: 7%;
+    background-color: var(--primary-light-grey);
+    box-shadow: 0px 3px 8px 0px rgba(0,0,0,0.75);
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+.back-btn {
+    color: var(--primary-blue);
+    background-color: transparent;
+    border: none;
+    outline: none;
+    margin: 0 1.5rem;
+}
+
+.back-btn:focus {
+    cursor: pointer;
+    color: var(--primary-dark-blue);
+    background-color: var(--primary-yellow);
+    box-shadow: 0 -2px var(--primary-yellow), 0 4px black;
+    text-decoration: none;
+}
+
+.back-btn:after {
+    background-image: url("left-arrow.svg");
+    content: "";
+    display: inline-block;
+    height: 18px;
+    position: absolute;
+    left: 0.5rem;
+    width: 10px;
 }

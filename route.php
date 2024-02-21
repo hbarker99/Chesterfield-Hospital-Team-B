@@ -10,9 +10,14 @@
 
     <body id="bootstrap-overrides">
         <div class="route-container">
-            <div class="image-box">
-
+            <div class="header-container">
+                <a href="index.php" class="back-btn">Pick another route</a>
             </div>
+            <div class="image-box">
+                <img src="./img/edge_2.jpg" />
+            </div>
+
+
             <div class="info-box-container show">
                 <div class="info-box">
                     <div id="toggle-visibility" onclick="ToggleVisibility()">
