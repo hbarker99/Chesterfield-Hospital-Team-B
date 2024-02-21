@@ -1,6 +1,20 @@
 <?php 
 include("sessionHandling.php");
+include("mapping-algo.php");
+
+
+if(isset($_POST['next'])){
+    if($_SESSION['current_step'] < count($final_path) - 1) {
+        $_SESSION['current_step']++;
+    }
+} else if (isset($_POST['previous'])){
+    
+    if($_SESSION['current_step'] > 0) {
+        $_SESSION['current_step']--;
+    }
+}
 ?>
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -12,12 +26,13 @@ include("sessionHandling.php");
     </head>
 
     <body id="bootstrap-overrides">
+        <div><?php echo $_SESSION['current_step'] ?></div>
         <div class="route-container">
             <div class="header-container">
                 <a href="index.php" class="back-btn">Pick another route</a>
             </div>
             <div class="image-box">
-                <img src="./img/edge_2.jpg" />
+                <img src="./img/<?php echo $final_path[$_SESSION['current_step']]['image'] ?>" />
             </div>
 
 
@@ -34,10 +49,12 @@ include("sessionHandling.php");
                     <?php if(true) : ?>
                         <p>Additional notes</p>
                     <?php endif ?>
-                    <div class="button-container">
-                        <button class="btn btn-primary">Previous Step</button>
-                        <button class="btn btn-primary">Next Step</button>
-                    </div>
+                    <form method="post">
+                        <div class="button-container">
+                            <input type="submit" class="btn btn-primary" name="previous" value="Previous Step" />
+                            <input type="submit" class="btn btn-primary" name="next" value="Next Step" />
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

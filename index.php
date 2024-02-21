@@ -1,7 +1,10 @@
-<?
+<?php
 include_once("dbString.php");
 include("./components/indexPHP/startLocation.php");
+require("sessionHandling.php");
 require ("footer.php");
+
+$_SESSION['current_step'] = 0;
 ?>
 
 <!doctype html>
