@@ -71,7 +71,7 @@ $_SESSION['current_step'] = 0;
 form.addEventListener(
     "submit",
     event => {
-        invalidInputs = [document.getElementById("startPoint"), document.getElementById("endPoint")].filter(x => x.value === '');
+        invalidInputs = GetRouteDropdowns().filter(x => x.value === '');
 
         if (invalidInputs.length === 0)
             return;
@@ -82,4 +82,10 @@ form.addEventListener(
         event.preventDefault();
     }
 )
+</script>
+
+<script>
+    function GetRouteDropdowns() {
+        return [document.getElementById("startPoint"), document.getElementById("endPoint")]
+    }
 </script>
