@@ -80,13 +80,14 @@ session_start();
                         <td><?php echo $rows_array[$i][0] ?></td>
                         <td><?php echo $rows_array[$i][1] ?></td>
                         <td>
-                        <form action="editEdges.php" method="post">
+                        <form action="editEdges.php" method="post" style="display: inline;">
                             <input type="hidden" name="node_id" value="<?php echo $rows_array[$i]['node_id']; ?>">
                             <button type="submit" name="edit" class="action-btn">Edit</button>
-                            <button type="submit" name="delete" class="action-btn">Delete</button>
-                        </td>
                         </form>
-                            
+                        <form action="deleteNode.php" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this node?');">
+                            <input type="hidden" name="node_id" value="<?php echo $rows_array[$i]['node_id']; ?>">
+                            <button type="submit" name="delete" class="action-btn">Delete</button>
+                        </form>
                     </tr>
                     <?php endfor; ?>
                 </tbody>
