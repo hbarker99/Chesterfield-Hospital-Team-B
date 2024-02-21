@@ -2,7 +2,12 @@ document.querySelectorAll('.searchInput').forEach(input => {
     input.addEventListener('keyup', Search);
     input.addEventListener('focus', Search);
     input.addEventListener('focusout', Close);
+    input.addEventListener('input', HandleClearButton);
 });
+
+document.querySelectorAll('.clear-button').forEach(clearButton => {
+    clearButton.addEventListener('click', ClearInput);
+})
 
 function Search(e) {
     var searchValue = e.type === 'keyup' ? this.value : '';
@@ -41,4 +46,37 @@ function SelectOption() {
     // Update the value of the search input and the hidden input field
     input.value = this.textContent; // Update the visible input with the selected name
     inputId.value = this.id; // Update the hidden input with the selected node_id
+
+    AddClearButton(this.parentNode.parentNode.querySelector('.clear-button'));
+}
+
+function HandleClearButton() {
+    var hasValue = !!this.value;
+
+    if (hasValue) {
+        AddClearButton(this.parentNode.querySelector('.clear-button'));
+    } else {
+        RemoveClearButton(this.parentNode.querySelector('.clear-button'));
+    }
+}
+
+function AddClearButton(clearButton) {
+
+
+    if (clearButton.classList.contains("visible"))
+        return;
+
+    clearButton.classList.add("visible")
+}
+
+function RemoveClearButton(clearButton) {
+    if (!clearButton.classList.contains("visible"))
+        return;
+
+    clearButton.classList.remove("visible")
+}
+
+function ClearInput() {
+    this.parentNode.querySelector('.searchInput').value = '';
+    RemoveClearButton(this.parentNode.querySelector('.clear-button'));
 }
