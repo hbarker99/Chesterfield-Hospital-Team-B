@@ -88,8 +88,9 @@ function check_for_precalculated_path($startPoint, $endPoint)
 }
 
 $exists = check_for_precalculated_path($startPoint, $endPoint);
-if($exists== null)
+if($exists == null)
 {
+    echo 'path not found';
     // Path does not exist in the database, calculate new path
 
     // NODE SCOPE
@@ -102,16 +103,13 @@ if($exists== null)
 
         $rows_array = [];
         
-        while ($row = $result->fetchArray()) {
-            $rows_array[] = $row;
-        }
-
-        foreach ($rows_array as $row) {
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
             $node_id = $row['node_id'];
             $nodeObjects['node_' . $node_id] = new Node($node_id);
+        }
 
+        $db->close();
     }
-
 
     // EDGE SCOPE
 
@@ -124,16 +122,9 @@ if($exists== null)
 
         while ($row = $edgesResult->fetchArray()) {
             $edgesResult_array[] = $row;
+            $nodeObjects['node_'.$row['start_node_id']]->addNeighbour($nodeObjects['node_'.$row['end_node_id']], $row['distance'], $row['edge_id']);
         }
 
-        foreach ($edgesResult_array as $row) {
-
-        $startNode = $nodeObjects['node_'.$row['start_node_id']];
-
-        $endNode = $nodeObjects['node_'.$row['end_node_id']];
-
-        $nodeObjects['node_'.$row['start_node_id']]->addNeighbour($nodeObjects['node_'.$row['end_node_id']], $row['distance'], $row['edge_id']);
-        }
     }
 
     foreach ($nodeObjects as $n) {
@@ -148,6 +139,8 @@ if($exists== null)
 
 
     $db = new SQLite3("database.db");
+    
+    // Using implode to add every edge_id from the $path variable
     $stmt = $db->prepare("SELECT image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).")");
 
     $edgesResult = $stmt->execute();
@@ -157,9 +150,14 @@ if($exists== null)
         $final_path[] = $row;
     }
     
-    }
 }
-   
+
+else
+{
+    // path already exists in database, use that instead
+    echo 'path exists';
+}
+
     function calculate_relative_directions($path)
     {
         // Using compass directions to calculate the relative direction of the instruction
@@ -177,25 +175,18 @@ if($exists== null)
                         break;
                     case 1:
                     case -3:
-                        $path[$i]['direction'] = '<- left';
+                        $path[$i]['direction'] = 'left';
                         break;
                     case -1:
                     case 3:
-                        $path[$i]['direction'] = 'right ->';
+                        $path[$i]['direction'] = 'right';
                         break;
                 }
             }
         }
-        return $path;
-    }
-     $final_path = calculate_relative_directions($final_path);
-    ?>
-        <!-- 
-<div class="image-box">
-  <img src="./img/<?php echo $final_path[$i]['image'];?>" alt="Your Image">
-</div>!--> 
-<?php
-        //echo nl2br("IMG: ".$final_path[$i]['image']."\n");
-    
 
-?>
+    return $path;
+    }
+    $final_path = calculate_relative_directions($final_path);
+    
+    ?>
