@@ -2,7 +2,7 @@
 include("sessionHandling.php");
 include("mapping-algo.php");
 
-ob_end_clean();
+ob_clean();
 include('./PDF/fpdf186/fpdf.php');
 $pdf = new FPDF();
 
@@ -13,7 +13,7 @@ foreach ($final_path as $index => $step) {
     $pdf->Cell(0, 10, 'Step ' . ($index + 1), 0, 1, 'C');
     $pdf->Cell(0, 10, 'Turn ' . $step['direction'], 0, 1, 'C');
     $pdf->Ln();
-    $pdf->Image('./img/' . $step['image'], 50, null, 100);
+    $pdf->Image('./img/' . $step['image'], 55, null, 100);
 }
 
 $pdf->Output();

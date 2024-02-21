@@ -13,7 +13,12 @@ function Search(e) {
     var searchValue = e.type === 'keyup' ? this.value : '';
     var dropdownContent = this.parentNode.querySelector('.dropdown-content');
     fetch('components/dropdown/data.php?search=' + searchValue)
-        .then(response =>  response.json())
+        .then(response => response.json())
+        .then(data => {
+            currentlySelected = GetRouteDropdowns().map(x => x.value);
+            data = data.filter(x => !currentlySelected.includes(x.node_id.toString()));
+            return data;
+        })
         .then(data => {
             dropdownContent.innerHTML = '';
             data.forEach(item => {
@@ -40,7 +45,7 @@ function SelectOption() {
     var input = this.closest('.dropdown').querySelector('.searchInput');
     
     // Find the ID of the hidden input field associated with this dropdown
-    var dropdownId = input.id;
+    var dropdownId = input.parentNode.id;
     var inputId = document.getElementById(dropdownId == '1' ? 'startPoint' : 'endPoint');
     
     // Update the value of the search input and the hidden input field
@@ -61,7 +66,9 @@ function HandleClearButton() {
 }
 
 function AddClearButton(clearButton) {
-
+    var containingInput = clearButton.parentNode.parentNode;
+    if (containingInput.classList.contains("error"))
+        containingInput.classList.remove("error");
 
     if (clearButton.classList.contains("visible"))
         return;
@@ -78,5 +85,6 @@ function RemoveClearButton(clearButton) {
 
 function ClearInput() {
     this.parentNode.querySelector('.searchInput').value = '';
+    document.getElementById(this.parentNode.id === '1' ? 'startPoint' : 'endPoint').value = '';
     RemoveClearButton(this.parentNode.querySelector('.clear-button'));
 }
