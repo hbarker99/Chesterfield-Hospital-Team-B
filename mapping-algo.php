@@ -90,7 +90,6 @@ function check_for_precalculated_path($startPoint, $endPoint)
 $exists = check_for_precalculated_path($startPoint, $endPoint);
 if($exists == null)
 {
-    echo 'path not found';
     // Path does not exist in the database, calculate new path
 
     // NODE SCOPE
@@ -183,7 +182,6 @@ if($exists == null)
 else
 {
     // path already exists in database, use that instead
-    echo 'path exists';
     // query steps table with path_id to build edge array
     $db = new SQLite3("database.db");
 
