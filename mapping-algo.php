@@ -65,7 +65,6 @@ class Node
     public function addNeighbour($node, $distance, $edgeId)
     {
         $this->neighbours[] = ["node" => $node, "distance" => $distance, "edgeId" => $edgeId];
-        //$node->neighbours[] = ["node" => $this, "distance" => $distance, "edgeId" => $edgeId];
     }
 }
 
@@ -114,59 +113,76 @@ class Dijkstra
         return $path;
     }
 }
-
-
-// NODE SCOPE
+$startPoint = 1;
+$endPoint = 3;
+function check_for_precalculated_path($startPoint, $endPoint)
 {
     $db = new SQLite3("database.db");
-    $stmt = $db->prepare('SELECT node_id FROM Node');
-
-
+    $stmt = $db->prepare('SELECT path_id FROM Path WHERE (start_node_id = $start) AND (end_node_id = $end)');
     $result = $stmt->execute();
 
-    $rows_array = [];
-    
-    while ($row = $result->fetchArray()) {
-        $rows_array[] = $row;
-    }
-
-    foreach ($rows_array as $row) {
-        $node_id = $row['node_id'];
-        $nodeObjects['node_' . $node_id] = new Node($node_id);
-
+    return $result;
 }
 
+$exists = check_for_precalculated_path($startPoint, $endPoint);
 
-// EDGE SCOPE
+if(!isset($exists))
+{
+    echo 'path not found';
+    // Path does not exist in the database, calculate new path
+
+    // NODE SCOPE
+    {
+        $db = new SQLite3("database.db");
+        $stmt = $db->prepare('SELECT node_id FROM Node');
 
 
+        $result = $stmt->execute();
+
+        $rows_array = [];
+        
+        while ($row = $result->fetchArray()) {
+            $rows_array[] = $row;
+        }
+
+        foreach ($rows_array as $row) {
+            $node_id = $row['node_id'];
+            $nodeObjects['node_' . $node_id] = new Node($node_id);
+
+    }
+
+
+    // EDGE SCOPE
+
+    {
         $db = new SQLite3("database.db");
         $stmt = $db->prepare('SELECT edge_id, start_node_id, end_node_id, distance FROM Edges');
 
         $edgesResult = $stmt->execute();
 
-    
+
         while ($row = $edgesResult->fetchArray()) {
             $edgesResult_array[] = $row;
         }
-    
+
         foreach ($edgesResult_array as $row) {
 
-            $startNode = $nodeObjects['node_'.$row['start_node_id']];
+        $startNode = $nodeObjects['node_'.$row['start_node_id']];
 
-            $endNode = $nodeObjects['node_'.$row['end_node_id']];
+        $endNode = $nodeObjects['node_'.$row['end_node_id']];
 
-            $nodeObjects['node_'.$row['start_node_id']]->addNeighbour($nodeObjects['node_'.$row['end_node_id']], $row['distance'], $row['edge_id']);
+        $nodeObjects['node_'.$row['start_node_id']]->addNeighbour($nodeObjects['node_'.$row['end_node_id']], $row['distance'], $row['edge_id']);
         }
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            // Form was submitted, process the data
-            $start = $_POST['startPoint'];
-            //echo nl2br("start index as: $start\n");
-            $end = $_POST['endPoint'];
-            //echo nl2br("end index as: $end\n");
-           
+        // Form was submitted, process the data
+        $start = $_POST['startPoint'];
+        //echo nl2br("start index as: $start\n");
+        $end = $_POST['endPoint'];
+        //echo nl2br("end index as: $end\n");
+
         }
-    
+    }
+
     foreach ($nodeObjects as $n) {
         $n->distance = PHP_INT_MAX;
         $n->previous = null;
@@ -174,8 +190,8 @@ class Dijkstra
     
     // Calculate shortest path
 
-    $nodeObjects['node_'.$start]->distance = 0; // Set the starting node's distance to 0
-    $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$start], $nodeObjects['node_'.$end]);
+    $nodeObjects['node_'.$startPoint]->distance = 0; // Set the starting node's distance to 0
+    $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$startPoint], $nodeObjects['node_'.$endPoint]);
 
 
     $db = new SQLite3("database.db");
@@ -187,28 +203,44 @@ class Dijkstra
     while ($row = $edgesResult->fetchArray()) {
         $final_path[] = $row;
     }
-    //echo nl2br("final path steps: ". count($final_path)."\n");
-    for ($i = 0; $i < count($final_path); $i++) {
-        //echo nl2br("Step ".($i+1)."\n");
-        if($i+1 < count($final_path)){ // Changed condition here
     
-            $direction = $final_path[$i]['direction']-$final_path[$i+1]['direction'];
-            switch($direction){
-                case 0: 
-                    //echo 'straight';
-                    break;
-                case 1:
-                case -3:
-                    //echo 'left';
-                    break;
-                case -1:
-                case 3:
-                    //echo 'right';
-                    break;
+    }
+}
+else
+{
+    // path already exists in database, use that instead
+    echo 'path exists';
+}
+
+    calculate_relative_directions($final_path);
+    function calculate_relative_directions($path)
+    {
+        // Using compass directions to calculate the relative direction of the instruction
+        // N,E,S,W are represented as 1,2,3,4
+        // Current compass direction - next compass direction = next relative direction
+        // Forward is 0, left is both 1 and -3, right is -1 and 3
+
+        for ($i = 0; $i < count($path); $i++) {
+            if($i+1 < count($path)){ // Changed condition here
+        
+                $direction = $path[$i]['direction']-$path[$i+1]['direction'];
+                switch($direction){
+                    case 0: 
+                        $path[$i]['direction'] = 'forward';
+                        break;
+                    case 1:
+                    case -3:
+                        $path[$i]['direction'] = 'left';
+                        break;
+                    case -1:
+                    case 3:
+                        $path[$i]['direction'] = 'right';
+                        break;
+                }
             }
-            //echo nl2br($direction."\n");
         }
     }
+    
     ?>
         <!-- 
 <div class="image-box">
@@ -216,6 +248,6 @@ class Dijkstra
 </div>!--> 
 <?php
         //echo nl2br("IMG: ".$final_path[$i]['image']."\n");
-    }
+    
 
 ?>
