@@ -1,13 +1,12 @@
 <?php
 $db = new SQLite3("databasepractice.db");
-var_dump($_POST['node_id']);
+session_start();
 
-
-$edges = [];
 $nodeId = isset($_POST['node_id']) ? intval($_POST['node_id']) : null;
+$edges = [];
 
 if ($nodeId) {
-    $stmt = $db->prepare('SELECT edge_id, end_node_id FROM Edges WHERE start_node_id = :nodeId');
+    $stmt = $db->prepare('SELECT edge_id, start_node_id, end_node_id,distance FROM Edges WHERE start_node_id = :nodeId');
     $stmt->bindValue(':nodeId', $nodeId, SQLITE3_INTEGER);
     $edgesResult = $stmt->execute();
 
@@ -18,19 +17,26 @@ if ($nodeId) {
 
 if (isset($_POST['updateEdges'])) {
     $edgeIds = $_POST['edgeId'];
+    $newSources = $_POST['newSource'];
     $newDestinations = $_POST['newDestination'];
+    $newDistances = $_POST['newDistance'];
 
-    foreach ($edgeIds as $index => $edgeId) {
-        $newDestination = intval($newDestinations[$index]);
-        $updateStmt = $db->prepare('UPDATE Edges SET end_node_id = :destination WHERE edge_id = :edgeId');
-        $updateStmt->bindValue(':destination', $newDestination, SQLITE3_INTEGER);
-        $updateStmt->bindValue(':edgeId', intval($edgeId), SQLITE3_INTEGER);
+    for ($i = 0; $i < count($edgeIds); $i++) {
+        $edgeId = intval($edgeIds[$i]);
+        $newSource = intval($newSources[$i]);
+        $newDestination = intval($newDestinations[$i]);
+        $newDistance = floatval($newDistances[$i]);
+
+        $updateStmt = $db->prepare('UPDATE Edges SET start_node_id = :newSource, end_node_id = :newDestination, distance = :newDistance WHERE edge_id = :edgeId');
+        $updateStmt->bindValue(':newSource', $newSource, SQLITE3_INTEGER);
+        $updateStmt->bindValue(':newDestination', $newDestination, SQLITE3_INTEGER);
+        $updateStmt->bindValue(':newDistance', $newDistance, SQLITE3_INTEGER);
+        $updateStmt->bindValue(':edgeId', $edgeId, SQLITE3_INTEGER);
         $updateStmt->execute();
     }
-
-    echo "<p>Edges updated successfully.</p>";
+    $_SESSION['flash_message'] = 'Location updated successfully.';
+    header("Location: admincrud.php");
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +45,7 @@ if (isset($_POST['updateEdges'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Edges</title>
-    <link rel="stylesheet" href="../admincrud.css">
+    <link rel="stylesheet" href="../editEdges.css">
 </head>
 <body>
     <header>
@@ -47,21 +53,27 @@ if (isset($_POST['updateEdges'])) {
     </header>
 
     <main>
-        <?php if ($nodeId && count($edges) > 0): ?>
-            <form method="post">
-                <input type="hidden" name="node_id" value="<?php echo htmlspecialchars($nodeId); ?>">
-                <?php foreach ($edges as $edge): ?>
-                    <div>
-                        <label for="edge-<?php echo $edge['edge_id']; ?>">Edge to Node ID:</label>
-                        <input type="text" name="newDestination[]" value="<?php echo htmlspecialchars($edge['end_node_id']); ?>">
-                        <input type="hidden" name="edgeId[]" value="<?php echo $edge['edge_id']; ?>">
-                    </div>
-                <?php endforeach; ?>
-                <button type="submit" name="updateEdges">Update Edges</button>
-            </form>
-        <?php else: ?>
-            <p>No edges found for the selected node.</p>
-        <?php endif; ?>
+    <form method="post">
+    <input type="hidden" name="node_id" value="<?php echo htmlspecialchars($nodeId); ?>">
+    <?php foreach ($edges as $edge): ?>
+        <div>
+            <label>Edge ID: <?php echo $edge['edge_id']; ?></label>
+            <input type="hidden" name="edgeId[]" value="<?php echo $edge['edge_id']; ?>">
+
+            <label>Source Node ID:</label>
+            <input type="text" name="newSource[]" value="<?php echo $edge['start_node_id']; ?>">
+
+            <label>Destination Node ID:</label>
+            <input type="text" name="newDestination[]" value="<?php echo $edge['end_node_id']; ?>">
+
+            <label>Distance:</label>
+            <input type="text" name="newDistance[]" value="<?php echo $edge['distance']; ?>">
+        </div>
+    <?php endforeach; ?>
+    <button type="submit" name="updateEdges">Update Edges</button>
+</form>
+
+        <a href="admincrud.php">Back to Nodes</a>
     </main>
 </body>
 </html>

@@ -1,4 +1,5 @@
-<?php 
+<?php
+session_start(); 
     $db = new SQLite3("databasepractice.db");
     $stmt = $db->prepare('SELECT node_id, name FROM Node');
 
@@ -19,6 +20,7 @@
             echo Wrong;// use bootstrap alert to display failed login
         }
     }
+        
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,6 +33,14 @@
 <body>
     <header>
         <h1>Location Management</h1>
+        <?php if (isset($_SESSION['flash_message'])): ?>
+<div class="flash-message">
+    <?php 
+    echo $_SESSION['flash_message']; 
+    unset($_SESSION['flash_message']); // Clear the message after displaying it
+    ?>
+</div>
+<?php endif; ?>
     </header>
 
     <main>
@@ -73,10 +83,10 @@
                         <form action="editEdges.php" method="post">
                             <input type="hidden" name="node_id" value="<?php echo $rows_array[$i]['node_id']; ?>">
                             <button type="submit" name="edit" class="action-btn">Edit</button>
-                        </form action="deletenode.php" method="post">
-                            <input type="hidden" name="delete" value="havent decided yet">
                             <button type="submit" name="delete" class="action-btn">Delete</button>
                         </td>
+                        </form>
+                            
                     </tr>
                     <?php endfor; ?>
                 </tbody>
