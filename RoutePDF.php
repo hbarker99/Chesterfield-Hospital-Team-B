@@ -26,7 +26,7 @@ $pdf->setFont('Arial' ,'', 22);
 //$pdf->Image('./PDF/NHSBlue.jpg', 155, null, 50);
 $pdf->Image('./PDF/CRHNHS.png', 155, null, 50);
 //$pdf->Ln(10);
-$directionInfo = 'Your directions for ' . $startName . ' to ' . $endName . ':';
+$directionInfo = 'Your directions - ' . $startName . ' to ' . $endName . ':';
 $pdf->MultiCell(0,10, $directionInfo, 0, 'C');
 $pdf->Ln();
 
