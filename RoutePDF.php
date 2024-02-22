@@ -41,12 +41,17 @@ foreach ($final_path as $index => $step) {
         $movementDescriptor = ' Use the stairs/lift to continue';
     } 
 
+    $pdf->SetFont('Arial', 'B', 14);
     // Step #: *Edge notes* . Direction change . Direction
     // Step 1: You will see... Turn right. 
-    $pdf->SetFont('Arial', 'B', 14);
+    if($index == sizeof($final_path)-1){
+        $directions = "You have reached your destination.";
+    }
+    else{
     $pdf->Cell(0, 10, 'Step ' . ($index + 1), 0, 1,);
     $pdf->SetFont('Arial', '', 14);
     $directions = $step['notes'] . $movementDescriptor . ' ' .  $step['direction'] . '.';
+    }
     $pdf->MultiCell(0,5,$directions);
     $pdf->Ln();
 }
