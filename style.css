@@ -2,7 +2,6 @@
 @font-face { font-family: "Frutiger Light"; src: url('./fonts/Frutiger/Frutiger Light/Frutiger Light.ttf'); } 
 @font-face { font-family: "Frutiger Roman"; src: url('./fonts/Frutiger/Frutiger Roman/Frutiger Roman.ttf'); } 
 
-
 :root {
     --primary-bright-blue: #0072CE;
     --primary-blue: #005EB8;
@@ -84,13 +83,21 @@
     border: 0.125rem solid var(--primary-dark-grey);
 }
 
+#bootstrap-overrides .error {
+    border: 0.125rem solid red;
+}
+
 #bootstrap-overrides .form-control:focus {
     border: 0.125rem solid black;
     outline: 0.25rem solid var(--primary-yellow)
 }
 
-.center{
-    text-align:center;
+#bootstrap-overrides .page-title {
+    margin-bottom: 1.5rem;
+}
+
+.center {
+    text-align: center;
     margin: auto;
     width: 100%;
     padding: 0.625rem;

@@ -1,0 +1,99 @@
+.location-input {
+    margin-bottom: 1.5rem;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+}
+
+.page-container {
+    padding: 1rem;
+    background-color: #f0f4f5;
+    height: 100vh;
+}
+
+.form-item {
+    width: 100%;
+}
+
+.form-button {
+    text-align: center;
+    margin-bottom: 1rem;
+    margin-top: 0.25rem;
+}
+
+.form-button > .btn {
+    width: 100%;
+}
+
+.form-item > label {
+    margin-bottom: 0.25rem;
+}
+
+/* The container */
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 2.25rem;
+    margin-top: 0.25rem;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.75rem;
+    width: 1.75rem;
+    background-color: white;
+    border: 2px solid var(--primary-dark-grey);
+}
+
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbox-container .checkmark:after {
+    left: 0.5rem;
+    top: 0.125rem;
+    width: 0.5rem;
+    height: 1.125rem;
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+.checkbox-container input:focus ~ .checkmark {
+    outline: 2px solid var(--primary-yellow);
+    border: 2px solid black;
+}
