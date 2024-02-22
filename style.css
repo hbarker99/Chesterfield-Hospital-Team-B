@@ -40,7 +40,7 @@
 #bootstrap-overrides .btn {
     box-sizing: border-box;
     padding: 0.75rem 1rem;
-    transition: none
+    transition: height ease 600ms, transform ease 600ms;
 }
 
 #bootstrap-overrides .btn-primary {
