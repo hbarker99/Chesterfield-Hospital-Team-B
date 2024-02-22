@@ -22,18 +22,18 @@ $pdf = new FPDF();
 $pdf->AddPage();
 $pdf->setFont('Arial' ,'', 22);
 
-// Image
-$imageX = $pdf->GetPageWidth() - 60; // Set X position for the image (right aligned)
-$pdf->Image('./PDF/CRHNHS.png', $imageX, 10, 50); // Adjust Y position as needed
 
-// Set Y position for the text (below the title)
-$textY = $pdf->GetY() + 5; // You can adjust this offset as needed
 
-// Text
-$directionInfo = 'Your directions - ' . $startName . ' to ' . $endName . ':';
-$pdf->SetXY(10, $textY); // Set X and Y position for the text (left aligned)
-$pdf->MultiCell(140, 10, $directionInfo, 0, 'L');
+// NHS logo and Directions header
+//$pdf->Image('./PDF/NHSBlue.jpg', 155, null, 50);
+$pdf->Image('./PDF/CRHNHS.png', 155, null, 50);
 $pdf->Ln(10);
+$pdf->SetTextColor(0,94,184);
+$pdf->MultiCell(0,10,'Directions for your visit' , 0, 'L');
+$pdf->SetTextColor(0,0,0);
+$directionInfo = $startName . ' to ' . $endName . ':';
+$pdf->MultiCell(0,10, $directionInfo, 0, 'L');
+$pdf->Ln();
 
 // Loop through each step and add content to the PDF
 foreach ($final_path as $index => $step) {
