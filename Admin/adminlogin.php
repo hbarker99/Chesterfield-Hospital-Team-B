@@ -18,8 +18,8 @@ if(isset($_POST['login'])){
     if($users != null){
         header("Location: admincrud.php");
     }
-    else{
-        // use bootstrap alert to display failed login
+    else {
+        echo '<script>alert("Wrong Username or Password")</script>';
     }
 }
 
