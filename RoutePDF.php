@@ -22,8 +22,6 @@ $pdf = new FPDF();
 $pdf->AddPage();
 $pdf->setFont('Arial' ,'', 22);
 
-
-
 // NHS logo and Directions header
 //$pdf->Image('./PDF/NHSBlue.jpg', 155, null, 50);
 $pdf->Image('./PDF/CRHNHS.png', 155, null, 50);
