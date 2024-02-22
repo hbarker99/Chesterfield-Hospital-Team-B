@@ -42,7 +42,7 @@
 
 .info-box-container {
     position: fixed;
-    outline: 2px solid black;
+    border-top: 2px solid black;
     background-color: var(--primary-light-grey);
     width: 100%;
     z-index: 10;
@@ -117,7 +117,7 @@
 
 #toggle-visibility.hidden {
     height: 3.125rem;
-    transform: translateY(1.875rem);
+    transform: translateY(1.75rem);
     padding: 0.5rem;
 }
 
@@ -160,7 +160,7 @@
     background-color: transparent;
     border: none;
     outline: none;
-    margin: 0 1.5rem;
+    margin: 0 24px;
 }
 
 .back-btn:focus {
@@ -177,6 +177,7 @@
     display: inline-block;
     height: 18px;
     position: absolute;
-    left: 0.5rem;
+    left: 8px;
+    top: calc(50% - 9px);
     width: 10px;
 }

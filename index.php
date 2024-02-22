@@ -2,7 +2,6 @@
 include_once("dbString.php");
 include("./components/indexPHP/startLocation.php");
 require("sessionHandling.php");
-require ("footer.php");
 
 $_SESSION['current_step'] = 0;
 ?>
@@ -58,6 +57,7 @@ $_SESSION['current_step'] = 0;
                 </form>
             </div>
         </div>
+        <?php require ("footer.php"); ?>
     </body>
 </html>
 
