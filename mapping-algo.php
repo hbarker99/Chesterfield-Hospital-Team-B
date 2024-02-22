@@ -1,18 +1,3 @@
-<style>
-  .image-box {
-    width: 400px;
-    height: 800px;
-    overflow: hidden; /* To crop excess content */
-  }
-
-  .image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Choose the desired value */
-  }
-</style>
-
-
 <?php
 class Node
 {
@@ -28,7 +13,7 @@ class Node
 
     public function addNeighbour($node, $distance, $edgeId)
     {
-        $this->neighbours[] = ["node" => $node, "distance" => $distance, "edgeId" => $edgeId];
+        $this->neighbours[] = ["node" => $node, "distance" => $distance, "edge_id" => $edgeId];
     }
 }
 
@@ -52,7 +37,7 @@ class Dijkstra
                 if ($altDistance < $neighbour["node"]->distance) {
                     $neighbour["node"]->distance = $altDistance;
                     $neighbour["node"]->previous = $currentNode;
-                    $neighbour["node"]->previousEdgeId = $neighbour["edgeId"];
+                    $neighbour["node"]->previousEdgeId = $neighbour["edge_id"];
                     array_push($queue, $neighbour["node"]);
                 }
             }
@@ -72,8 +57,6 @@ class Dijkstra
         }
         array_pop($path);
         $path = array_reverse($path);
-
-        
         return $path;
     }
 }
@@ -91,7 +74,6 @@ $exists = check_for_precalculated_path($startPoint, $endPoint);
 if($exists == null)
 {
     // Path does not exist in the database, calculate new path
-
     // NODE SCOPE
     {
         $db = new SQLite3("database.db");
@@ -145,14 +127,26 @@ if($exists == null)
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         // Using implode to add every edge_id from the $path variable
-        $stmt = $db->prepare("SELECT edge_id, image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).")");
+
+        //$stmt = $db->prepare("SELECT edge_id, image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).") ORDER BY FIELD(edge_id, ".implode(',',$path).")");
         
+        $orderQueryPart = '';
+        foreach ($path as $index => $value) {
+            $orderQueryPart .= "WHEN {$value} THEN {$index} ";
+        }
+        
+        $stmt = $db->prepare("SELECT edge_id, image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).") ORDER BY CASE edge_id {$orderQueryPart} END");
+        
+
         $edgesResult = $stmt->execute();
 
         $final_path = [];
         while ($row = $edgesResult->fetchArray()) {
             $final_path[] = $row;
     }
+
+    
+
     } catch (PDOException $e) {
         echo "Error selecting data: " . $e->getMessage();
     }
@@ -177,6 +171,7 @@ if($exists == null)
         $stmt = $pdo->prepare("INSERT INTO Steps (path_id, edge_id, position_in_path) VALUES (?, ?, ?)");
         $stmt->execute([$path_id, $edge_id, $position]);
     }
+    $db->close(); // Close the database connection
 }
 
 else
@@ -217,32 +212,20 @@ else
         for ($i = 0; $i < count($path); $i++) {
             if($i+1 < count($path)){ // Changed condition here
                 
-                $direction = $path[$i]['direction'];
-                if($direction == 5 or $direction == 6)
-                {
-                    switch($path[$i]['direction']){
-                        case 5:
-                            $path[$i]['direction'] = 'upstairs';
-                            break;
-                        case 6:
-                            $path[$i]['direction'] = 'downstairs';
-                            break;
-                    }
-                }else{
-                    $direction = $path[$i]['direction']-$path[$i+1]['direction'];
-                    switch($direction){
-                        case 0: 
-                            $path[$i]['direction'] = 'forward';
-                            break;
-                        case 1:
-                        case -3:
-                            $path[$i]['direction'] = 'left';
-                            break;
-                        case -1:
-                        case 3:
-                            $path[$i]['direction'] = 'right';
-                            break;
-                    }
+
+                $direction = $path[$i]['direction']-$path[$i+1]['direction'];
+                switch($direction){
+                    case 0: 
+                        $path[$i]['direction'] = 'forward';
+                        break;
+                    case 1:
+                    case -3:
+                        $path[$i]['direction'] = 'left';
+                        break;
+                    case -1:
+                    case 3:
+                        $path[$i]['direction'] = 'right';
+                        break;
                 }
             }
         }
