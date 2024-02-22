@@ -1,3 +1,27 @@
+<?php
+session_start(); 
+    $db = new SQLite3("databasepractice.db");
+    $stmt = $db->prepare('SELECT node_id, name FROM Node');
+
+
+    $result = $stmt->execute();
+
+    $rows_array = [];
+    
+    while ($row = $result->fetchArray()) {
+        $rows_array[] = $row;
+    }
+
+    if(isset($_POST['edit'])){
+        if($users != null){
+            header("Location: admincrud.php");
+        }
+        else{
+            echo Wrong;// use bootstrap alert to display failed login
+        }
+    }
+        
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +33,14 @@
 <body>
     <header>
         <h1>Location Management</h1>
+        <?php if (isset($_SESSION['flash_message'])): ?>
+<div class="flash-message">
+    <?php 
+    echo $_SESSION['flash_message']; 
+    unset($_SESSION['flash_message']); // Clear the message after displaying it
+    ?>
+</div>
+<?php endif; ?>
     </header>
 
     <main>
@@ -43,14 +75,21 @@
                     </tr>
                 </thead>
                 <tbody>
+                <?php for ($i = 0; $i < count($rows_array); $i++):?>
                     <tr>
-                        <td>1</td>
-                        <td>Main Entrance</td>
+                        <td><?php echo $rows_array[$i][0] ?></td>
+                        <td><?php echo $rows_array[$i][1] ?></td>
                         <td>
-                            <button class="action-btn">Edit</button>
-                            <button class="action-btn">Delete</button>
-                        </td>
+                        <form action="editEdges.php" method="post" style="display: inline;">
+                            <input type="hidden" name="node_id" value="<?php echo $rows_array[$i]['node_id']; ?>">
+                            <button type="submit" name="edit" class="action-btn">Edit</button>
+                        </form>
+                        <form action="deleteNode.php" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this node?');">
+                            <input type="hidden" name="node_id" value="<?php echo $rows_array[$i]['node_id']; ?>">
+                            <button type="submit" name="delete" class="action-btn">Delete</button>
+                        </form>
                     </tr>
+                    <?php endfor; ?>
                 </tbody>
             </table>
         </section>
