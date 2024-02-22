@@ -25,9 +25,12 @@ $pdf->setFont('Arial' ,'', 22);
 // NHS logo and Directions header
 //$pdf->Image('./PDF/NHSBlue.jpg', 155, null, 50);
 $pdf->Image('./PDF/CRHNHS.png', 155, null, 50);
-//$pdf->Ln(10);
-$directionInfo = 'Your directions for ' . $startName . ' to ' . $endName . ':';
-$pdf->MultiCell(0,10, $directionInfo, 0, 'C');
+$pdf->Ln(10);
+$pdf->SetTextColor(0,94,184);
+$pdf->MultiCell(0,10,'Directions for your visit' , 0, 'L');
+$pdf->SetTextColor(0,0,0);
+$directionInfo = $startName . ' to ' . $endName . ':';
+$pdf->MultiCell(0,10, $directionInfo, 0, 'L');
 $pdf->Ln();
 
 // Loop through each step and add content to the PDF
