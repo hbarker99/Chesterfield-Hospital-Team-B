@@ -20,3 +20,7 @@ if(isset($_SESSION['routeInfo']) && !empty($_SESSION['routeInfo'])) {
     // Handle the case where session data is not available
     echo "Session data not found!";
 }
+
+if (!isset($_SESSION['current_step'])) {
+    $_SESSION['current_step'] = 0;
+} 

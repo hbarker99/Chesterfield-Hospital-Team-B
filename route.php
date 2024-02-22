@@ -1,6 +1,24 @@
 <?php 
 include("sessionHandling.php");
+include("mapping-algo.php");
+
+
+if(isset($_POST['next'])){
+    if($_SESSION['current_step'] < count($final_path) - 1) {
+        $_SESSION['current_step']++;
+    }
+} else if (isset($_POST['previous'])){
+    
+    if($_SESSION['current_step'] > 0) {
+        $_SESSION['current_step']--;
+    }
+}
+
+if (!isset($_SESSION['show_instructions'])) {
+    $_SESSION['show_instructions'] = true;
+}
 ?>
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -13,28 +31,42 @@ include("sessionHandling.php");
 
     <body id="bootstrap-overrides">
         <div class="route-container">
-            <div class="image-box">
-
+            <div class="header-container">
+                <a href="index.php" class="back-btn">Pick another route</a>
             </div>
-            <div class="info-box-container show">
+            <div class="image-box">
+                <img src="./img/<?php echo $final_path[$_SESSION['current_step']]['image'] ?>" />
+            </div>
+
+
+            <div class="info-box-container">
                 <div class="info-box">
-                    <div id="toggle-visibility" onclick="ToggleVisibility()">
+                    <div id="toggle-visibility" class="btn btn-secondary" onclick="ToggleVisibility()">
                         <div class="arrow down"></div>
                     </div>
-                    <h4>Instruction</h4>
                     <div class="instruction-container">
                         <div class="instruction-highlight"></div>
-                        <div class="instruction-text">At the next junction turn <b>Left</b></div>
+                        <?php if($_SESSION['current_step'] == count($final_path) - 1) {?>
+                            <div class="instruction-text">You have reached your destination.</div>
+                        <?php } elseif($_SESSION['current_step'] == 0) { ?>
+                            <div class="instruction-text">Begin facing the same direction as the image. Then continue forwards.</div>
+                        <?php } else { ?>
+                            <div class="instruction-text">At the next junction turn <b><?php echo $final_path[$_SESSION['current_step']]['direction'];?></b></div>
+                        <?php } ?>
                     </div>
                     <?php if(true) : ?>
-                        <p>Additional notes</p>
+                        <div class="additional-notes">
+                            <p>Additional notes</p>
+                        </div>
                     <?php endif ?>
-                    <div class="button-container">
-                        <button class="btn btn-primary">Previous Step</button>
-                        <button class="btn btn-primary">Next Step</button>
-                    </div>
                 </div>
             </div>
+            <form method="post">
+                <div class="button-container">
+                    <input <?php if($_SESSION['current_step'] == 0) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="previous" value="Back" />
+                    <input <?php if($_SESSION['current_step'] == count($final_path) - 1) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="next" value="Next" />
+                </div>
+            </form>
         </div>
     </body>
 
