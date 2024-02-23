@@ -42,9 +42,13 @@ foreach ($final_path as $index => $step) {
         $directions = "You have reached " . $endName . ".";
     }
     else{
-    $pdf->Cell(0, 10, 'Step ' . ($index + 1), 0, 1,);
-    $pdf->SetFont('Arial', '', 14);
-    $directions = $step['notes'] . ' ' .  $step['instruction']  ;
+        $pdf->Cell(0, 10, 'Step ' . ($index + 1), 0, 1,);
+        $pdf->SetFont('Arial', '', 14);
+        $directions = $step['notes'] . ' ' .  $step['instruction'];
+
+        // Replace HTML <b> tag with FPDF's bold formatting
+        $directions = str_replace('<b>', '', $directions);
+        $directions = str_replace('</b>', '', $directions);
     }
     $pdf->MultiCell(0,5,$directions);
     $pdf->Ln();
