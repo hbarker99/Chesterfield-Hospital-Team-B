@@ -54,7 +54,7 @@ if (!isset($_SESSION['show_instructions'])) {
                             <div class="instruction-text"><?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
                         <?php } ?>
                     </div>
-                    <?php if(true) : ?>
+                    <?php if($accessibilityCheck== 'on') : ?>
                         <div class="accessibility-notes">
                             <?php echo $final_path[$_SESSION['current_step']]['accessibility_notes'];?>
                         </div>
