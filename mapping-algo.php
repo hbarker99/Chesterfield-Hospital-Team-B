@@ -252,7 +252,7 @@ else
                         
                         $instruction_text = 'At the next junction ';
                         if ($direction_text == 'forward') {
-                            $instruction_text .= 'continue straight.';
+                            $instruction_text .= 'continue <b>straight</b>.';
                         } else {
                             $instruction_text .= 'turn <b>'.$direction_text.'</b>.';
                         };
@@ -281,6 +281,9 @@ else
                     case 5:
                         $instruction_text = 'Go through <b>'.$path[$i]['name'] + '</b>.';
                         break;
+
+                    case 6:
+                        $instruction_text = 'Continue along the corridor.';
                 }
 
                 $path[$i]['instruction'] = $instruction_text;
