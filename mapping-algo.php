@@ -276,4 +276,3 @@ else
     }
     $final_path = calculate_relative_directions($final_path);
     
-    ?>
