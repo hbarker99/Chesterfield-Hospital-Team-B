@@ -17,7 +17,7 @@ session_start();
             header("Location: admincrud.php");
         }
         else{
-            echo Wrong;// use bootstrap alert to display failed login
+            echo "Error Editing Location";
         }
     }
         
@@ -34,36 +34,13 @@ session_start();
     <header>
         <h1>Location Management</h1>
         <?php if (isset($_SESSION['flash_message'])): ?>
-<div class="flash-message">
-    <?php 
-    echo $_SESSION['flash_message']; 
-    unset($_SESSION['flash_message']); // Clear the message after displaying it
-    ?>
-</div>
-<?php endif; ?>
+        <div class="flash-message">
+            <?php echo $_SESSION['flash_message']; unset($_SESSION['flash_message']); ?>
+        </div>
+        <?php endif; ?>
     </header>
 
     <main>
-        <section class="location-form-section">
-            <h2>Create Source Location</h2>
-            <form id="currentLocationForm" class="location-form">
-                <div class="form-field">
-                    <label for="currentLocationName">Location Name:</label>
-                    <input type="text" id="currentLocationName" name="currentLocationName" required>
-                </div>
-                <button type="submit" class="action-btn">Create Current Location</button>
-            </form>
-
-            <h2>Create Destination Location</h2>
-            <form id="destinationLocationForm" class="location-form">
-                <div class="form-field">
-                    <label for="destinationLocationName">Location Name:</label>
-                    <input type="text" id="destinationLocationName" name="destinationLocationName" required>
-                </div>
-                <button type="submit" class="action-btn">Create Destination Location</button>
-            </form>
-        </section>
-
         <section class="existing-locations">
             <h2>Existing Locations</h2>
             <table>
@@ -75,25 +52,33 @@ session_start();
                     </tr>
                 </thead>
                 <tbody>
-                <?php for ($i = 0; $i < count($rows_array); $i++):?>
+                    <?php foreach ($rows_array as $row): ?>
                     <tr>
-                        <td><?php echo $rows_array[$i][0] ?></td>
-                        <td><?php echo $rows_array[$i][1] ?></td>
+                        <td><?php echo htmlspecialchars($row['node_id']); ?></td>
+                        <td><?php echo htmlspecialchars($row['name']); ?></td>
                         <td>
-                        <form action="editEdges.php" method="post" style="display: inline;">
-                            <input type="hidden" name="node_id" value="<?php echo $rows_array[$i]['node_id']; ?>">
-                            <button type="submit" name="edit" class="action-btn">Edit</button>
-                        </form>
-                        <form action="deleteNode.php" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this node?');">
-                            <input type="hidden" name="node_id" value="<?php echo $rows_array[$i]['node_id']; ?>">
-                            <button type="submit" name="delete" class="action-btn">Delete</button>
-                        </form>
+                            <form action="editEdges.php" method="post" style="display: inline;">
+                                <input type="hidden" name="node_id" value="<?php echo $row['node_id']; ?>">
+                                <button type="submit" name="edit" class="action-btn">Edit</button>
+                            </form>
+                            <form action="viewRelatedEdges.php" method="get" style="display: inline;">
+                                <input type="hidden" name="node_id" value="<?php echo $row['node_id']; ?>">
+                                <button type="submit" class="action-btn" onclick="return confirm('Are you sure you want to delete this node? This action will require you to update or delete related edges.');">Delete</button>
+                            </form>
+                        </td>
                     </tr>
-                    <?php endfor; ?>
+                    <?php endforeach; ?>
+                    <!-- Additional row for adding a new location -->
+                    <tr>
+                        <td colspan="3" style="text-align: center;">
+                            <a href="addLocation.php" class="action-btn">Add New Location</a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </section>
     </main>
 </body>
 </html>
+
 

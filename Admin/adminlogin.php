@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 $db = new SQLite3("admin_database.db");
 $stmt = $db->prepare('SELECT username, password FROM Login WHERE username=:username AND password=:password');
@@ -10,40 +10,33 @@ $result = $stmt->execute();
 
 $users = [];
 
-while($row = $result->fetchArray()){
+while ($row = $result->fetchArray()) {
     $users[] = $row;
 }
 
-if(isset($_POST['login'])){
-    if($users != null){
+if (isset($_POST['login'])) {
+    if ($users != null) {
         header("Location: admincrud.php");
-    }
-    else {
+    } else {
         echo '<script>alert("Wrong Username or Password")</script>';
     }
 }
-
-
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chesterfield Royal Hospital Admin Login</title>
     <link rel="stylesheet" href="../adminlogin.css">
 </head>
+
 <body>
     <div class="login-wrapper">
         <h1>Admin Login</h1>
         <div class="login-form">
-            <?php
-            // Placeholder for server-side logic
-            ?>
-
             <form method="post">
                 <div class="form-group">
                     <label for="Username">Username</label>
@@ -63,4 +56,5 @@ if(isset($_POST['login'])){
         </div>
     </div>
 </body>
+
 </html>
