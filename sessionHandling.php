@@ -16,9 +16,6 @@ if(isset($_SESSION['routeInfo']) && !empty($_SESSION['routeInfo'])) {
     
     // Don't forget to unset or clear the session data if it's no longer needed
     // unset($_SESSION['routeInfo']);
-} else {
-    // Handle the case where session data is not available
-    echo "Session data not found!";
 }
 
 if (!isset($_SESSION['current_step'])) {
