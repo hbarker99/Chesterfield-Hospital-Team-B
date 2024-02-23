@@ -271,8 +271,8 @@ else
                             $end_floor = $path[$x + 1]['floor'];
                         }
 
-                        $path_start = array_slice($path, 0, $i);
-                        $path_end = array_slice($path, $x);
+                        $path_start = array_slice($path, 0, ($i + 1));
+                        $path_end = array_slice($path, ($x + 1));
                         $path = array_merge($path_start, $path_end);
 
                         $instruction_text = 'Use the stairs or lift to get to ';
