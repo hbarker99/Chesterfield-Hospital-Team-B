@@ -228,6 +228,8 @@ else
                         break;
                 }
 
+                $path[$i]['direction'] = $direction_text;
+
                 switch ($path[$i]['category']){
                     case 1:
                         $instruction_text = 'Go through the door';

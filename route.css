@@ -182,3 +182,32 @@
     top: calc(50% - 9px);
     width: 10px;
 }
+
+.direction-container {
+    position: fixed;
+    top: calc(20px + 7%);
+    left: 20px;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+}
+
+.direction-arrow {
+    background-color: var(--primary-blue);
+    mask-size: cover;
+    width: 80%;
+    height: 80%;
+    margin: 10% 0 0 10%;
+    mask-image: url('direction-arrow.svg');
+    transition: transform ease 600ms;
+    transform: rotateZ(-90deg);
+}
+
+.left {
+    transform: rotateZ(-180deg);
+}
+
+.right {
+    transform: rotateZ(0);
+}
