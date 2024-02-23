@@ -180,7 +180,7 @@ else
     $db = new SQLite3("database.db");
 
     //$stmt = $db->prepare('SELECT edge_id, position_in_path FROM Path INNER JOIN Edges on ');
-    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor
+    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor, Edges.accessibility_notes
     FROM Steps
     INNER JOIN Edges ON Steps.edge_id = Edges.edge_id
     INNER JOIN Node ON Edges.end_node_id = Node.node_id

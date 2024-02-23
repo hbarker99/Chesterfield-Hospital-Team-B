@@ -63,16 +63,17 @@
     box-shadow: none;
 }
 
-.info-box-container.hidden > .info-box > :is(.instruction-container , .additional-notes) {
-    transform: translateY(100%);
-}
+    .info-box-container.hidden > .info-box > :is(.instruction-container, .accessibility-notes) {
+        transform: translateY(100%);
+    }
 
 .info-box {
     position: relative;
 }
 
-.additional-notes {
+.accessibility-notes {
     transition: all ease 600ms;
+    margin-bottom: 1rem;
 }
 
 .arrow {
