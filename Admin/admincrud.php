@@ -71,7 +71,7 @@ session_start();
                     <!-- Additional row for adding a new location -->
                     <tr>
                         <td colspan="3" style="text-align: center;">
-                            <a href="addLocation.php" class="action-btn">Add New Location</a>
+                            <a href="createLocation.php" class="action-btn">Add New Location</a>
                         </td>
                     </tr>
                 </tbody>
