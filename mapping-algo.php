@@ -134,9 +134,8 @@ if($exists == null)
         foreach ($path as $index => $value) {
             $orderQueryPart .= "WHEN {$value} THEN {$index} ";
         }
-        
-        $stmt = $db->prepare("SELECT Edges.edge_id, Edges.image, Edges.direction, Edges.notes, Node.category, Node.name FROM Edges INNER JOIN Node ON Edges.end_node_id = Node.node_id WHERE edge_id IN(".implode(',',$path).") ORDER BY CASE edge_id {$orderQueryPart} END");
-        
+
+        $stmt = $db->prepare("SELECT Edges.edge_id, Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor FROM Edges INNER JOIN Node ON Edges.end_node_id = Node.node_id WHERE edge_id IN(".implode(',',$path).") ORDER BY CASE edge_id {$orderQueryPart} END");
 
         $edgesResult = $stmt->execute();
 
@@ -181,7 +180,7 @@ else
     $db = new SQLite3("database.db");
 
     //$stmt = $db->prepare('SELECT edge_id, position_in_path FROM Path INNER JOIN Edges on ');
-    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes, Node.category, Node.name
+    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor
     FROM Steps
     INNER JOIN Edges ON Steps.edge_id = Edges.edge_id
     INNER JOIN Node ON Edges.end_node_id = Node.node_id
@@ -234,37 +233,53 @@ else
                         $instruction_text = 'Go through the door and ';
 
                         if ($direction_text == 'forward') {
-                            $instruction_text .= 'continue.';
+                            $instruction_text .= 'continue <b>forward</b>.';
                         } else {
-                            $instruction_text .= 'turn '.$direction_text.'.';
+                            $instruction_text .= 'turn <b>'.$direction_text.'</b>.';
                         }
 
                         break;
 
                     case 2:
-                        $instruction_text = 'Continue through the '.$path[$i]['name'].'.';
+                        $instruction_text = 'Continue through the <b>'.$path[$i]['name'].'</b>.';
                         break;
 
                     case 3:
                         if ($i + 1 < count($path) and $path[$i + 1]['category'] == 2) {
-                            $instruction_text = 'The '.$path[$i + 1]['name'].' is on your '.$direction_text.'.';
+                            $instruction_text = 'The '.$path[$i + 1]['name'].' is on your <b>'.$direction_text.'</b>.';
                             break;
                         }
                         
-                        $instruction_text = 'At the junction ';
+                        $instruction_text = 'At the next junction ';
                         if ($direction_text == 'forward') {
                             $instruction_text .= 'continue straight.';
                         } else {
-                            $instruction_text .= 'turn '.$direction_text.'.';
+                            $instruction_text .= 'turn <b>'.$direction_text.'</b>.';
                         };
                         break;
 
                     case 4:
-                        $instruction_text = 'Use the stairs.';
+                        for ($x = $i; $x < count($path) - 1; $x++) {
+                            if ($path[$x + 1]['category'] != 4) {
+                                break;
+                            }
+                            $end_floor = $path[$x + 1]['floor'];
+                        }
+
+                        $path_start = array_slice($path, 0, $i);
+                        $path_end = array_slice($path, $x);
+                        $path = array_merge($path_start, $path_end);
+
+                        $instruction_text = 'Use the stairs or lift to get to ';
+                        if ($end_floor == 0) {
+                            $instruction_text .= 'the <b>ground</b> floor.';
+                        } else {
+                            $instruction_text .= 'floor <b>'.$end_floor.'</b>.';
+                        }
                         break;
 
                     case 5:
-                        $instruction_text = 'Go through '.$path[$i]['name'] + '.';
+                        $instruction_text = 'Go through <b>'.$path[$i]['name'] + '</b>.';
                         break;
                 }
 
@@ -273,6 +288,13 @@ else
         }
 
     return $path;
+    }
+
+    function IsStairs($var) {
+        return $var['category'] == 5;
+    }
+
+    function IsConnected($var) {
     }
     $final_path = calculate_relative_directions($final_path);
     
