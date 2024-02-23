@@ -6,29 +6,6 @@ $nodeId = isset($_POST['node_id']) ? intval($_POST['node_id']) : null;
 $edges = [];
 $nodeName = '';
 
-// Handle request to delete an edge
-if(isset($_POST['deleteEdge'])) {
-    $edgeIdToDelete = $_POST['deleteEdge'];
-    $deleteStmt = $db->prepare("DELETE FROM Edges WHERE edge_id = :edgeId");
-    $deleteStmt->bindValue(':edgeId', $edgeIdToDelete, SQLITE3_INTEGER);
-    $deleteStmt->execute();
-}
-
-// Handle adding new edges
-if(isset($_POST['addNewEdge'])) {
-    // Logic to insert new edge based on provided data
-    // Assume form fields for new edge are named accordingly (e.g., newEdgeSource, newEdgeDestination, etc.)
-    $source = $_POST['newEdgeSource'];
-    $destination = $_POST['newEdgeDestination'];
-    // Additional data collection as needed
-
-    $insertStmt = $db->prepare("INSERT INTO Edges (start_node_id, end_node_id) VALUES (:source, :destination)");
-    $insertStmt->bindValue(':source', $source, SQLITE3_INTEGER);
-    $insertStmt->bindValue(':destination', $destination, SQLITE3_INTEGER);
-    $insertStmt->execute();
-}
-
-
 if ($nodeId) {
 
     $nodeStmt = $db->prepare('SELECT name FROM Node WHERE node_id = :nodeId');
@@ -64,11 +41,11 @@ if (isset($_POST['updateEdges'])) {
 
     $targetDir = "../img/";
 
-    for ($i = 0; $i < count($_POST['edge_id']); $i++) {
-        $edgeId = intval($_POST['edge_id'][$i]);
+    for ($i = 0; $i < count($_POST['edgeId']); $i++) {
+        $edgeId = intval($_POST['edgeId'][$i]);
 
         if (!empty($_FILES['newImage']['name'][$i])) {
-            $fileName = "edge_" . $edgeId . ".jpg";
+            $fileName = "edgeId" . $edgeId . ".jpg";
             $targetFilePath = $targetDir . $fileName;
 
             if (move_uploaded_file($_FILES['newImage']['tmp_name'][$i], $targetFilePath)) {
@@ -105,20 +82,6 @@ if (isset($_POST['updateEdges'])) {
             $_SESSION['flash_message'] = 'Error updating edge with ID: ' . $edgeId;
             header("Location: admincrud.php");
             exit();
-        }
-    }
-
-    if (isset($_POST['newEdgeSource'])) {
-        foreach ($_POST['newEdgeSource'] as $index => $sourceId) {
-            $destinationId = $_POST['newEdgeDestination'][$index];
-            $direction = $_POST['newEdgeDirection'][$index];
-            $distance = $_POST['newEdgeDistance'][$index];
-            $notes = $_POST['newEdgeNotes'][$index];
-            // Handle image upload for new edge
-
-            // Insert new edge into database
-            $insertEdgeStmt = $db->prepare("INSERT INTO Edges (start_node_id, end_node_id, direction, distance, notes) VALUES (?, ?, ?, ?, ?)");
-            $insertEdgeStmt->execute([$sourceId, $destinationId, $direction, $distance, $notes]);
         }
     }
 
@@ -192,64 +155,12 @@ if (isset($_POST['updateEdges'])) {
                         <textarea name="newNote[]"><?php echo $edge['notes']; ?></textarea>
                 </div>
 
-                <div class="edge">
-        <!-- Edge details -->
-        <button type="submit" name="deleteEdge" value="<?= $edge['edge_id']; ?>">Delete Edge</button>
-                </div>
-
             <?php endforeach; ?>
-
-            <div id="newEdgesContainer"></div>
-    <button type="button" id="addEdgeButton">Add New Edge</button>
 
     <button type="submit" name="updateEdges">Update Edges</button>
 
         </form>
-
-        <script>
-document.getElementById('addEdgeButton').addEventListener('click', function() {
-    const container = document.getElementById('newEdgesContainer');
-    const newEdgeIndex = container.children.length; // This index can be used to differentiate between new edge forms.
-    const newEdgeHTML = `
-        <div class="new-edge-form">
-            <strong>New Edge #${newEdgeIndex + 1}</strong><br>
-            <label for="newEdgeSource_${newEdgeIndex}">Source Node:</label>
-            <select name="newEdgeSource[]" id="newEdgeSource_${newEdgeIndex}">
-                <?php foreach ($nodes as $node): ?>
-                    <option value="<?= $node['node_id']; ?>"><?= htmlspecialchars($node['name']); ?></option>
-                <?php endforeach; ?>
-            </select><br>
-
-            <label for="newEdgeDestination_${newEdgeIndex}">Destination Node:</label>
-            <select name="newEdgeDestination[]" id="newEdgeDestination_${newEdgeIndex}">
-                <?php foreach ($nodes as $node): ?>
-                    <option value="<?= $node['node_id']; ?>"><?= htmlspecialchars($node['name']); ?></option>
-                <?php endforeach; ?>
-            </select><br>
-
-            <label for="newEdgeDistance_${newEdgeIndex}">Distance:</label>
-            <input type="number" name="newEdgeDistance[]" id="newEdgeDistance_${newEdgeIndex}" step="0.01"><br>
-
-            <label for="newEdgeDirection_${newEdgeIndex}">Direction:</label>
-            <select name="newEdgeDirection[]" id="newEdgeDirection_${newEdgeIndex}">
-                <?php foreach ($directions as $direction): ?>
-                    <option value="<?= $direction['direction_id']; ?>"><?= htmlspecialchars($direction['direction']); ?></option>
-                <?php endforeach; ?>
-            </select><br>
-
-            <label for="newEdgeNotes_${newEdgeIndex}">Notes:</label>
-            <textarea name="newEdgeNotes[]" id="newEdgeNotes_${newEdgeIndex}"></textarea><br>
-
-            <label for="newEdgeImage_${newEdgeIndex}">Image:</label>
-            <input type="file" name="newEdgeImage[]" id="newEdgeImage_${newEdgeIndex}"><br>
-        </div>
-    `;
-    container.insertAdjacentHTML('beforeend', newEdgeHTML);
-});
-</script>
-
-
-        <a href="admincrud.php">Back to Locations</a>
+      <a href="admincrud.php">Back to Locations</a>
     </main>
 </body>
 
