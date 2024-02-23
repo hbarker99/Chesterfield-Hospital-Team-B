@@ -12,7 +12,7 @@
 .page-container {
     padding: 1rem;
     background-color: #f0f4f5;
-    height: 100vh;
+    min-height: calc(100dvh - 3.75rem);
 }
 
 .form-item {

@@ -13,7 +13,7 @@ function fetchData() {
 
 function locationFill(){
     $db = new SQLite3("../../database.db");
-    $stmt = $db->prepare('SELECT * FROM Node WHERE endpoint=1');
+    $stmt = $db->prepare('SELECT * FROM Node WHERE category=5 OR category=2');
     $result = $stmt->execute();
     $rows_array = [];
     while ($row=$result->fetchArray())

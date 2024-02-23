@@ -13,6 +13,10 @@ if(isset($_POST['next'])){
         $_SESSION['current_step']--;
     }
 }
+
+if (!isset($_SESSION['show_instructions'])) {
+    $_SESSION['show_instructions'] = true;
+}
 ?>
 
 <!doctype html>
@@ -35,33 +39,34 @@ if(isset($_POST['next'])){
             </div>
 
 
-            <div class="info-box-container show">
+            <div class="info-box-container">
                 <div class="info-box">
-                    <div id="toggle-visibility" onclick="ToggleVisibility()">
+                    <div id="toggle-visibility" class="btn btn-secondary" onclick="ToggleVisibility()">
                         <div class="arrow down"></div>
                     </div>
-                    <h4>Instruction</h4>
                     <div class="instruction-container">
                         <div class="instruction-highlight"></div>
                         <?php if($_SESSION['current_step'] == count($final_path) - 1) {?>
-                            <div class="instruction-text">You have reached your destination.</div>
+                            <div class="instruction-text">You have reached the <b><?php echo $final_path[$_SESSION['current_step']]['name'];?></b>.</div>
                         <?php } elseif($_SESSION['current_step'] == 0) { ?>
-                            <div class="instruction-text">Begin facing the same direction as the image. Then continue forwards.</div>
+                            <div class="instruction-text">Begin facing the same direction as the image. <?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
                         <?php } else { ?>
-                            <div class="instruction-text">At the next junction turn <b><?php echo $final_path[$_SESSION['current_step']]['direction'];?></b></div>
+                            <div class="instruction-text"><?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
                         <?php } ?>
                     </div>
                     <?php if(true) : ?>
-                        <p>Additional notes</p>
-                    <?php endif ?>
-                    <form method="post">
-                        <div class="button-container">
-                            <input <?php if($_SESSION['current_step'] == 0) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="previous" value="Previous Step" />
-                            <input <?php if($_SESSION['current_step'] == count($final_path) - 1) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="next" value="Next Step" />
+                        <div class="additional-notes">
+                            <p>Additional notes</p>
                         </div>
-                    </form>
+                    <?php endif ?>
                 </div>
             </div>
+            <form method="post">
+                <div class="button-container">
+                    <input <?php if($_SESSION['current_step'] == 0) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="previous" value="Back" />
+                    <input <?php if($_SESSION['current_step'] == count($final_path) - 1) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="next" value="Next" />
+                </div>
+            </form>
         </div>
     </body>
 
