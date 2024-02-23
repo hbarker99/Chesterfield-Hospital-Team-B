@@ -3,7 +3,7 @@
     z-index: -1;
     display: block;
     width: 100%;
-    height: calc(100vh - 4rem - 7%);
+    height: calc(100dvh - 4rem - 7%);
 }
 
 .image-box img {
@@ -16,7 +16,7 @@
     padding: 0;
     margin: 0;
     position: relative;
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
 }
 
