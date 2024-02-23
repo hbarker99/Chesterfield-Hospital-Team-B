@@ -230,12 +230,17 @@ else
 
                 switch ($path[$i]['category']){
                     case 1:
-                        $instruction_text = 'Go through the door and ';
+                        $instruction_text = 'Go through the door';
+
+                        if ($i == count($path) - 2) {
+                            $instruction_text .= '.';
+                            break;
+                        }
 
                         if ($direction_text == 'forward') {
-                            $instruction_text .= 'continue <b>forward</b>.';
+                            $instruction_text .= ' and continue <b>forward</b>.';
                         } else {
-                            $instruction_text .= 'turn <b>'.$direction_text.'</b>.';
+                            $instruction_text .= ' and turn <b>'.$direction_text.'</b>.';
                         }
 
                         break;
