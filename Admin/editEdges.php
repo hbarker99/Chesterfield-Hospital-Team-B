@@ -108,19 +108,17 @@ if (isset($_POST['updateEdges'])) {
         }
     }
 
-    // New edges addition logic
-    if(isset($_POST['newEdgeSource'])) {
-        foreach($_POST['newEdgeSource'] as $index => $source) {
-            $destination = $_POST['newEdgeDestination'][$index];
+    if (isset($_POST['newEdgeSource'])) {
+        foreach ($_POST['newEdgeSource'] as $index => $sourceId) {
+            $destinationId = $_POST['newEdgeDestination'][$index];
+            $direction = $_POST['newEdgeDirection'][$index];
             $distance = $_POST['newEdgeDistance'][$index];
-            $direction = $_POST['newEdgeDirection'][$index]; // Assuming direction is included
             $notes = $_POST['newEdgeNotes'][$index];
-            // Handle image upload for new edges as necessary
+            // Handle image upload for new edge
 
             // Insert new edge into database
-            $insertStmt = $db->prepare("INSERT INTO Edges (start_node_id, end_node_id, direction, distance, notes) VALUES (?, ?, ?, ?, ?)");
-            $insertStmt->execute([$source, $destination, $direction, $distance, $notes]);
-            // Additional logic for handling image upload and linking to the edge
+            $insertEdgeStmt = $db->prepare("INSERT INTO Edges (start_node_id, end_node_id, direction, distance, notes) VALUES (?, ?, ?, ?, ?)");
+            $insertEdgeStmt->execute([$sourceId, $destinationId, $direction, $distance, $notes]);
         }
     }
 
