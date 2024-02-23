@@ -10,7 +10,7 @@ function getStartEndNames($nodeId) {
     $stmt = $db->prepare('SELECT name FROM Node WHERE node_id=:nodeId');
     $stmt->bindParam(':nodeId', $nodeId, SQLITE3_INTEGER);
     $result = $stmt->execute();
-    $data = $result->fetchArray(SQLITE3_ASSOC);    
+    $data = $result->fetchArray(SQLITE3_ASSOC); 
     return $data['name'];
 }
 $startName = getStartEndNames($startPoint);
