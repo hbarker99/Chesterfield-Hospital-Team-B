@@ -47,11 +47,11 @@ if (!isset($_SESSION['show_instructions'])) {
                     <div class="instruction-container">
                         <div class="instruction-highlight"></div>
                         <?php if($_SESSION['current_step'] == count($final_path) - 1) {?>
-                            <div class="instruction-text">You have reached your destination.</div>
+                            <div class="instruction-text">You have reached the <?php echo $final_path[$_SESSION['current_step']]['name'];?>.</div>
                         <?php } elseif($_SESSION['current_step'] == 0) { ?>
-                            <div class="instruction-text">Begin facing the same direction as the image. Then continue forwards.</div>
+                            <div class="instruction-text">Begin facing the same direction as the image. <?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
                         <?php } else { ?>
-                            <div class="instruction-text">At the next junction turn <b><?php echo $final_path[$_SESSION['current_step']]['direction'];?></b></div>
+                            <div class="instruction-text"><?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
                         <?php } ?>
                     </div>
                     <?php if(true) : ?>

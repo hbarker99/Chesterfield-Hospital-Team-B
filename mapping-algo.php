@@ -135,7 +135,7 @@ if($exists == null)
             $orderQueryPart .= "WHEN {$value} THEN {$index} ";
         }
         
-        $stmt = $db->prepare("SELECT edge_id, image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).") ORDER BY CASE edge_id {$orderQueryPart} END");
+        $stmt = $db->prepare("SELECT Edges.edge_id, Edges.image, Edges.direction, Edges.notes, Node.category, Node.name FROM Edges INNER JOIN Node ON Edges.end_node_id = Node.node_id WHERE edge_id IN(".implode(',',$path).") ORDER BY CASE edge_id {$orderQueryPart} END");
         
 
         $edgesResult = $stmt->execute();
@@ -181,9 +181,10 @@ else
     $db = new SQLite3("database.db");
 
     //$stmt = $db->prepare('SELECT edge_id, position_in_path FROM Path INNER JOIN Edges on ');
-    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes
+    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes, Node.category, Node.name
     FROM Steps
     INNER JOIN Edges ON Steps.edge_id = Edges.edge_id
+    INNER JOIN Node ON Edges.end_node_id = Node.node_id
     WHERE Steps.path_id = :path_id
     ORDER BY Steps.position_in_path");
 
@@ -216,17 +217,58 @@ else
                 $direction = $path[$i]['direction']-$path[$i+1]['direction'];
                 switch($direction){
                     case 0: 
-                        $path[$i]['direction'] = 'forward';
+                        $direction_text = 'forward';
                         break;
                     case 1:
                     case -3:
-                        $path[$i]['direction'] = 'left';
+                        $direction_text = 'left';
                         break;
                     case -1:
                     case 3:
-                        $path[$i]['direction'] = 'right';
+                        $direction_text = 'right';
                         break;
                 }
+
+                switch ($path[$i]['category']){
+                    case 1:
+                        $instruction_text = 'Go through the door and ';
+
+                        if ($direction_text == 'forward') {
+                            $instruction_text .= 'continue.';
+                        } else {
+                            $instruction_text .= 'turn '.$direction_text.'.';
+                        }
+
+                        break;
+
+                    case 2:
+                        $instruction_text = 'Continue through the '.$path[$i]['name'].'.';
+                        break;
+
+                    case 3:
+                        if ($i + 1 < count($path) and $path[$i + 1]['category'] == 2) {
+                            $instruction_text = 'The '.$path[$i + 1]['name'].' is on your '.$direction_text.'.';
+                            break;
+                        }
+                        
+                        $instruction_text = 'At the junction ';
+                        if ($direction_text == 'forward') {
+                            $instruction_text .= 'continue straight.';
+                        } else {
+                            $instruction_text .= 'turn '.$direction_text.'.';
+                        };
+                        break;
+
+                    case 4:
+                        $instruction_text = 'Use the stairs.';
+                        break;
+
+                    case 5:
+                        $instruction_text = 'Go through '.$path[$i]['name'] + '.';
+                        break;
+                }
+
+                $path[$i]['instruction'] = $instruction_text;
             }
         }
 
