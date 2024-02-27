@@ -45,7 +45,7 @@ if (isset($_POST['updateEdges'])) {
         $edgeId = intval($_POST['edgeId'][$i]);
 
         if (!empty($_FILES['newImage']['name'][$i])) {
-            $fileName = "edgeId" . $edgeId . ".jpg";
+            $fileName = "edge_" . $edgeId . ".jpg";
             $targetFilePath = $targetDir . $fileName;
 
             if (move_uploaded_file($_FILES['newImage']['tmp_name'][$i], $targetFilePath)) {
