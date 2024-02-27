@@ -109,14 +109,17 @@ if (isset($_POST['updateEdges'])) {
     <main>
         <form method="post" enctype="multipart/form-data">
             <input type="hidden" name="node_id" value="<?php echo htmlspecialchars($nodeId); ?>">
-            <?php foreach ($edges as $edge): ?>
-                <div>
-                    <label>Edge ID:
-                        <?php echo $edge['edge_id']; ?>
-                    </label>
-                    <input type="hidden" name="edgeId[]" value="<?php echo $edge['edge_id']; ?>">
+            <?php if (empty($edges)): ?>
+                <p>No edges to edit for this Location.</p>
+            <?php else: ?>
+                <?php foreach ($edges as $edge): ?>
+                    <div>
+                        <label>Edge ID:
+                            <?php echo $edge['edge_id']; ?>
+                        </label>
+                        <input type="hidden" name="edgeId[]" value="<?php echo $edge['edge_id']; ?>">
 
-                    <label for="source-<?php echo $edge['edge_id']; ?>">Source Node:</label>
+                        <label for="source-<?php echo $edge['edge_id']; ?>">Source Node:</label>
                         <select name="newSource[]" id="source-<?php echo $edge['edge_id']; ?>">
                             <?php foreach ($nodes as $node): ?>
                                 <option value="<?php echo $node['node_id']; ?>" <?php echo $node['node_id'] == $edge['start_node_id'] ? 'selected' : ''; ?>>
@@ -151,14 +154,14 @@ if (isset($_POST['updateEdges'])) {
 
                         <label>Notes:</label>
                         <textarea name="newNote[]"><?php echo $edge['notes']; ?></textarea>
-                </div>
+                    </div>
 
-            <?php endforeach; ?>
-
-    <button type="submit" name="updateEdges">Update Edges</button>
+                <?php endforeach; ?>
+                <button type="submit" name="updateEdges">Update Edges</button>
+            <?php endif; ?>
 
         </form>
-      <a href="admincrud.php">Back to Locations</a>
+        <a href="admincrud.php">Back to Locations</a>
     </main>
 </body>
 
