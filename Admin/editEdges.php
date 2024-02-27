@@ -62,16 +62,14 @@ if (isset($_POST['updateEdges'])) {
         $newDestination = intval($_POST['newDestination'][$i]);
         $newDirection = intval($_POST['newDirection'][$i]);
         $newDistance = floatval($_POST['newDistance'][$i]);
-        $newImage = $_POST['newImage'][$i];
         $newNote = $_POST['newNote'][$i];
 
-        $updateStmt = $db->prepare('UPDATE Edges SET start_node_id = :newSource, end_node_id = :newDestination, direction = :newDirection, distance = :newDistance, image = :newImage, notes = :newNote WHERE edge_id = :edgeId');
+        $updateStmt = $db->prepare('UPDATE Edges SET start_node_id = :newSource, end_node_id = :newDestination, direction = :newDirection, distance = :newDistance, notes = :newNote WHERE edge_id = :edgeId');
 
         $updateStmt->bindValue(':newSource', $newSource, SQLITE3_INTEGER);
         $updateStmt->bindValue(':newDestination', $newDestination, SQLITE3_INTEGER);
-        $updateStmt->bindValue(':newDirection', $newDirection, SQLITE3_INTEGER); // Adjust if your direction handling differs
+        $updateStmt->bindValue(':newDirection', $newDirection, SQLITE3_INTEGER);
         $updateStmt->bindValue(':newDistance', $newDistance, SQLITE3_FLOAT);
-        $updateStmt->bindValue(':newImage', $newImage, SQLITE3_TEXT);
         $updateStmt->bindValue(':newNote', $newNote, SQLITE3_TEXT);
         $updateStmt->bindValue(':edgeId', $edgeId, SQLITE3_INTEGER);
 
