@@ -1,21 +1,5 @@
 <?php
-class Node
-{
-    public $distance = PHP_INT_MAX;
-    public $previous = null;
-    public $nodeId;
-    public $neighbours = [];
-
-    public function __construct($name)
-    {
-        $this->nodeId = $name;
-    }
-
-    public function addNeighbour($node, $distance, $edgeId)
-    {
-        $this->neighbours[] = ["node" => $node, "distance" => $distance, "edge_id" => $edgeId];
-    }
-}
+require("./components/node_class.php");
 
 class Dijkstra
 {
@@ -134,9 +118,12 @@ if($exists == null)
         foreach ($path as $index => $value) {
             $orderQueryPart .= "WHEN {$value} THEN {$index} ";
         }
-        
-        $stmt = $db->prepare("SELECT edge_id, image, direction, notes FROM Edges WHERE edge_id IN(".implode(',',$path).") ORDER BY CASE edge_id {$orderQueryPart} END");
-        
+
+        $stmt = $db->prepare("SELECT Edges.edge_id, Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor, Edges.accessibility_notes 
+        FROM Edges 
+        INNER JOIN Node ON Edges.end_node_id = Node.node_id 
+        WHERE edge_id IN(".implode(',',$path).") 
+        ORDER BY CASE edge_id {$orderQueryPart} END");
 
         $edgesResult = $stmt->execute();
 
