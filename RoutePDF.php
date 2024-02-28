@@ -35,24 +35,28 @@ $pdf->Ln();
 
 // Loop through each step and add content to the PDF
 foreach ($final_path as $index => $step) {
-    if ($step['direction'] == 'left' || $step['direction'] == 'right'){
-        $movementDescriptor = ' Turn';
-    } else if ($step['direction'] == 'upstairs' || $step['direction'] == 'downstairs') {
-        $movementDescriptor = ' Use the stairs/lift to continue';
-    } 
+
 
     $pdf->SetFont('Arial', 'B', 14);
-    // Step #: *Edge notes* . Direction change . Direction
-    // Step 1: You will see... Turn right. 
     if($index == sizeof($final_path)-1){
-        $directions = "You have reached your destination.";
+        $directions = "You have reached " . $endName . ".";
     }
     else{
-    $pdf->Cell(0, 10, 'Step ' . ($index + 1), 0, 1,);
-    $pdf->SetFont('Arial', '', 14);
-    $directions = $step['notes'] . $movementDescriptor . ' ' .  $step['direction'] . '.';
+        $pdf->Cell(0, 10, 'Step ' . ($index + 1), 0, 1,);
+        $pdf->SetFont('Arial', '', 14);
+        $directions = $step['notes'] . ' ' .  $step['instruction'];
+        // Replace HTML <b> tag with FPDF's bold formatting
+        $directions = str_replace('<b>', '', $directions);
+        $directions = str_replace('</b>', '', $directions);
     }
-    $pdf->MultiCell(0,5,$directions);
+
+    if($accessibilityCheck == 'on'){
+        $access = $step['accessibility_notes'];
+    }
+    else{
+        $access = '';
+    }
+    $pdf->MultiCell(0,5,$directions .  ' '. $access);
     $pdf->Ln();
 }
 $pdf->Output();

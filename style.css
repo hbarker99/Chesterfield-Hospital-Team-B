@@ -97,7 +97,7 @@
 }
 
 #bootstrap-overrides .page-container {
-    min-height: calc(100vh - 3.75rem);
+    min-height: calc(100dvh - 3.75rem);
 }
 
 .center {

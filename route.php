@@ -36,6 +36,9 @@ if (!isset($_SESSION['show_instructions'])) {
             </div>
             <div class="image-box">
                 <img src="./img/<?php echo $final_path[$_SESSION['current_step']]['image'] ?>" />
+                <div class="direction-container">
+                    <div class="direction-arrow" id="arrow"></div>
+                </div>
             </div>
 
 
@@ -47,16 +50,16 @@ if (!isset($_SESSION['show_instructions'])) {
                     <div class="instruction-container">
                         <div class="instruction-highlight"></div>
                         <?php if($_SESSION['current_step'] == count($final_path) - 1) {?>
-                            <div class="instruction-text">You have reached your destination.</div>
+                            <div class="instruction-text">You have reached the <b><?php echo $final_path[$_SESSION['current_step']]['name'];?></b>.</div>
                         <?php } elseif($_SESSION['current_step'] == 0) { ?>
-                            <div class="instruction-text">Begin facing the same direction as the image. Then continue forwards.</div>
+                            <div class="instruction-text">Begin facing the same direction as the image. <?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
                         <?php } else { ?>
-                            <div class="instruction-text">At the next junction turn <b><?php echo $final_path[$_SESSION['current_step']]['direction'];?></b></div>
+                            <div class="instruction-text"><?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
                         <?php } ?>
                     </div>
-                    <?php if(true) : ?>
-                        <div class="additional-notes">
-                            <p>Additional notes</p>
+                    <?php if($accessibilityCheck== 'on') : ?>
+                        <div class="accessibility-notes">
+                            <?php echo $final_path[$_SESSION['current_step']]['accessibility_notes'];?>
                         </div>
                     <?php endif ?>
                 </div>
@@ -73,6 +76,12 @@ if (!isset($_SESSION['show_instructions'])) {
 </html>
 
 <script>
+var element = document.getElementById("arrow");
+var direction = '<?php echo $final_path[$_SESSION['current_step']]['direction'];?>';
+if (direction != 'forward'){
+    setTimeout(() => element.classList.add(direction), 100);
+}
+
 function ToggleVisibility() {
     var element = document.getElementById("toggle-visibility");
     var parentElement = element.parentElement.parentElement;
