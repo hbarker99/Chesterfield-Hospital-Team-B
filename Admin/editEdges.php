@@ -45,7 +45,7 @@ if (isset($_POST['updateEdges'])) {
         $edgeId = intval($_POST['edgeId'][$i]);
 
         if (!empty($_FILES['newImage']['name'][$i])) {
-            $fileName = "edgeId" . $edgeId . ".jpg";
+            $fileName = "edge_" . $edgeId . ".jpg";
             $targetFilePath = $targetDir . $fileName;
 
             if (move_uploaded_file($_FILES['newImage']['tmp_name'][$i], $targetFilePath)) {
@@ -62,16 +62,14 @@ if (isset($_POST['updateEdges'])) {
         $newDestination = intval($_POST['newDestination'][$i]);
         $newDirection = intval($_POST['newDirection'][$i]);
         $newDistance = floatval($_POST['newDistance'][$i]);
-        $newImage = $_POST['newImage'][$i];
         $newNote = $_POST['newNote'][$i];
 
-        $updateStmt = $db->prepare('UPDATE Edges SET start_node_id = :newSource, end_node_id = :newDestination, direction = :newDirection, distance = :newDistance, image = :newImage, notes = :newNote WHERE edge_id = :edgeId');
+        $updateStmt = $db->prepare('UPDATE Edges SET start_node_id = :newSource, end_node_id = :newDestination, direction = :newDirection, distance = :newDistance, notes = :newNote WHERE edge_id = :edgeId');
 
         $updateStmt->bindValue(':newSource', $newSource, SQLITE3_INTEGER);
         $updateStmt->bindValue(':newDestination', $newDestination, SQLITE3_INTEGER);
-        $updateStmt->bindValue(':newDirection', $newDirection, SQLITE3_INTEGER); // Adjust if your direction handling differs
+        $updateStmt->bindValue(':newDirection', $newDirection, SQLITE3_INTEGER);
         $updateStmt->bindValue(':newDistance', $newDistance, SQLITE3_FLOAT);
-        $updateStmt->bindValue(':newImage', $newImage, SQLITE3_TEXT);
         $updateStmt->bindValue(':newNote', $newNote, SQLITE3_TEXT);
         $updateStmt->bindValue(':edgeId', $edgeId, SQLITE3_INTEGER);
 
@@ -111,14 +109,17 @@ if (isset($_POST['updateEdges'])) {
     <main>
         <form method="post" enctype="multipart/form-data">
             <input type="hidden" name="node_id" value="<?php echo htmlspecialchars($nodeId); ?>">
-            <?php foreach ($edges as $edge): ?>
-                <div>
-                    <label>Edge ID:
-                        <?php echo $edge['edge_id']; ?>
-                    </label>
-                    <input type="hidden" name="edgeId[]" value="<?php echo $edge['edge_id']; ?>">
+            <?php if (empty($edges)): ?>
+                <p>No edges to edit for this Location.</p>
+            <?php else: ?>
+                <?php foreach ($edges as $edge): ?>
+                    <div>
+                        <label>Edge ID:
+                            <?php echo $edge['edge_id']; ?>
+                        </label>
+                        <input type="hidden" name="edgeId[]" value="<?php echo $edge['edge_id']; ?>">
 
-                    <label for="source-<?php echo $edge['edge_id']; ?>">Source Node:</label>
+                        <label for="source-<?php echo $edge['edge_id']; ?>">Source Node:</label>
                         <select name="newSource[]" id="source-<?php echo $edge['edge_id']; ?>">
                             <?php foreach ($nodes as $node): ?>
                                 <option value="<?php echo $node['node_id']; ?>" <?php echo $node['node_id'] == $edge['start_node_id'] ? 'selected' : ''; ?>>
@@ -146,21 +147,21 @@ if (isset($_POST['updateEdges'])) {
                         </select>
 
                         <label>Distance:</label>
-                        <input type="text" name="newDistance[]" value="<?php echo $edge['distance']; ?>">
+                        <input type="number" name="newDistance[]" value="<?php echo $edge['distance']; ?>">
 
                         <label for="image-<?php echo $edge['edge_id']; ?>">Upload Image:</label>
                         <input type="file" name="newImage[]" id="image-<?php echo $edge['edge_id']; ?>">
 
                         <label>Notes:</label>
                         <textarea name="newNote[]"><?php echo $edge['notes']; ?></textarea>
-                </div>
+                    </div>
 
-            <?php endforeach; ?>
-
-    <button type="submit" name="updateEdges">Update Edges</button>
+                <?php endforeach; ?>
+                <button type="submit" name="updateEdges">Update Edges</button>
+            <?php endif; ?>
 
         </form>
-      <a href="admincrud.php">Back to Locations</a>
+        <a href="admincrud.php">Back to Locations</a>
     </main>
 </body>
 

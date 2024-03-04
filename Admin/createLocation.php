@@ -2,205 +2,319 @@
 $db = new SQLite3("databasepractice.db");
 session_start();
 
-// Variables to hold submitted form data
-$locationName = '';
-$edgeCount = 0;
-$isEndpoint = false;
-
-// Arrays to store dynamically added edge data
-$edges = [];
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['confirmName'])) {
-        // Add location name to database and set it in session
+// Function to handle adding or updating location
+function handleLocation($db, &$locationName, &$locationId) {
+    if (!empty($_SESSION['confirmedLocationName'])) {
+        $locationName = $_SESSION['confirmedLocationName'];
+        // Fetch location ID based on name
+        $stmt = $db->prepare("SELECT node_id FROM Node WHERE name = :name");
+        $stmt->bindValue(':name', $locationName, SQLITE3_TEXT);
+        $result = $stmt->execute();
+        $row = $result->fetchArray(SQLITE3_ASSOC);
+        $locationId = $row['node_id'] ?? 0;
+    } elseif (!empty($_POST['locationName'])) {
         $locationName = trim($_POST['locationName']);
-        if (!empty($locationName)) {
-            $stmt = $db->prepare('INSERT INTO Node (name) VALUES (:name)');
-            $stmt->bindValue(':name', $locationName, SQLITE3_TEXT);
+        // Insert new location
+        $stmt = $db->prepare("INSERT INTO Node (name) VALUES (:name)");
+        $stmt->bindValue(':name', $locationName, SQLITE3_TEXT);
+        $stmt->execute();
+        $locationId = $db->lastInsertRowID();
+        $_SESSION['confirmedLocationName'] = $locationName;
+    }
+}
+
+// Function to handle edge addition
+function addEdges($db, $locationId) {
+    // Assume $_POST['endNode'], $_POST['distance'], etc., are arrays from the form
+    if (!empty($_POST['endNode']) && is_array($_POST['endNode'])) {
+        foreach ($_POST['endNode'] as $i => $endNode) {
+            $distance = $_POST['distance'][$i] ?? 0;
+            // Add more parameters as needed
+            $stmt = $db->prepare("INSERT INTO Edges (start_node_id, end_node_id, distance) VALUES (:start, :end, :distance)");
+            $stmt->bindValue(':start', $locationId, SQLITE3_INTEGER);
+            $stmt->bindValue(':end', $endNode, SQLITE3_INTEGER);
+            $stmt->bindValue(':distance', $distance, SQLITE3_FLOAT);
+            // Execute edge insertion
             $stmt->execute();
-            $_SESSION['confirmedLocationName'] = $locationName;
+        }
+    }
+}
+
+$locationName = '';
+$locationId = 0;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['confirmName']) || isset($_POST['submitLocation'])) {
+        handleLocation($db, $locationName, $locationId);
+        if (isset($_POST['submitLocation'])) {
+            addEdges($db, $locationId);
+            // Redirect or display success message
+            $_SESSION['flash_message'] = "Location and edges have been successfully added.";
+            unset($_SESSION['confirmedLocationName']);
+            header('Location: admincrud.php');
+            exit();
+        }
+    } elseif (isset($_POST['changeName'])) {
+
+        $locationName = $_POST['locationName'] ?? '';
+    
+        $locationidStmt = $db->prepare('SELECT node_id FROM Node WHERE name = :locationName');
+        $locationidStmt->bindValue(':locationName', $locationName, SQLITE3_TEXT);
+        $result = $locationidStmt->execute();
+        $row = $result->fetchArray(SQLITE3_ASSOC);
+        
+        if ($row) {
+            $locationid = $row['node_id'];
+    
+            $deleteStmt = $db->prepare('DELETE FROM Node WHERE node_id = :nodeId');
+            $deleteStmt->bindValue(':nodeId', $locationid, SQLITE3_INTEGER);
+            $deleteStmt->execute();
+    
+            unset($_SESSION['confirmedLocationName']);
+    
             header('Location: ' . $_SERVER['PHP_SELF']);
             exit;
         }
     }
 }
-        else if (isset($_POST['submitLocation'])) {
-    $locationName = $_POST['locationName'];
-    $edgeCount = intval($_POST['edgeCount']);
-    $isEndpoint = isset($_POST['isEndpoint']) ? 1 : 0; // 1 for true, 0 for false
 
-    // Insert the new location into the Node table
-    $insertStmt = $db->prepare('INSERT INTO Node (name, endpoint) VALUES (:name, :isEndpoint)');
-    $insertStmt->bindValue(':name', $locationName, SQLITE3_TEXT);
-    $insertStmt->bindValue(':isEndpoint', $isEndpoint, SQLITE3_INTEGER);
-    $result = $insertStmt->execute();
-    $newNodeId = $db->lastInsertRowID(); // Get the ID of the newly created location
-
-    // Process each edge if edges are connected
-    if ($edgeCount > 0) {
-        if ($newNodeId) {
-            for ($i = 0; $i < $edgeCount; $i++) {
-                // Assume each edge has start_node_id, end_node_id, direction, distance, image, and notes
-                $newSource = intval($_POST['newSource'][$i]);
-                $newDestination = intval($_POST['newDestination'][$i]);
-                $newDirection = intval($_POST['newDirection'][$i]);
-                $newDistance = floatval($_POST['newDistance'][$i]);
-                $newNotes = $_POST['newNote'][$i];
-    
-                // Handling file upload for each edge
-                $fileName = !empty($_FILES['newImage']['name'][$i]) ? $_FILES['newImage']['name'][$i] : null;
-                $filePath = null;
-                if ($fileName) {
-                    $filePath = $targetDir . basename($fileName);
-                    // Move the uploaded file to the target directory
-                    move_uploaded_file($_FILES['newImage']['tmp_name'][$i], $filePath);
-                }
-    
-                // Insert edge into the database
-                $insertEdgeStmt = $db->prepare('INSERT INTO Edges (start_node_id, end_node_id, direction, distance, image, notes) VALUES (:start_node_id, :end_node_id, :direction, :distance, :image, :notes)');
-                $insertEdgeStmt->bindValue(':start_node_id', $newSource, SQLITE3_INTEGER);
-                $insertEdgeStmt->bindValue(':end_node_id', $newDestination, SQLITE3_INTEGER);
-                $insertEdgeStmt->bindValue(':direction', $newDirection, SQLITE3_INTEGER);
-                $insertEdgeStmt->bindValue(':distance', $newDistance, SQLITE3_FLOAT);
-                $insertEdgeStmt->bindValue(':image', $filePath, SQLITE3_TEXT);
-                $insertEdgeStmt->bindValue(':notes', $newNotes, SQLITE3_TEXT);
-                $insertEdgeStmt->execute();
-            }
-    }
-}
-
-    $_SESSION['flash_message'] = 'Location added successfully.';
-    header("Location: admincrud.php");
-    exit();
-}
-
-// Fetch nodes and directions for dropdown selections
+// Fetch nodes for the form
 $nodes = [];
-$nodesResult = $db->query('SELECT node_id, name FROM Node');
-while ($node = $nodesResult->fetchArray(SQLITE3_ASSOC)) {
-    $nodes[] = $node;
+$result = $db->query('SELECT node_id, name FROM Node');
+while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+    $nodes[] = $row;
 }
 
 $directions = [];
-$directionsResult = $db->query('SELECT direction_id, direction FROM Direction');
-while ($direction = $directionsResult->fetchArray(SQLITE3_ASSOC)) {
-    $directions[] = $direction;
+$result2 = $db->query('SELECT direction_id,direction FROM Direction');
+while ($row = $result2->fetchArray(SQLITE3_ASSOC)) {
+    $directions[] = $row;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Location</title>
-    <link rel="stylesheet" href="../editEdges.css">
+    <title>Create Location and Edges</title>
+    <link rel="stylesheet" href="style.css"> <!-- Make sure this path is correct -->
 </head>
 <body>
     <header>
-        <h1>Create New Location</h1>
+        <h1>Create New Location and Edges</h1>
     </header>
     <main>
+        <?php if (!empty($_SESSION['flash_message'])): ?>
+            <p><?= $_SESSION['flash_message']; ?></p>
+            <?php unset($_SESSION['flash_message']); ?>
+        <?php endif; ?>
+
         <form method="post" enctype="multipart/form-data">
+            <!-- Location Name Field -->
+            <label for="locationName">Location Name:</label>
+            <input type="text" id="locationName" name="locationName" value="<?= htmlspecialchars($locationName); ?>" <?= !empty($locationName) ? 'readonly' : ''; ?> required>
+            
+            <!-- Dynamic Edge Forms Container -->
+            <div id="edgesContainer"></div>
+
             <?php if (empty($locationName)): ?>
-                <label for="locationName">Location Name:</label>
-                <input type="text" id="locationName" name="locationName" required>
                 <button type="submit" name="confirmName">Confirm Name</button>
             <?php else: ?>
-                <input type="hidden" name="locationName" value="<?= htmlspecialchars($locationName) ?>">
-                Location: <?= htmlspecialchars($locationName) ?>
-                <!-- Add form elements for edge creation here -->
-                <button type="submit" name="submitLocation">Create Edges</button>
+                <button type="button" id="addEdgeButton">Add Edge</button>
+                <button type="submit" name="submitLocation">Submit Location and Edges</button>
+                <button type="submit" name="changeName">Change Name</button>
             <?php endif; ?>
         </form>
-        <?php if (!empty($locationName)): ?>
-            <!-- Optional: Add edge creation form here -->
-        <?php endif; ?>
-        <a href="admincrud.php">Back to Locations</a>
     </main>
-</body>
-
 
     <script>
-/*document.addEventListener('DOMContentLoaded', function() {
-    const confirmNameBtn = document.getElementById('confirmName');
-    const locationNameInput = document.getElementById('locationName');
-    const additionalDetails = document.getElementById('additionalDetails');
-    const submitLocationBtn = document.getElementById('submitLocation');
-    const edgeCountSelector = document.getElementById('edgeCount');
+        document.getElementById('addEdgeButton')?.addEventListener('click', function() {
+            const container = document.getElementById('edgesContainer');
+            const edgeForm = document.createElement('div');
+            edgeForm.innerHTML = `
+                <label for="endNode">End Node:</label>
+                <select name="endNode[]">
+                    <?php foreach ($nodes as $node): ?>
+                        <option value="<?= $node['node_id']; ?>"><?= htmlspecialchars($node['name']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <label for="distance">Distance:</label>
+                <input type="number" name="distance[]">
+                <?php /*<label for="direction">Direction:</label>
+                        <select name="direction[]">
+                            <?php foreach ($directions as $direction): ?>
+                                <option value="<?= $direction['direction_id']; ?>"> <?= htmlspecialchars($direction['direction']); ?></option>
+                            <?php endforeach; ?>
+                        </select> */?>
 
-    confirmNameBtn.addEventListener('click', function() {
-        const locationName = locationNameInput.value.trim();
-        if (locationName !== '') {
-            locationNameInput.disabled = true;
-            confirmNameBtn.disabled = true;
-            additionalDetails.style.display = 'block';
-            submitLocationBtn.style.display = 'inline-block';
+                    <?php /* <label for="image-<?php echo $edge['edge_id']; ?>">Upload Image:</label>
+                        <input type="file" name="newImage[]" id="image-<?php echo $edge['edge_id']; ?>">
 
-            // Dynamically add the new location name to dropdowns
-            const newOptionHTML = `<option value="new">${locationName} (New)</option>`;
-            document.querySelectorAll('select[name="newSource[]"], select[name="newDestination[]"]').forEach(select => {
-                select.insertAdjacentHTML('beforeend', newOptionHTML);
-                select.value = "new";
-            });
-        } else {
-            alert('Please enter a location name.');
-        }
-    });
-
-        edgeCountSelector.addEventListener('change', function() {
-            const selectedCount = parseInt(edgeCountSelector.value, 10);
-            const currentCount = edgesContainer.getElementsByClassName('edge-details').length;
-
-            // Adding fields
-            while (selectedCount > currentCount) {
-                const edgeDetailDiv = document.createElement('div');
-                edgeDetailDiv.className = 'edge-details';
-                edgeDetailDiv.innerHTML = `
-                    <label>Start Node:</label>
-                    <select name="newSource[]">
-                        <?php //foreach ($nodes as $node): ?>
-                            <option value="<?php echo $node['node_id']; ?>"><?//php echo htmlspecialchars($node['name']); ?></option>
-                        <?php //endforeach; ?>
-                    </select>
-
-                    <label>Destination Node:</label>
-                    <select name="newDestination[]">
-                        <?php //foreach ($nodes as $node): ?>
-                            <option value="<?//php echo $node['node_id']; ?>"><?//php echo htmlspecialchars($node['name']); ?></option>
-                        <?php //endforeach; ?>
-                    </select>
-
-                    <label>Direction:</label>
-                    <select name="newDirection[]">
-                        <?php //foreach ($directions as $direction): ?>
-                            <option value="<?//php echo $direction['direction_id']; ?>"><?//php echo htmlspecialchars($direction['direction']); ?></option>
-                        <?php //endforeach; ?>
-                    </select>
-
-                    <label>Distance:</label>
-                    <input type="text" name="newDistance[]">
-
-                    <label>Image:</label>
-                    <input type="file" name="newImage[]">
-
-                    <label>Notes:</label>
-                    <textarea name="newNote[]"></textarea>
-                `;
-                edgesContainer.appendChild(edgeDetailDiv);
-                currentCount++;
-            }
-
-            // Removing fields
-            while (selectedCount < currentCount) {
-                const lastField = edgesContainer.lastChild;
-                if (lastField) {
-                    edgesContainer.removeChild(lastField);
-                    currentCount--;
-                }
-            }
+                        <label>Notes:</label>
+                        <textarea name="newNote[]"><?php echo $edge['notes']; ?></textarea> */ ?>
+                <button type="button" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(edgeForm);
         });
-    });*/
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+<?php
+/* 
+<?php
+$db = new SQLite3("databasepractice.db");
+session_start();
+
+// Function to handle adding or updating location
+function handleLocation($db, &$locationName, &$locationId) {
+    if (!empty($_SESSION['confirmedLocationName'])) {
+        $locationName = $_SESSION['confirmedLocationName'];
+        // Fetch location ID based on name
+        $stmt = $db->prepare("SELECT node_id FROM Node WHERE name = :name");
+        $stmt->bindValue(':name', $locationName, SQLITE3_TEXT);
+        $result = $stmt->execute();
+        $row = $result->fetchArray(SQLITE3_ASSOC);
+        $locationId = $row['node_id'] ?? 0;
+    } elseif (!empty($_POST['locationName'])) {
+        $locationName = trim($_POST['locationName']);
+        // Insert new location
+        $stmt = $db->prepare("INSERT INTO Node (name) VALUES (:name)");
+        $stmt->bindValue(':name', $locationName, SQLITE3_TEXT);
+        $stmt->execute();
+        $locationId = $db->lastInsertRowID();
+        $_SESSION['confirmedLocationName'] = $locationName;
+    }
+}
+
+// Function to handle edge addition
+function addEdges($db, $locationId) {
+    // Assume $_POST['endNode'], $_POST['distance'], etc., are arrays from the form
+    if (!empty($_POST['endNode']) && is_array($_POST['endNode'])) {
+        foreach ($_POST['endNode'] as $i => $endNode) {
+            $distance = $_POST['distance'][$i] ?? 0;
+            // Add more parameters as needed
+            $stmt = $db->prepare("INSERT INTO Edges (start_node_id, end_node_id, distance) VALUES (:start, :end, :distance)");
+            $stmt->bindValue(':start', $locationId, SQLITE3_INTEGER);
+            $stmt->bindValue(':end', $endNode, SQLITE3_INTEGER);
+            $stmt->bindValue(':distance', $distance, SQLITE3_FLOAT);
+            // Execute edge insertion
+            $stmt->execute();
+        }
+    }
+}
+
+$locationName = '';
+$locationId = 0;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['confirmName']) || isset($_POST['submitLocation'])) {
+        handleLocation($db, $locationName, $locationId);
+        if (isset($_POST['submitLocation'])) {
+            addEdges($db, $locationId);
+            // Redirect or display success message
+            $_SESSION['flash_message'] = "Location and edges have been successfully added.";
+            unset($_SESSION['confirmedLocationName']);
+            header('Location: admincrud.php');
+            exit();
+        }
+    } elseif (isset($_POST['changeName'])) {
+
+        $locationName = $_POST['locationName'] ?? '';
+    
+        $locationidStmt = $db->prepare('SELECT node_id FROM Node WHERE name = :locationName');
+        $locationidStmt->bindValue(':locationName', $locationName, SQLITE3_TEXT);
+        $result = $locationidStmt->execute();
+        $row = $result->fetchArray(SQLITE3_ASSOC);
+        
+        if ($row) {
+            $locationid = $row['node_id'];
+    
+            $deleteStmt = $db->prepare('DELETE FROM Node WHERE node_id = :nodeId');
+            $deleteStmt->bindValue(':nodeId', $locationid, SQLITE3_INTEGER);
+            $deleteStmt->execute();
+    
+            unset($_SESSION['confirmedLocationName']);
+    
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit;
+        }
+    }
+}
+
+// Fetch nodes for the form
+$nodes = [];
+$result = $db->query('SELECT node_id, name FROM Node');
+while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+    $nodes[] = $row;
+}
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Location and Edges</title>
+    <link rel="stylesheet" href="style.css"> <!-- Make sure this path is correct -->
+</head>
+<body>
+    <header>
+        <h1>Create New Location and Edges</h1>
+    </header>
+    <main>
+        <?php if (!empty($_SESSION['flash_message'])): ?>
+            <p><?= $_SESSION['flash_message']; ?></p>
+            <?php unset($_SESSION['flash_message']); ?>
+        <?php endif; ?>
+
+        <form method="post" enctype="multipart/form-data">
+            <!-- Location Name Field -->
+            <label for="locationName">Location Name:</label>
+            <input type="text" id="locationName" name="locationName" value="<?= htmlspecialchars($locationName); ?>" <?= !empty($locationName) ? 'readonly' : ''; ?> required>
+            
+            <!-- Dynamic Edge Forms Container -->
+            <div id="edgesContainer"></div>
+
+            <?php if (empty($locationName)): ?>
+                <button type="submit" name="confirmName">Confirm Name</button>
+            <?php else: ?>
+                <button type="button" id="addEdgeButton">Add Edge</button>
+                <button type="submit" name="submitLocation">Submit Location and Edges</button>
+                <button type="submit" name="changeName">Change Name</button>
+            <?php endif; ?>
+        </form>
+    </main>
+
+    <script>
+        document.getElementById('addEdgeButton')?.addEventListener('click', function() {
+            const container = document.getElementById('edgesContainer');
+            const edgeForm = document.createElement('div');
+            edgeForm.innerHTML = `
+                <label for="endNode">End Node:</label>
+                <select name="endNode[]">
+                    <?php foreach ($nodes as $node): ?>
+                        <option value="<?= $node['node_id']; ?>"><?= htmlspecialchars($node['name']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <label for="distance">Distance:</label>
+                <input type="text" name="distance[]">
+                <!-- Add more fields as needed -->
+                <button type="button" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(edgeForm);
+        });
+    </script>
+</body>
+</html>
+*/
+?>
