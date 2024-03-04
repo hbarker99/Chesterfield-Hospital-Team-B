@@ -65,10 +65,32 @@ function GetSelectedNode(selected) {
 }
 
 function AddNewNode(point) {
+    //Name
+    // Category -
+    // example node object = { name, category, x, y }
+    //Need node id returning
     const nodeIds = points.map(point => point.id);
     const newId = Math.max(Math.max(...nodeIds) + 1, 0);
     const newPoint = { x: point.x, y: point.y, id: newId };
 
     points.push(newPoint);
     SetupPoints();
+}
+
+function GetNodes() {
+    //Return a list of node objects
+    return [{ name: "New node", category: 1, x: 100, y: 100, node_id: 1 }]
+}
+
+function CreateNode(node) {
+    const creatingNode = { name: "New node", category: 1, x: 100, y: 100 };
+    //Create the node in the database
+    //Return the new node id - just a number
+}
+
+function NewEdge() {
+
+    //Start node,
+    //End node
+    //
 }
