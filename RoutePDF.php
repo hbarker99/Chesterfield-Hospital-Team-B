@@ -45,12 +45,18 @@ foreach ($final_path as $index => $step) {
         $pdf->Cell(0, 10, 'Step ' . ($index + 1), 0, 1,);
         $pdf->SetFont('Arial', '', 14);
         $directions = $step['notes'] . ' ' .  $step['instruction'];
-
         // Replace HTML <b> tag with FPDF's bold formatting
         $directions = str_replace('<b>', '', $directions);
         $directions = str_replace('</b>', '', $directions);
     }
-    $pdf->MultiCell(0,5,$directions);
+
+    if($accessibilityCheck == 'on'){
+        $access = $step['accessibility_notes'];
+    }
+    else{
+        $access = '';
+    }
+    $pdf->MultiCell(0,5,$directions .  ' '. $access);
     $pdf->Ln();
 }
 $pdf->Output();

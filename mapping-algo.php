@@ -180,7 +180,7 @@ else
     $db = new SQLite3("database.db");
 
     //$stmt = $db->prepare('SELECT edge_id, position_in_path FROM Path INNER JOIN Edges on ');
-    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor
+    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor, Edges.accessibility_notes
     FROM Steps
     INNER JOIN Edges ON Steps.edge_id = Edges.edge_id
     INNER JOIN Node ON Edges.end_node_id = Node.node_id
@@ -228,6 +228,8 @@ else
                         break;
                 }
 
+                $path[$i]['direction'] = $direction_text;
+
                 switch ($path[$i]['category']){
                     case 1:
                         $instruction_text = 'Go through the door';
@@ -271,8 +273,8 @@ else
                             $end_floor = $path[$x + 1]['floor'];
                         }
 
-                        $path_start = array_slice($path, 0, $i);
-                        $path_end = array_slice($path, $x);
+                        $path_start = array_slice($path, 0, ($i + 1));
+                        $path_end = array_slice($path, ($x + 1));
                         $path = array_merge($path_start, $path_end);
 
                         $instruction_text = 'Use the stairs or lift to get to ';

@@ -36,6 +36,9 @@ if (!isset($_SESSION['show_instructions'])) {
             </div>
             <div class="image-box">
                 <img src="./img/<?php echo $final_path[$_SESSION['current_step']]['image'] ?>" />
+                <div class="direction-container">
+                    <div class="direction-arrow" id="arrow"></div>
+                </div>
             </div>
 
 
@@ -54,9 +57,9 @@ if (!isset($_SESSION['show_instructions'])) {
                             <div class="instruction-text"><?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
                         <?php } ?>
                     </div>
-                    <?php if(true) : ?>
-                        <div class="additional-notes">
-                            <p>Additional notes</p>
+                    <?php if($accessibilityCheck== 'on') : ?>
+                        <div class="accessibility-notes">
+                            <?php echo $final_path[$_SESSION['current_step']]['accessibility_notes'];?>
                         </div>
                     <?php endif ?>
                 </div>
@@ -73,6 +76,12 @@ if (!isset($_SESSION['show_instructions'])) {
 </html>
 
 <script>
+var element = document.getElementById("arrow");
+var direction = '<?php echo $final_path[$_SESSION['current_step']]['direction'];?>';
+if (direction != 'forward'){
+    setTimeout(() => element.classList.add(direction), 100);
+}
+
 function ToggleVisibility() {
     var element = document.getElementById("toggle-visibility");
     var parentElement = element.parentElement.parentElement;
