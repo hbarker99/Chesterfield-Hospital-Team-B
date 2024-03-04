@@ -12,7 +12,7 @@ class Node
 
     // Constructor for creating new Node object
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->nodeId = $name;
     }
@@ -24,7 +24,7 @@ class Node
      * @param int    $distance The distance to the neighbouring node.
      * @param string $edgeId   Identifier for the connecting edge. Used in PDF script.
      */
-    public function addNeighbour($node, $distance, $edgeId)
+    public function addNeighbour(Node $node, int $distance, string $edgeId)
     {
         $this->neighbours[] = ["node" => $node, "distance" => $distance, "edge_id" => $edgeId];
     }

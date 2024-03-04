@@ -1,50 +1,19 @@
 <?php
+require_once("./components/database.php");
 require("./components/node_class.php");
+require("./components/dijkstra_class.php");
 
-class Dijkstra
-{
+$db_pdo = new DatabaseConnection();
 
-    public static function calculateShortestPathFrom($startNode, $endNode)
-    {
-        $queue = [$startNode];
-        $startNode->distance = 0;
+/*  
+*   IN
+*   $startPoint and $endPoint are the variables delivered by the form
+*   OUT
+*   $final_path - 2D array with all steps in order they are visited
+*
+*/
 
-        while (count($queue) > 0) {
-            usort($queue, function ($node1, $node2) {
-                return $node1->distance <=> $node2->distance;
-            });
-
-            $currentNode = array_shift($queue);
-
-            foreach ($currentNode->neighbours as $neighbour) {
-                $altDistance = $currentNode->distance + $neighbour["distance"];
-                if ($altDistance < $neighbour["node"]->distance) {
-                    $neighbour["node"]->distance = $altDistance;
-                    $neighbour["node"]->previous = $currentNode;
-                    $neighbour["node"]->previousEdgeId = $neighbour["edge_id"];
-                    array_push($queue, $neighbour["node"]);
-                }
-            }
-        }
-
-        $node = $endNode;
-        $path = [];
-
-        while ($node !== null) {
-            if(isset($node->previousEdgeId)){
-            array_push($path, $node->previousEdgeId);
-            }
-            else{
-                array_push($path, 0);
-            }
-            $node = $node->previous;
-        }
-        array_pop($path);
-        $path = array_reverse($path);
-        return $path;
-    }
-}
-function check_for_precalculated_path($startPoint, $endPoint)
+function check_for_precalculated_path($db_pdo, $startPoint, $endPoint)
 {
     $db = new SQLite3("database.db");
     $stmt = $db->prepare("SELECT path_id FROM Path WHERE (start_node_id = $startPoint) AND (end_node_id = $endPoint)");
@@ -54,36 +23,36 @@ function check_for_precalculated_path($startPoint, $endPoint)
     return $data;
 }
 
-$exists = check_for_precalculated_path($startPoint, $endPoint);
+$exists = check_for_precalculated_path($db_pdo, $startPoint, $endPoint);
+
 if($exists == null)
 {
+    echo 'if null';
     // Path does not exist in the database, calculate new path
-    // NODE SCOPE
+    // NODE SELECT 
     {
-        $db = new SQLite3("database.db");
-        $stmt = $db->prepare('SELECT node_id FROM Node');
+        $node_sql = "SELECT node_id FROM Node";
 
+        $data = $db_pdo->executeQuery($node_sql);
 
-        $result = $stmt->execute();
+        $nodeObjects = [];
 
-        $rows_array = [];
-        
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        foreach ($data as $row) {
             $node_id = $row['node_id'];
             $nodeObjects['node_' . $node_id] = new Node($node_id);
         }
-
-        $db->close();
     }
 
     // EDGE SCOPE
 
+    
     {
         $db = new SQLite3("database.db");
+
         $stmt = $db->prepare('SELECT edge_id, start_node_id, end_node_id, distance FROM Edges');
-
+        $sql = "SELECT edge_id, start_node_id, end_node_id, distance FROM Edges";
+        
         $edgesResult = $stmt->execute();
-
 
         while ($row = $edgesResult->fetchArray()) {
             $edgesResult_array[] = $row;
@@ -91,18 +60,18 @@ if($exists == null)
         }
 
     }
+    
 
     foreach ($nodeObjects as $n) {
         $n->distance = PHP_INT_MAX;
         $n->previous = null;
     }
-    
     // Calculate shortest path
 
     $nodeObjects['node_'.$startPoint]->distance = 0; // Set the starting node's distance to 0
     $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$startPoint], $nodeObjects['node_'.$endPoint]);
 
-
+    var_dump($path);
     $dbFile = 'database.db'; // Replace with your actual database file path
     $dsn = "sqlite:$dbFile";
 
@@ -119,11 +88,7 @@ if($exists == null)
             $orderQueryPart .= "WHEN {$value} THEN {$index} ";
         }
 
-        $stmt = $db->prepare("SELECT Edges.edge_id, Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor, Edges.accessibility_notes 
-        FROM Edges 
-        INNER JOIN Node ON Edges.end_node_id = Node.node_id 
-        WHERE edge_id IN(".implode(',',$path).") 
-        ORDER BY CASE edge_id {$orderQueryPart} END");
+        $stmt = $db->prepare("SELECT Edges.edge_id, Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor, Edges.accessibility_notes FROM Edges INNER JOIN Node ON Edges.end_node_id = Node.node_id WHERE edge_id IN(".implode(',',$path).") ORDER BY CASE edge_id {$orderQueryPart} END");
 
         $edgesResult = $stmt->execute();
 
@@ -168,18 +133,19 @@ else
     $db = new SQLite3("database.db");
 
     //$stmt = $db->prepare('SELECT edge_id, position_in_path FROM Path INNER JOIN Edges on ');
-    $stmt = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor, Edges.accessibility_notes
+    $collect_path_sql = $db->prepare("SELECT Edges.image, Edges.direction, Edges.notes, Node.category, Node.name, Node.floor, Edges.accessibility_notes
     FROM Steps
     INNER JOIN Edges ON Steps.edge_id = Edges.edge_id
     INNER JOIN Node ON Edges.end_node_id = Node.node_id
     WHERE Steps.path_id = :path_id
     ORDER BY Steps.position_in_path");
+    
 
     // bind params to avoid sql injection
-    $stmt->bindParam(':path_id', $exists['path_id'], PDO::PARAM_INT);
+    $collect_path_sql->bindParam(':path_id', $exists['path_id'], PDO::PARAM_INT);
 
 
-    $edgesResult = $stmt->execute();
+    $edgesResult = $collect_path_sql->execute();
 
     $final_path = [];
     while ($row = $edgesResult->fetchArray()) {
