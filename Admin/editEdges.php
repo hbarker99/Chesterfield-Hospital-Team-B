@@ -147,7 +147,7 @@ if (isset($_POST['updateEdges'])) {
                         </select>
 
                         <label>Distance:</label>
-                        <input type="text" name="newDistance[]" value="<?php echo $edge['distance']; ?>">
+                        <input type="number" name="newDistance[]" value="<?php echo $edge['distance']; ?>">
 
                         <label for="image-<?php echo $edge['edge_id']; ?>">Upload Image:</label>
                         <input type="file" name="newImage[]" id="image-<?php echo $edge['edge_id']; ?>">
