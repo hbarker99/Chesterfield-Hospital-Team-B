@@ -1,0 +1,21 @@
+#map {
+    width: 1000px;
+    height: 600px;
+    background-color: white;
+    background-image: url('mapBackground.png');
+
+    background-repeat: no-repeat;
+
+
+}
+
+body {
+    background-color: var(--primary-light-grey);
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    height: 100dvh;
+}
