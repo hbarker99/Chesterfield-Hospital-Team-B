@@ -42,6 +42,8 @@ function DrawPoint(location) {
 }
 
 function ClickCanvas(event) {
+    const name = "test";
+    const category = 25
     const x = event.pageX - canvasLeft;
     const y = event.pageY - canvasTop;
 
@@ -51,8 +53,9 @@ function ClickCanvas(event) {
         console.log(nodeSelected);
         return;
     }
+    const newnode = {name, category, x, y};
 
-    AddNewNode({ x, y });
+    AddNewNode(newnode);
 }
 
 function GetSelectedNode(selected) {
@@ -64,17 +67,42 @@ function GetSelectedNode(selected) {
     });
 }
 
-function AddNewNode(point) {
-    //Name
-    // Category -
-    // example node object = { name, category, x, y }
-    //Need node id returning
-    const nodeIds = points.map(point => point.id);
-    const newId = Math.max(Math.max(...nodeIds) + 1, 0);
-    const newPoint = { x: point.x, y: point.y, id: newId };
-
-    points.push(newPoint);
-    SetupPoints();
+function AddNewNode(node) {
+    console.log("Sending node data:", node); //Testing
+    fetch('addNode.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(node),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            console.error('Error:', data.error);
+            alert('Error: ' + data.error); 
+        } else {
+            console.log('Success:', data);
+            const newPoint = {
+                id: data.id,
+                name: node.name,
+                category: node.category,
+                x: node.x,
+                y: node.y
+            };
+            points.push(newPoint);
+            DrawPoint(newPoint);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Network or server error occurred');
+    });
 }
 
 function GetNodes() {
