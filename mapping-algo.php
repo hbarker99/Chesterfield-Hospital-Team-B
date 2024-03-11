@@ -233,9 +233,9 @@ else
 
                         $instruction_text = 'Use the stairs or lift to get to ';
                         if ($end_floor == 0) {
-                            $instruction_text .= 'the <b>ground</b> floor.';
+                            $instruction_text .= 'the "<b>"ground</b> floor.';
                         } else {
-                            $instruction_text .= 'floor <b>'.$end_floor.'</b>.';
+                            $instruction_text .= 'floor "<b>"'.$end_floor.'</b>.';
                         }
                         break;
 
@@ -261,4 +261,28 @@ else
     function IsConnected($var) {
     }
     $final_path = calculate_relative_directions($final_path);
+    
+    //echo '<pre>' , var_dump($final_path) , '</pre>';
+
+    $json_data = array();
+    foreach($final_path as $step){
+        $step_array = array(
+            "image" => $step["image"],
+            "direction" => $step["direction"],
+            "notes" => $step["notes"],
+            "category" => $step["category"],
+            "name" => $step["name"],
+            "floor" => $step["floor"],
+            "accessibility_notes" => $step["accessibility_notes"],
+            "instruction" => $step["instruction"] ?? null
+        );
+
+        $json_data[] = $step_array;
+    }
+    $json_finish = json_encode($json_data, JSON_PRETTY_PRINT);
+    header('Content-Type: application/json');
+    header('Content-Disposition: attachment; filename="data.json"');
+    
+
+    echo $json_finish;
     
