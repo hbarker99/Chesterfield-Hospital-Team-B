@@ -11,6 +11,7 @@ Welcome, this website is designed to help you navigate Chesterfield Royal Hospit
 
 ### How to use the application
 Landing page:
+
 This is the first page you will see when you access the site. Here you can pick your current location (show picture circled) and your desired destination (show picture circled). If you scanned a QR code to get here, your current location is already taken care of.
 
 When choosing a location, as you type, suggestions will be shown that you are able to choose from.
