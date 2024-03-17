@@ -1,6 +1,5 @@
 # Chesterfield Hospital - Team B
 
-***
 
 ## User Guide
 
