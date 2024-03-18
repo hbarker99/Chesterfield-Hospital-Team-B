@@ -132,3 +132,11 @@ Tap on the prompt to open the link in your web browser, where you'll be directed
 #### Is there a way to save my route?
 
 If you opt for the PDF version of your route, you can save this PDF locally or print it off to bring with you.
+
+## Feedback and Support
+
+-If you encounter any issues, feel free to [open an issue]
+
+## License
+
+This project is licensed under the xxxxxx License
