@@ -11,8 +11,6 @@ const nodeRadius = 20;
 
 var nodes = []
 
-fetchDatabaseNodes();
-
 var addingNewNode = true;
 
 canvas.addEventListener('click', ClickCanvas)
@@ -124,6 +122,55 @@ function fetchDatabaseNodes() {
         });
 }
 
+let edges = [];
+
+function fetchEdges() {
+    fetch('getEdges.php')
+        .then(response => response.json())
+        .then(data => {
+            edges = data;
+            console.log('Edges:', edges);
+        })
+        .catch(error => console.error('Error fetching edges:', error));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchDatabaseNodes();
+    fetchEdges();
+});
+
+canvas.addEventListener('mousemove', (event) => {
+    const mouseX = event.pageX - canvasLeft;
+    const mouseY = event.pageY - canvasTop;
+
+    nodes.forEach(node => {
+        const distance = Math.sqrt(Math.pow(mouseX - node.x, 2) + Math.pow(mouseY - node.y, 2));
+        if (distance < nodeRadius) {
+            highlightNodeAndEdges(node);
+        }
+    });
+});
+
+function highlightNodeAndEdges(node) {
+    
+    DrawPoint({ x: node.x, y: node.y, color: 'red' });
+
+    
+    edges.filter(edge => edge.start_node_id === node.id || edge.end_node_id === node.id)
+         .forEach(edge => {
+             const startNode = nodes.find(n => n.id === edge.start_node_id);
+             const endNode = nodes.find(n => n.id === edge.end_node_id);
+             drawEdge(startNode, endNode);
+         });
+}
+
+function drawEdge(startNode, endNode) {
+    context.beginPath();
+    context.moveTo(startNode.x, startNode.y);
+    context.lineTo(endNode.x, endNode.y);
+    context.strokeStyle = '#ff0000'; 
+    context.stroke();
+}
 
 function AddNewNode(node) {
     console.log("Sending node data:", node); //Testing
