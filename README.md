@@ -46,10 +46,6 @@ There are multiple ways to access the site:
 
 #### Landing Page
 
-The landing page is where you start your journey. Here, you can select your current location and desired destination. If you scanned a QR code, your current location is already set. Suggestions will be shown as you type. You can also opt for accessibility information before getting your route.
-
-wow chat gpt ^ vs:
-
 This is the first page you will see when you access the site. Here you can pick your current location (show picture circled ) and your desired destination (show picture circled). If you scanned a QR code to get here, your current location is already taken care of.
 
 When choosing a location, as you type, suggestions will be shown that you are able to choose from.
