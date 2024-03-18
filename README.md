@@ -84,3 +84,38 @@ The rest of the pdf lays out the directions for reaching your destination in eas
 **Try a Different Browser:** If you're experiencing problems with one browser, try accessing the application using a different browser to see if the issue persists. This can help determine if the problem is browser-specific.
 
 **Disable Browser Extensions:** Sometimes, browser extensions or add-ons can interfere with the functionality of web applications, such as ad-blockers. Try disabling any extensions and then reload the application to see if the issue is resolved.
+
+### FAQs
+
+FAQs
+
+**How do I change my current location or desired destination?**
+On the landing page, you can easily update your current location or desired destination by clicking on the respective input fields and typing in the new location. As you type, suggestions will be shown for you to choose from.
+
+What is the purpose of the accessibility information checkbox?
+The accessibility information checkbox allows users to see information regarding lift availability and other relevant accessibility information along their route. This ensures that users with mobility constraints can plan their journey accordingly.
+
+How can I view my route visually?
+After selecting your locations and opting for accessibility information if needed, simply press the "Get Route" button on the landing page. This will display your route in a visual format, making it easy to follow.
+
+Can I get a written version of my route?
+Yes, you can! Simply press the "Get Route as PDF" button on the landing page after selecting your starting location and desired destination, and a PDF document with each step of your route laid out will be generated for you to download or print.
+
+What if I need to navigate through my route step by step?
+In the visual route view, at the bottom of the page, you'll find a navigation bar. Here, you can use the next/previous buttons to cycle through the steps of your route. Each step includes information about which direction to take and any relevant accessibility details.
+
+How do I switch to a different route?
+If you are using the visual route page and need to choose a different route, simply click on the "Pick Another Route" link at the top of the page. This will take you back to the landing page, where you can update your locations and preferences.
+If you are viewing the PDF version of your route and need to choose a different route, use your browser's previous page button to bring you back to the home page
+
+What if I need help during my journey?
+If you encounter any issues or need assistance during your journey, please contact a member of staff in the hospital and they will be happy to help you get to where you are headed
+
+How do I use the QR code to access the website?
+To use the QR code, simply open the camera app on your smartphone or tablet.
+Point the camera at the QR code displayed within the hospital premises.
+Your device should automatically recognize the QR code and prompt you to open the link.
+Tap on the prompt to open the link in your web browser, where you'll be directed to the website's landing page.
+
+Is there a way to save my route?
+If you opt for the PDF version of your route, you can save this PDF locally or print it off to bring with you.
