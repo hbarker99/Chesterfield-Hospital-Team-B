@@ -67,6 +67,28 @@ function GetSelectedNode(selected) {
     });
 }
 
+function fetchDatabaseNodes() {
+    fetch('getNodes.php')
+        .then(response => response.json())
+        .then(nodes => {
+            nodes.forEach(node => {
+                if(node.x !=null && node.y !=null){
+                DrawPoint({ x: node.x, y: node.y });
+                console.log('Node Details:',node);
+                }
+                else{
+                    console.log('Failure: Coordinates are Empty',node);
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching nodes:', error);
+        });
+}
+
+document.addEventListener('DOMContentLoaded', fetchDatabaseNodes);
+
+
 function AddNewNode(node) {
     console.log("Sending node data:", node); //Testing
     fetch('addNode.php', {
