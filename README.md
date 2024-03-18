@@ -87,7 +87,15 @@ The rest of the pdf lays out the directions for reaching your destination in eas
 
 ### FAQs
 
-FAQs
+1. [How do I change my current location or desired destination?](#how-do-i-change-my-current-location-or-desired-destination)
+2. [What is the purpose of the accessibility information checkbox?](#what-is-the-purpose-of-the-accessibility-information-checkbox)
+3. [How can I view my route visually?](#how-can-i-view-my-route-visually)
+4. [Can I get a written version of my route?](#can-i-get-a-written-version-of-my-route)
+5. [What if I need to navigate through my route step by step?](#what-if-i-need-to-navigate-through-my-route-step-by-step)
+6. [How do I switch to a different route?](#how-do-i-switch-to-a-different-route)
+7. [What if I need help during my journey?](#what-if-i-need-help-during-my-journey)
+8. [How do I use the QR code to access the website?](#how-do-i-use-the-qr-code-to-access-the-website)
+9. [Is there a way to save my route?](#is-there-a-way-to-save-my-route)
 
 #### How do I change my current location or desired destination?
 
