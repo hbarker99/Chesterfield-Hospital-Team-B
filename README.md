@@ -13,3 +13,15 @@
 - **Hospital Website Integration:** Access the system directly from the Chesterfield Hospital Website.
 
 ## User Guide
+
+### Set Up
+
+#### Accessing the Website
+
+There are multiple ways to access the site:
+
+- **QR Code:**
+    - The website can be accessed by scanning one of the QR codes that can be found around the hospital facility. Using a QR code will give the website your start location, and as such you will only be asked to enter your desired destination.
+
+- **Hospital website:**
+    - The website can also be accessed from the Chesterfield Hospital Website through the link provided on their page.
