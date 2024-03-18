@@ -9,8 +9,8 @@ var canvasTop = canvas.offsetTop + canvas.clientTop;
 
 const nodeRadius = 20;
 
-var nodes = []
-var edges = []
+var nodes = [];
+let edges = [];
 
 var addingNewNode = true;
 
@@ -155,7 +155,6 @@ function fetchDatabaseNodes() {
         });
 }
 
-let edges = [];
 
 function fetchEdges() {
     fetch('getEdges.php')
@@ -186,7 +185,7 @@ canvas.addEventListener('mousemove', (event) => {
 
 function highlightNodeAndEdges(node) {
     
-    DrawPoint({ x: node.x, y: node.y, color: 'red' });
+    DrawNode(node, 'red');
 
     
     edges.filter(edge => edge.start_node_id === node.id || edge.end_node_id === node.id)
