@@ -1,61 +1,106 @@
-const points = [];
+var canvas, context;
+formEvents = [];
 
-const buttons = [{
-    text: "+ New Node",
-    width: 50,
-    height: 20
-}]
-
-const canvas = document.getElementById('map');
-const context = canvas.getContext('2d');
+SetupCanvas();
+SizeCanvas();
 
 var canvasLeft = canvas.offsetLeft + canvas.clientLeft;
 var canvasTop = canvas.offsetTop + canvas.clientTop;
 
-const nodeRadius = 30;
+const nodeRadius = 20;
 
 var nodes = []
+
+fetchDatabaseNodes();
 
 var addingNewNode = true;
 
 canvas.addEventListener('click', ClickCanvas)
 
-SetupPoints();
-
 function SetupPoints() {
-    nodes = []
-
-    points.forEach(point => {
-        nodes.push(point);
+    nodes.forEach(point => {
         DrawPoint(point);
-    })
+    });
+
+    DisplayNode(nodes[nodes.length - 1]);
 }
 
 function DrawPoint(location) {
     context.beginPath();
-    context.arc(location.x, location.y, nodeRadius, 0, 2 * Math.PI, false);
+    context.rect(location.x, location.y, nodeRadius, nodeRadius);
     context.fillStyle = 'green';
     context.fill();
-    context.lineWidth = 5;
+    context.lineWidth = 3;
     context.strokeStyle = '#003300';
     context.stroke();
 }
 
 function ClickCanvas(event) {
     const name = "test";
-    const category = 25
+    const category = 0;
     const x = event.pageX - canvasLeft;
     const y = event.pageY - canvasTop;
 
     const nodeSelected = GetSelectedNode({ x, y });
 
     if (nodeSelected != null) {
-        console.log(nodeSelected);
+        DisplayNode(nodeSelected);
         return;
     }
     const newnode = {name, category, x, y};
 
     AddNewNode(newnode);
+}
+
+function DisplayNode(node) {
+
+
+    console.log(node)
+    document.getElementById("edge-info-container").style.display = "none";
+
+    var info = document.getElementById("info-container");
+
+    const title = info.querySelector("#title");
+    title.textContent = GetCategoryName(node.category);
+
+    const specificInfo = info.querySelector("#node-info-container");
+    specificInfo.style.display = "block";
+
+    const name = specificInfo.querySelector("#visible-name");
+    const nameInput = name.querySelector("input");
+    nameInput.initialValue = 'Hiya';
+    formEvents = nameInput.addEventListener("keyup", HandleInputChange);
+}
+
+function HandleInputChange(event) {
+    
+}
+
+function DisplayEdge(edge) {
+    document.getElementById("node-info-container").style.display = "none";
+
+    var info = document.getElementById("edge-info-container");
+    info.style.display = "block";
+
+    console.log(info.querySelector("#title"));
+}
+
+function SetupCanvas() {
+    canvas = document.getElementById('map');
+    context = canvas.getContext('2d');
+
+    addEventListener("resize", event => {
+        SizeCanvas();
+        SetupPoints();
+    });
+}
+function SizeCanvas() {
+    canvasContainer = document.getElementById("canvas-container");
+
+    canvas.style.width = canvasContainer.offsetWidth;
+    canvas.style.height = canvasContainer.offsetHeight;
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
 }
 
 function GetSelectedNode(selected) {
@@ -70,23 +115,14 @@ function GetSelectedNode(selected) {
 function fetchDatabaseNodes() {
     fetch('getNodes.php')
         .then(response => response.json())
-        .then(nodes => {
-            nodes.forEach(node => {
-                if(node.x !=null && node.y !=null){
-                DrawPoint({ x: node.x, y: node.y });
-                console.log('Node Details:',node);
-                }
-                else{
-                    console.log('Failure: Coordinates are Empty',node);
-                }
-            });
+        .then(recievedNodes => {
+            recievedNodes.forEach(node => nodes.push(node));
+            SetupPoints();
         })
         .catch(error => {
             console.error('Error fetching nodes:', error);
         });
 }
-
-document.addEventListener('DOMContentLoaded', fetchDatabaseNodes);
 
 
 function AddNewNode(node) {
@@ -110,21 +146,49 @@ function AddNewNode(node) {
             alert('Error: ' + data.error); 
         } else {
             console.log('Success:', data);
-            const newPoint = {
+            const newNode = {
                 id: data.id,
                 name: node.name,
                 category: node.category,
                 x: node.x,
                 y: node.y
             };
-            points.push(newPoint);
-            DrawPoint(newPoint);
+            nodes.push(newNode);
+            DrawPoint(newNode);
         }
     })
     .catch((error) => {
         console.error('Error:', error);
         alert('Network or server error occurred');
     });
+}
+
+function GetCategoryName(categoryId) {
+    switch (categoryId) {
+        case 0:
+            return "Door";
+            break;
+
+        case 1:
+            return "Entrance";
+            break;
+
+        case 2:
+            return "Junction";
+            break;
+
+        case 3:
+            return "Stairs";
+            break;
+
+        case 4:
+            return "Destination";
+            break;
+
+        case 5:
+            return "Corridor";
+            break;
+    }
 }
 
 function GetNodes() {
