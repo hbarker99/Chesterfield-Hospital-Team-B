@@ -84,7 +84,7 @@ function ResetCanvas() {
 function DrawConnectedNodes(currentNode) {
     const connectedNodeIds = edges.filter(edge => edge.start_node_id === currentNode.node_id).map(edge => edge.end_node_id);
     const connectedNodes = connectedNodeIds.map(nodeId => nodes.find(node => node.node_id === nodeId));
-
+    console.log(connectedNodeIds)
     connectedNodes.forEach(node => {
         DrawNode(node);
     });
