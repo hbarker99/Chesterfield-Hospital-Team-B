@@ -135,7 +135,7 @@ If you opt for the PDF version of your route, you can save this PDF locally or p
 
 ## Feedback and Support
 
-- If you encounter any issues, feel free to open an issue
+If you encounter any issues, feel free to open an issue
 
 ## License
 
