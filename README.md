@@ -89,7 +89,8 @@ The rest of the pdf lays out the directions for reaching your destination in eas
 
 FAQs
 
-**How do I change my current location or desired destination?**
+#### How do I change my current location or desired destination?
+
 On the landing page, you can easily update your current location or desired destination by clicking on the respective input fields and typing in the new location. As you type, suggestions will be shown for you to choose from.
 
 What is the purpose of the accessibility information checkbox?
