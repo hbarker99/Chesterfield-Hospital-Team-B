@@ -49,7 +49,7 @@ body {
     flex-direction: column;
 }
 
-#title {
+.title {
     font-size: 2rem;
     font-family: "Frutiger Roman";
     margin-bottom: 1rem;
@@ -74,10 +74,10 @@ body {
     gap: 0.5rem;
 }
 
-#visible-name label {
+#info-container label {
     display: block;
     font-family: "Frutiger Roman";
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
 #visible-name input {
@@ -87,4 +87,8 @@ body {
     margin-bottom: 2rem;
 
     font-size: 1rem;
+}
+
+.image-container {
+    margin-bottom: 3rem;
 }

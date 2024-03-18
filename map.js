@@ -10,6 +10,7 @@ var canvasTop = canvas.offsetTop + canvas.clientTop;
 const nodeRadius = 20;
 
 var nodes = []
+var edges = []
 
 fetchDatabaseNodes();
 
@@ -18,17 +19,22 @@ var addingNewNode = true;
 canvas.addEventListener('click', ClickCanvas)
 
 function SetupPoints() {
-    nodes.forEach(point => {
-        DrawPoint(point);
+    nodes.forEach(node => {
+        DrawNode(node);
     });
 
-    DisplayNode(nodes[nodes.length - 1]);
+
+    DisplayEdge({
+        start_node: { category: 0 },
+        end_node: { category: 1 }
+    });
+
 }
 
-function DrawPoint(location) {
+function DrawNode(node, fillColor='green') {
     context.beginPath();
-    context.rect(location.x, location.y, nodeRadius, nodeRadius);
-    context.fillStyle = 'green';
+    context.rect(node.x, node.y, nodeRadius, nodeRadius);
+    context.fillStyle = fillColor;
     context.fill();
     context.lineWidth = 3;
     context.strokeStyle = '#003300';
@@ -53,9 +59,6 @@ function ClickCanvas(event) {
 }
 
 function DisplayNode(node) {
-
-
-    console.log(node)
     document.getElementById("edge-info-container").style.display = "none";
 
     var info = document.getElementById("info-container");
@@ -70,20 +73,50 @@ function DisplayNode(node) {
     const nameInput = name.querySelector("input");
     nameInput.initialValue = 'Hiya';
     formEvents = nameInput.addEventListener("keyup", HandleInputChange);
+
+    ResetCanvas();
+    DrawConnectedNodes(node);
+}
+
+function ResetCanvas() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function DrawConnectedNodes(currentNode) {
+    const connectedNodes = edges.filter(edge => edge.start_node.node_id === currentNode.node_id).map(edge => edge.end_node);
+
+    connectedNodes.forEach(node => {
+        DrawNode(node);
+    });
+
+    DrawNode(currentNode, 'purple');
+}
+
+function DisplayEdge(edge) {
+    document.getElementById("node-info-container").style.display = "none";
+
+    var info = document.getElementById("info-container");
+
+    const specificInfo = info.querySelector("#edge-info-container");
+    specificInfo.style.display = "block";
+
+    routes = ["one", "two"];
+
+    routes.forEach(route => {
+        const routeInfo = specificInfo.querySelector("#route-" + route);
+
+        const startCategory = route === "one" ? edge.start_node.category : edge.end_node.category;
+        const endCategory = route === "one" ? edge.end_node.category : edge.start_node.category;
+
+        routeInfo.querySelector("#route-title").textContent = "From " + GetCategoryName(startCategory) + " to " + GetCategoryName(endCategory);
+    })
+
 }
 
 function HandleInputChange(event) {
     
 }
 
-function DisplayEdge(edge) {
-    document.getElementById("node-info-container").style.display = "none";
-
-    var info = document.getElementById("edge-info-container");
-    info.style.display = "block";
-
-    console.log(info.querySelector("#title"));
-}
 
 function SetupCanvas() {
     canvas = document.getElementById('map');
@@ -154,7 +187,7 @@ function AddNewNode(node) {
                 y: node.y
             };
             nodes.push(newNode);
-            DrawPoint(newNode);
+            DrawNode(newNode);
         }
     })
     .catch((error) => {
