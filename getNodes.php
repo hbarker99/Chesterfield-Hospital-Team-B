@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 
 $conn = new SQLite3("databasemap.db");
 
-$results = $conn->query("SELECT name, category, x, y FROM Node");
+$results = $conn->query("SELECT name, category, x, y, node_id FROM Node");
 
 $nodes = [];
 while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
@@ -15,3 +15,4 @@ while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
 echo json_encode($nodes);
 
 $conn->close();
+?>
