@@ -57,6 +57,7 @@ function ClickCanvas(event) {
 }
 
 function DisplayNode(node) {
+    console.log(node);
     document.getElementById("edge-info-container").style.display = "none";
 
     var info = document.getElementById("info-container");
@@ -81,7 +82,8 @@ function ResetCanvas() {
 }
 
 function DrawConnectedNodes(currentNode) {
-    const connectedNodes = edges.filter(edge => edge.start_node.node_id === currentNode.node_id).map(edge => edge.end_node);
+    const connectedNodeIds = edges.filter(edge => edge.start_node_id === currentNode.node_id).map(edge => edge.end_node_id);
+    const connectedNodes = connectedNodeIds.map(nodeId => nodes.find(node => node.node_id === nodeId));
 
     connectedNodes.forEach(node => {
         DrawNode(node);
@@ -268,11 +270,6 @@ function GetCategoryName(categoryId) {
             return "Corridor";
             break;
     }
-}
-
-function GetNodes() {
-    //Return a list of node objects
-    return [{ name: "New node", category: 1, x: 100, y: 100, node_id: 1 }]
 }
 
 function CreateNode(node) {
