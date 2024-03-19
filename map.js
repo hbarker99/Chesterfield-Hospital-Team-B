@@ -646,9 +646,12 @@ function AngleToDirection(angle) {
         document.getElementById("connection-info-container").style.display = "none";
         document.getElementById("node-info-container").style.display = "none";
         document.getElementById("edge-info-container").style.display = "none";
+        document.getElementById("door-info-container").style.display = "none";
 
         const buttons = document.getElementById("button-container");
         buttons.style.display = "none";
+        document.getElementById("apply").style.display = "block";
+
 
         if (!displaying)
             return;
@@ -662,6 +665,8 @@ function AngleToDirection(angle) {
 
 function NewDoorMode() {
     ResetSelectedInformation();
+    const specificInfo = ResetInformationTo("door");
+    document.getElementById("apply").style.display = "none";
     currentState = "new door";
 }
 
