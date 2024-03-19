@@ -23,10 +23,10 @@ function FetchRouteJSON(){
         json = passedData;
         UpdateArrows(0);
         Display(0);
-        
+
         totalSteps = json.length;
     }
-        
+
     )
     .catch(error => {
         console.error('Error fetching JSON', error);
@@ -46,15 +46,14 @@ function Display(currentStep) {
     if (direction != 'forward'){
         setTimeout(() => arrowElement.classList.add(direction), 100);
     }
-    
+
 }
 
 function process(response) {
     if(!response.ok){
         window.location.href = './error.html';
         throw new Error(response.error)
-        
+
     }
     return response.json();
 }
-

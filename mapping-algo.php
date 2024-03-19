@@ -5,6 +5,10 @@ require("./components/dijkstra_class.php");
 
 $db_pdo = new DatabaseConnection();
 
+$startPoint = $_GET['start_node'] ?? null;
+$endPoint = $_GET['end_node'] ?? null;
+
+
 /*  
 *   IN
 *   $startPoint and $endPoint are the variables delivered by the form
@@ -27,7 +31,7 @@ $exists = check_for_precalculated_path($db_pdo, $startPoint, $endPoint);
 
 if($exists == null)
 {
-    echo 'if null';
+    //echo 'if null';
     // Path does not exist in the database, calculate new path
     // NODE SELECT 
     {
@@ -280,8 +284,8 @@ else
         $json_data[] = $step_array;
     }
     $json_finish = json_encode($json_data, JSON_PRETTY_PRINT);
-    header('Content-Type: application/json');
-    header('Content-Disposition: attachment; filename="data.json"');
+    //header('Content-Type: application/json');
+    //header('Content-Disposition: attachment; filename="data.json"');
     
 
     echo $json_finish;
