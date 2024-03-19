@@ -35,6 +35,26 @@ ResetSelectedInformation();
 
 function SetupEventListeners() {
 
+    canvas.addEventListener('mousedown', function (event) {
+        const startX = event.pageX;
+        const startY = event.pageY;
+
+        function handleMouseMove(event) {
+            const dx = event.pageX - startX;
+            const dy = event.pageY - startY;
+            PanCanvas(dx, dy);
+            startX = event.pageX;
+            startY = event.pageY;
+        }
+
+        function handleMouseUp(event) {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        }
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    });
     canvas.addEventListener('click', (event) => {
         SetMousePos(event);
         HandleSelection();
@@ -83,7 +103,7 @@ function SetupNodes() {
 }
 
 function SetMousePos(event) {
-    mousePos = { x: event.pageX - canvasLeft - offsetX, y: event.pageY - canvasTop - offsetY};
+    mousePos = { x: event.pageX - canvasLeft - offsetX, y: event.pageY - canvasTop - offsetY };
 }
 
 function DrawNode(node, fillColor = 'green') {
@@ -280,282 +300,262 @@ function SetHoveredStates() {
     else
         activeNodes = nodes;
 
-    hoveredNode = GetNodeAtLocation({ x: mousePos.x + offsetX, y: mousePos.y + offsetY}, activeNodes);
-
-function DrawFrame() {
-    if (currentState === "node" || currentState === "edge")
-        SetHoveredEdge();
-
-    if (currentState === "node")
-        DrawConnectedNodes(selectedNode);
-
-    else if (currentState === "edge") {
-        DrawEdge(activeNodes[0], activeNodes[1]);
-        DrawNode(activeNodes[0], primaryColor);
-        DrawNode(activeNodes[1], secondaryColor);
-    }
-
-    else
-        SetupNodes();
-
-    if (currentState === "connection") {
-        const from = newConnectionSelectedNodes[0];
-        const to = newConnectionSelectedNodes[1];
-
-        if (from)
-            DrawNode(from, "gold");
-
-        if (to)
-            DrawNode(to, "gold");
-    }
-
-    if (hoveredNode)
-        DrawConnectedNodes(hoveredNode);
+    hoveredNode = GetNodeAtLocation({ x: mousePos.x + offsetX, y: mousePos.y + offsetY }, activeNodes);
 }
 
-function SetHoveredEdge() {
-    hoveredEdge = null;
+    function DrawFrame() {
+        if (currentState === "node" || currentState === "edge")
+            SetHoveredEdge();
 
-    GetConnectedNodes(selectedNode).forEach(endNode => {
-        nearestPoint = LinepointNearestMouse({ start: selectedNode, end: endNode }, mousePos.x, mousePos.y);
-        var dx = nearestPoint.x - mousePos.x;
-        var dy = nearestPoint.y - mousePos.y;
+        if (currentState === "node")
+            DrawConnectedNodes(selectedNode);
 
-        const distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
-
-        if (distance < 10) {
-            hoveredEdge = edges.find(edge => edge.start_node_id === selectedNode.node_id && edge.end_node_id === endNode.node_id);
+        else if (currentState === "edge") {
+            DrawEdge(activeNodes[0], activeNodes[1]);
+            DrawNode(activeNodes[0], primaryColor);
+            DrawNode(activeNodes[1], secondaryColor);
         }
-    })
-}
 
-function LinepointNearestMouse(line, x, y) {
+        else
+            SetupNodes();
 
-    const endX = line.end.x + (nodeSize / 2);
-    const endY = line.end.y + (nodeSize / 2);
-    const startX = line.start.x + (nodeSize / 2);
-    const startY = line.start.y + (nodeSize / 2);
+        if (currentState === "connection") {
+            const from = newConnectionSelectedNodes[0];
+            const to = newConnectionSelectedNodes[1];
 
-    lerp = function (a, b, x) {
-        return (a + x * (b - a));
-    };
-    var dx = endX - startX;
-    var dy = endY - startY;
+            if (from)
+                DrawNode(from, "gold");
 
-    var t = ((x - startX) * dx + (y - startY) * dy) / (dx * dx + dy * dy);
+            if (to)
+                DrawNode(to, "gold");
+        }
 
-    var lineX = lerp(startX, endX, t);
-    var lineY = lerp(startY, endY, t);
+        if (hoveredNode)
+            DrawConnectedNodes(hoveredNode);
+    }
 
-    smallX = Math.min(startX, endX) + 10;
-    bigX = Math.max(startX, endX) - 10;
-    smallY = Math.min(startY, endY) + 10;
-    bigY = Math.max(startY, endY) - 10;
+    function SetHoveredEdge() {
+        hoveredEdge = null;
 
-    clampedX = Math.max(Math.min(lineX, bigX), smallX);
-    clampedY = Math.max(Math.min(lineY, bigY), smallY);
+        GetConnectedNodes(selectedNode).forEach(endNode => {
+            nearestPoint = LinepointNearestMouse({ start: selectedNode, end: endNode }, mousePos.x, mousePos.y);
+            var dx = nearestPoint.x - mousePos.x;
+            var dy = nearestPoint.y - mousePos.y;
 
-    return ({
-        x: clampedX,
-        y: clampedY
-    });
-};
+            const distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
 
-function DrawEdges(currentNode) {
-    connectedNodes = GetConnectedNodes(currentNode);
-    connectedNodes.forEach(endNode => {
-        DrawEdge(currentNode, endNode);
-    });
-}
-
-function DrawEdge(startNode, endNode) {
-    const start = { x: startNode.x + (nodeSize / 2), y: startNode.y + (nodeSize / 2) };
-    const end = { x: endNode.x + (nodeSize / 2), y: endNode.y + (nodeSize / 2) };
-
-    let edgeChecking = hoveredEdge;
-
-    if (currentState === "edge")
-        edgeChecking = selectedEdge;
-
-    //Highlight hovered edge / selected edge
-    if (edgeChecking && edgeChecking.start_node_id === startNode.node_id && edgeChecking.end_node_id === endNode.node_id)
-        DrawLine(start, end, 'gold', 6);
-
-    DrawLine(start, end);
-}
-
-function DrawLine(start, end, color = 'black', thickness = 3) {
-    context.beginPath();
-    context.moveTo(start.x, start.y);
-    context.lineTo(end.x, end.y);
-    context.strokeStyle = color;
-    context.lineWidth = thickness;
-    context.stroke();
-}
-
-function HighlightEdge(startNode, endNode) {
-    context.beginPath();
-    context.moveTo(startNode.x + (nodeSize / 2), startNode.y + (nodeSize / 2));
-    context.lineTo(endNode.x + (nodeSize / 2), endNode.y + (nodeSize / 2));
-    context.strokeStyle = 'gold';
-    context.lineWidth = 1;
-    context.stroke();
-}
-
-function AddNewNode(node) {
-    console.log("Sending node data:", node); //Testing
-    fetch('addNode.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(node),
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.error) {
-                console.error('Error:', data.error);
-                alert('Error: ' + data.error);
-            } else {
-                console.log('Success:', data);
-                const newNode = {
-                    id: data.id,
-                    name: node.name,
-                    category: node.category,
-                    x: node.x,
-                    y: node.y
-                };
-                nodes.push(newNode);
-                DrawNode(newNode);
+            if (distance < 10) {
+                hoveredEdge = edges.find(edge => edge.start_node_id === selectedNode.node_id && edge.end_node_id === endNode.node_id);
             }
         })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('Network or server error occurred');
+    }
+
+    function LinepointNearestMouse(line, x, y) {
+
+        const endX = line.end.x + (nodeSize / 2);
+        const endY = line.end.y + (nodeSize / 2);
+        const startX = line.start.x + (nodeSize / 2);
+        const startY = line.start.y + (nodeSize / 2);
+
+        lerp = function (a, b, x) {
+            return (a + x * (b - a));
+        };
+        var dx = endX - startX;
+        var dy = endY - startY;
+
+        var t = ((x - startX) * dx + (y - startY) * dy) / (dx * dx + dy * dy);
+
+        var lineX = lerp(startX, endX, t);
+        var lineY = lerp(startY, endY, t);
+
+        smallX = Math.min(startX, endX) + 10;
+        bigX = Math.max(startX, endX) - 10;
+        smallY = Math.min(startY, endY) + 10;
+        bigY = Math.max(startY, endY) - 10;
+
+        clampedX = Math.max(Math.min(lineX, bigX), smallX);
+        clampedY = Math.max(Math.min(lineY, bigY), smallY);
+
+        return ({
+            x: clampedX,
+            y: clampedY
         });
-}
+    };
 
-function GetNodeName(node) {
-
-    if (node.name)
-        return node.name;
-
-    switch (node.category) {
-        case 0:
-            return "Door";
-            break;
-
-        case 1:
-            return "Entrance";
-            break;
-
-        case 2:
-            return "Junction";
-            break;
-
-        case 3:
-            return "Stairs";
-            break;
-
-        case 4:
-            return "Destination";
-            break;
-
-        case 5:
-            return "Corridor";
-            break;
-    }
-}
-
-
-function NewConnectionMode() {
-    ResetSelectedInformation();
-    DisplayConnectionInformation();
-
-    currentState = "connection";
-}
-
-function CreateConnection() {
-    const to = newConnectionSelectedNodes[0];
-    const from = 0;
-}
-
-function DisplayConnectionInformation() {
-    const specificInfo = ResetInformationTo("connection");
-
-    specificInfo.querySelector(".title").textContent = "Creating new connection";
-
-    const nodeFrom = newConnectionSelectedNodes[0];
-    const nodeTo = newConnectionSelectedNodes[1];
-
-    const fromText = specificInfo.querySelector("#from");
-    const toText = specificInfo.querySelector("#to");
-
-    fromText.textContent = nodeFrom ? "From " + GetNodeName(nodeFrom) : "";
-    toText.textContent = nodeTo ? "To " + GetNodeName(nodeTo) : "";
-}
-
-function ResetSelectedInformation() {
-    newConnectionSelectedNodes = [];
-    selectedNode = null;
-    selectedEdge = null;
-    currentState = null;
-}
-function ResetInformationTo(displaying) {
-    document.getElementById("connection-info-container").style.display = "none";
-    document.getElementById("node-info-container").style.display = "none";
-    document.getElementById("edge-info-container").style.display = "none";
-
-    const buttons = document.getElementById("button-container");
-    buttons.style.display = "none";
-
-    if (!displaying)
-        return;
-
-    buttons.style.display = "flex";
-    var displaying = document.getElementById(displaying + "-info-container");
-    displaying.style.display = "block";
-
-    return displaying;
-}
-
-// Add function to handle panning
-function PanCanvas(dx, dy) {
-    offsetX += dx;
-    offsetY += dy;
-    ResetCanvas();
-    SetupNodes(); // Redraw all nodes and edges with new pan offset
-    let x = String(-offsetX);
-    let y = String(-offsetY);
-    moveMap(x, y);
-}
-function moveMap(x, y){
-    document.getElementById("map").style.backgroundPosition= x+'px '+y+'px';
-    // $("map").css('background-position', x+'px '+y+'px');
-}
-// Add event listeners for panning
-canvas.addEventListener('mousedown', function (event) {
-    const startX = event.pageX;
-    const startY = event.pageY;
-
-    function handleMouseMove(event) {
-        const dx = event.pageX - startX;
-        const dy = event.pageY - startY;
-        PanCanvas(dx, dy);
-        startX = event.pageX;
-        startY = event.pageY;
+    function DrawEdges(currentNode) {
+        connectedNodes = GetConnectedNodes(currentNode);
+        connectedNodes.forEach(endNode => {
+            DrawEdge(currentNode, endNode);
+        });
     }
 
-    function handleMouseUp(event) {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
+    function DrawEdge(startNode, endNode) {
+        const start = { x: startNode.x + (nodeSize / 2), y: startNode.y + (nodeSize / 2) };
+        const end = { x: endNode.x + (nodeSize / 2), y: endNode.y + (nodeSize / 2) };
+
+        let edgeChecking = hoveredEdge;
+
+        if (currentState === "edge")
+            edgeChecking = selectedEdge;
+
+        //Highlight hovered edge / selected edge
+        if (edgeChecking && edgeChecking.start_node_id === startNode.node_id && edgeChecking.end_node_id === endNode.node_id)
+            DrawLine(start, end, 'gold', 6);
+
+        DrawLine(start, end);
     }
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-});
+    function DrawLine(start, end, color = 'black', thickness = 3) {
+        context.beginPath();
+        context.moveTo(start.x, start.y);
+        context.lineTo(end.x, end.y);
+        context.strokeStyle = color;
+        context.lineWidth = thickness;
+        context.stroke();
+    }
+
+    function HighlightEdge(startNode, endNode) {
+        context.beginPath();
+        context.moveTo(startNode.x + (nodeSize / 2), startNode.y + (nodeSize / 2));
+        context.lineTo(endNode.x + (nodeSize / 2), endNode.y + (nodeSize / 2));
+        context.strokeStyle = 'gold';
+        context.lineWidth = 1;
+        context.stroke();
+    }
+
+    function AddNewNode(node) {
+        console.log("Sending node data:", node); //Testing
+        fetch('addNode.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(node),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    alert('Error: ' + data.error);
+                } else {
+                    console.log('Success:', data);
+                    const newNode = {
+                        id: data.id,
+                        name: node.name,
+                        category: node.category,
+                        x: node.x,
+                        y: node.y
+                    };
+                    nodes.push(newNode);
+                    DrawNode(newNode);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Network or server error occurred');
+            });
+    }
+
+    function GetNodeName(node) {
+
+        if (node.name)
+            return node.name;
+
+        switch (node.category) {
+            case 0:
+                return "Door";
+                break;
+
+            case 1:
+                return "Entrance";
+                break;
+
+            case 2:
+                return "Junction";
+                break;
+
+            case 3:
+                return "Stairs";
+                break;
+
+            case 4:
+                return "Destination";
+                break;
+
+            case 5:
+                return "Corridor";
+                break;
+        }
+    }
+
+
+    function NewConnectionMode() {
+        ResetSelectedInformation();
+        DisplayConnectionInformation();
+
+        currentState = "connection";
+    }
+
+    function CreateConnection() {
+        const to = newConnectionSelectedNodes[0];
+        const from = 0;
+    }
+
+    function DisplayConnectionInformation() {
+        const specificInfo = ResetInformationTo("connection");
+
+        specificInfo.querySelector(".title").textContent = "Creating new connection";
+
+        const nodeFrom = newConnectionSelectedNodes[0];
+        const nodeTo = newConnectionSelectedNodes[1];
+
+        const fromText = specificInfo.querySelector("#from");
+        const toText = specificInfo.querySelector("#to");
+
+        fromText.textContent = nodeFrom ? "From " + GetNodeName(nodeFrom) : "";
+        toText.textContent = nodeTo ? "To " + GetNodeName(nodeTo) : "";
+    }
+
+    function ResetSelectedInformation() {
+        newConnectionSelectedNodes = [];
+        selectedNode = null;
+        selectedEdge = null;
+        currentState = null;
+    }
+    function ResetInformationTo(displaying) {
+        document.getElementById("connection-info-container").style.display = "none";
+        document.getElementById("node-info-container").style.display = "none";
+        document.getElementById("edge-info-container").style.display = "none";
+
+        const buttons = document.getElementById("button-container");
+        buttons.style.display = "none";
+
+        if (!displaying)
+            return;
+
+        buttons.style.display = "flex";
+        var displaying = document.getElementById(displaying + "-info-container");
+        displaying.style.display = "block";
+
+        return displaying;
+    }
+
+    // Add function to handle panning
+    function PanCanvas(dx, dy) {
+        offsetX += dx;
+        offsetY += dy;
+        ResetCanvas();
+        SetupNodes(); // Redraw all nodes and edges with new pan offset
+        let x = String(-offsetX);
+        let y = String(-offsetY);
+        moveMap(x, y);
+    }
+    function moveMap(x, y) {
+        document.getElementById("map").style.backgroundPosition = x + 'px ' + y + 'px';
+        // $("map").css('background-position', x+'px '+y+'px');
+    }
