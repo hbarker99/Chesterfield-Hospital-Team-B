@@ -23,6 +23,8 @@ fetchDatabaseEdges();
 var canvasLeft = canvas.offsetLeft + canvas.clientLeft;
 var canvasTop = canvas.offsetTop + canvas.clientTop;
 
+let startX;
+let startY;
 const nodeSize = 20;
 const edgeSize = 6;
 
@@ -36,16 +38,8 @@ ResetSelectedInformation();
 function SetupEventListeners() {
 
     canvas.addEventListener('mousedown', function (event) {
-        const startX = event.pageX;
-        const startY = event.pageY;
+        setUpStartPos(event);
 
-        function handleMouseMove(event) {
-            let dx = event.pageX - startX;
-            let dy = event.pageY - startY;
-            PanCanvas(dx, dy);
-            startX = event.pageX;
-            startY = event.pageY;
-        }
 
         function handleMouseUp(event) {
             document.removeEventListener('mousemove', handleMouseMove);
@@ -87,6 +81,14 @@ function SetupEventListeners() {
     });
 }
 
+function handleMouseMove(event) {
+    PanCanvas();
+
+}
+function setUpStartPos(){
+    startX = canvasPos.x +offsetX;
+    startY = canvasPos.y + offsetY;
+}
 function HandleCancel() {
     ResetInformationTo();
     ResetSelectedInformation();
@@ -154,8 +156,8 @@ function HandleSelection(event) {
         const newDoor = {
             name: "New Door",
             category: 0,
-            x: canvasPos.x,
-            y: canvasPos.y
+            x: worldPos.x - nodeSize/2,
+            y: worldPos.y - nodeSize/2
         };
         AddNewNode(newDoor);
 
@@ -658,9 +660,9 @@ function NewDoorMode() {
 }
 
     // Add function to handle panning
-    function PanCanvas(dx, dy) {
-        offsetX += dx;
-        offsetY += dy;
+    function PanCanvas() {
+        offsetX =  startX - canvasPos.x;
+        offsetY = startY - canvasPos.y;
         ResetCanvas();
         SetupNodes(); // Redraw all nodes and edges with new pan offset
         let x = String(-offsetX);
