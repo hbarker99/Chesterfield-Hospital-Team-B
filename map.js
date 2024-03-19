@@ -80,6 +80,11 @@ function SetupEventListeners() {
         NewConnectionMode();
         Frame();
     });
+
+    document.getElementById('new-door').addEventListener('click', () => {
+        NewDoorMode();
+        Frame();
+    });
 }
 
 function HandleCancel() {
@@ -120,9 +125,6 @@ function DrawNode(node, fillColor = 'green') {
 }
 
 function HandleSelection(event) {
-    const name = "test";
-    const category = 0;
-
     if (currentState === "connection") {
         if (hoveredNode != null) {
             const alreadySelected = newConnectionSelectedNodes.findIndex(node => node.node_id === hoveredNode.node_id);
@@ -138,31 +140,46 @@ function HandleSelection(event) {
     }
 
     if (hoveredNode != null) {
-        selectedNode = hoveredNode;
-        DisplayNodeInfo();
-
-        currentState = "node";
+        SelectNode(hoveredNode);
         return;
     }
 
     if (hoveredEdge != null) {
-        selectedEdge = hoveredEdge;
-        DisplayEdgeInfo();
-
-        currentState = "edge";
+        SelectEdge(hoveredEdge);
         return;
     }
 
     if (currentState === "new door") {
-        const x = mousePos.x;
-        const y = mousePos.y;
-        const newnode = { name, category, x, y };
-        AddNewNode(newnode);
+        const newDoor = {
+            name: "New Door",
+            category: 0,
+            x: mousePos.x,
+            y: mousePos.y
+        };
+        AddNewNode(newDoor);
 
+        currentState = null;
         return;
     }
 
     currentState = null;
+}
+
+function SelectEdge(edge) {
+    if (selectedNode == null)
+        selectedNode = nodes.find(node => node.node_id === edge.start_node_id);
+
+    selectedEdge = edge;
+    DisplayEdgeInfo();
+
+    currentState = "edge";
+}
+
+function SelectNode(node) {
+    selectedNode = node;
+    DisplayNodeInfo();
+
+    currentState = "node";
 }
 
 
@@ -423,43 +440,42 @@ function SetHoveredStates() {
         context.stroke();
     }
 
-    function AddNewNode(node) {
-        console.log("Sending node data:", node); //Testing
-        fetch('addNode.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(node),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    console.error('Error:', data.error);
-                    alert('Error: ' + data.error);
-                } else {
-                    console.log('Success:', data);
-                    const newNode = {
-                        id: data.id,
-                        name: node.name,
-                        category: node.category,
-                        x: node.x,
-                        y: node.y
-                    };
-                    nodes.push(newNode);
-                    DrawNode(newNode);
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Network or server error occurred');
-            });
-    }
+function AddNewNode(node) {
+    fetch('addNode.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(node),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            console.error('Error:', data.error);
+            alert('Error: ' + data.error);
+        } else {
+            console.log('Success:', data);
+            const newNode = {
+                node_id: data.id,
+                name: node.name,
+                category: node.category,
+                x: node.x,
+                y: node.y
+            };
+            nodes.push(newNode);
+            DrawNode(newNode);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Network or server error occurred');
+    });
+}
 
     function GetNodeName(node) {
 
@@ -501,10 +517,100 @@ function SetHoveredStates() {
         currentState = "connection";
     }
 
-    function CreateConnection() {
-        const to = newConnectionSelectedNodes[0];
-        const from = 0;
+function CreateConnection() {
+    const to = newConnectionSelectedNodes[0];
+    const from = newConnectionSelectedNodes[1];
+
+    const edge = {
+        start_node_id: from.node_id,
+        end_node_id: to.node_id,
+        distance: 1,
+        direction: GetDirection(from.node_id, to.node_id)
+    };
+
+    fetch('createEdge.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(edge),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const alternate = {
+            start_node_id: to.node_id,
+            end_node_id: from.node_id,
+            distance: 1,
+            direction: (edge.direction + 2) % 4
+        }
+
+        edges.push(edge);
+        edges.push(alternate);
+        
+        SelectEdge(edge);
+        Frame();
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Network or server error occurred');
+    });
+}
+
+function GetDirection(startNodeId, endNodeId) {
+    const start = GetNodeFromId(startNodeId);
+    const end = GetNodeFromId(endNodeId);
+
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+
+    let theta;
+
+    if (dx === 0) {
+        if (dy === 0)
+            theta = 0;
+
+        else if (dy > 0)
+            theta = 90;
+
+        else
+            theta = -90;
+
     }
+
+    else if (dy == 0) {
+        if (dx > 0)
+            theta = 0;
+
+        else
+            theta = 180;
+    }
+
+    else
+        theta = Math.atan2(dy / dx);
+
+    thetaDeg = theta / Math.PI;
+    return AngleToDirection(theta);
+    
+}
+
+function AngleToDirection(angle) {
+    if (angle > 135)
+        return 4;
+
+    if (angle > 45)
+        return 1;
+
+    if (angle > -45)
+        return 2;
+
+    if (angle > -135)
+        return 3
+
+    return 4;
+}
 
     function DisplayConnectionInformation() {
         const specificInfo = ResetInformationTo("connection");
@@ -542,8 +648,13 @@ function SetHoveredStates() {
         var displaying = document.getElementById(displaying + "-info-container");
         displaying.style.display = "block";
 
-        return displaying;
-    }
+        return displaying;    }
+
+
+function NewDoorMode() {
+    ResetSelectedInformation();
+    currentState = "new door";
+}
 
     // Add function to handle panning
     function PanCanvas(dx, dy) {
