@@ -57,6 +57,15 @@ function SetupEventListeners() {
     });
 }
 
+function HandleCancel() {
+    ResetInformationTo();
+    ResetSelectedInformation();
+}
+
+function HandleApply() {
+
+}
+
 function SetupNodes() {
     nodes.forEach(node => {
         DrawNode(node);
@@ -487,6 +496,9 @@ function ResetInformationTo(displaying) {
     document.getElementById("connection-info-container").style.display = "none";
     document.getElementById("node-info-container").style.display = "none";
     document.getElementById("edge-info-container").style.display = "none";
+
+    if (!displaying)
+        return;
 
     var displaying = document.getElementById(displaying + "-info-container");
     displaying.style.display = "block";
