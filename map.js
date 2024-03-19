@@ -54,7 +54,7 @@ function SetupEventListeners() {
     });
 
     document.getElementById('new-connection').addEventListener('click', () => {
-        NewConnection();
+        NewConnectionMode();
         Frame();
     });
 }
@@ -65,7 +65,12 @@ function HandleCancel() {
 }
 
 function HandleApply() {
+    if (currentState === "connection") {
+        if (newConnectionSelectedNodes.length !== 2)
+            return;
 
+        CreateConnection();
+    }
 }
 
 function SetupNodes() {
@@ -465,11 +470,15 @@ function GetNodeName(node) {
     }
 }
 
-function NewConnection() {
+function NewConnectionMode() {
     ResetSelectedInformation();
     DisplayConnectionInformation();
 
     currentState = "connection";
+}
+
+function CreateConnection() {
+
 }
 
 function DisplayConnectionInformation() {
