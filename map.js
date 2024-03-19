@@ -4,6 +4,9 @@ var selectedNode, selectedEdge;
 var mousePos;
 
 
+var offsetX = 0;
+var offsetY = 0;
+
 SetupCanvas();
 SizeCanvas();
 
@@ -41,7 +44,7 @@ function SetupNodes() {
 }
 
 function SetMousePos(event) {
-    mousePos = { x: event.pageX - canvasLeft, y: event.pageY - canvasTop };
+    mousePos = { x: event.pageX - canvasLeft - offsetX, y: event.pageY - canvasTop - offsetY};
 }
 
 function DrawNode(node, fillColor = 'green') {
@@ -49,7 +52,7 @@ function DrawNode(node, fillColor = 'green') {
         fillColor = 'gold';
 
     context.beginPath();
-    context.rect(node.x, node.y, nodeSize, nodeSize);
+    context.rect(node.x - offsetX, node.y - offsetY, nodeSize, nodeSize);
     context.fillStyle = fillColor;
     context.fill();
     context.lineWidth = 3;
@@ -207,7 +210,7 @@ function HandleHover(event) {
     else
         activeNodes = nodes;
 
-    hoveredNode = GetNodeAtLocation({ x: mousePos.x, y: mousePos.y}, activeNodes);
+    hoveredNode = GetNodeAtLocation({ x: mousePos.x + offsetX, y: mousePos.y + offsetY}, activeNodes);
 
     if (currentState == "node")
         SetHoveredEdge();
@@ -287,16 +290,16 @@ function DrawEdge(startNode, endNode) {
 
     if (selectedEdge && selectedEdge.start.node_id === startNode.node_id && selectedEdge.end.node_id === endNode.node_id) {
         context.beginPath();
-        context.moveTo(startNode.x + (nodeSize / 2), startNode.y + (nodeSize / 2));
-        context.lineTo(endNode.x + (nodeSize / 2), endNode.y + (nodeSize / 2));
+        context.moveTo(startNode.x + (nodeSize / 2) - offsetX, startNode.y + (nodeSize / 2)- offsetY) ;
+        context.lineTo(endNode.x + (nodeSize / 2) - offsetY, endNode.y + (nodeSize / 2)- offsetY) ;
         context.strokeStyle = 'gold';
         context.lineWidth = 6;
         context.stroke();
     }
 
     context.beginPath();
-    context.moveTo(startNode.x + (nodeSize / 2), startNode.y + (nodeSize / 2));
-    context.lineTo(endNode.x + (nodeSize / 2), endNode.y + (nodeSize / 2));
+    context.moveTo(startNode.x + (nodeSize / 2) - offsetX, startNode.y + (nodeSize / 2) - offsetY);
+    context.lineTo(endNode.x + (nodeSize / 2) - offsetX, endNode.y + (nodeSize / 2) - offsetY);
     context.strokeStyle = 'black';
     context.lineWidth = 3;
     context.stroke();
@@ -389,3 +392,39 @@ function NewEdge() {
     //End node
     //
 }
+
+// Add function to handle panning
+function PanCanvas(dx, dy) {
+    offsetX += dx;
+    offsetY += dy;
+    ResetCanvas();
+    SetupNodes(); // Redraw all nodes and edges with new pan offset
+    let x = String(-offsetX);
+    let y = String(-offsetY);
+    moveMap(x, y);
+}
+function moveMap(x, y){
+    document.getElementById("map").style.backgroundPosition= x+'px '+y+'px';
+    // $("map").css('background-position', x+'px '+y+'px');
+}
+// Add event listeners for panning
+canvas.addEventListener('mousedown', function (event) {
+    const startX = event.pageX;
+    const startY = event.pageY;
+
+    function handleMouseMove(event) {
+        const dx = event.pageX - startX;
+        const dy = event.pageY - startY;
+        PanCanvas(dx, dy);
+        startX = event.pageX;
+        startY = event.pageY;
+    }
+
+    function handleMouseUp(event) {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+    }
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+});
