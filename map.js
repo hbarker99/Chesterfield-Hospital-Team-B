@@ -433,8 +433,8 @@ function SetHoveredStates() {
 
     function HighlightEdge(startNode, endNode) {
         context.beginPath();
-        context.moveTo(startNode.x + (nodeSize / 2) - offsetX, startNode.y + (nodeSize / 2) - offsetY);
-        context.lineTo(endNode.x + (nodeSize / 2) - offsetX, endNode.y + (nodeSize / 2) - offsetY);
+        context.moveTo(startNode.x + (nodeSize / 2), startNode.y + (nodeSize / 2) );
+        context.lineTo(endNode.x + (nodeSize / 2), endNode.y + (nodeSize / 2));
         context.strokeStyle = 'gold';
         context.lineWidth = 1;
         context.stroke();
