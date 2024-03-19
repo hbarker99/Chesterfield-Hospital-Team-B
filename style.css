@@ -20,10 +20,6 @@
     --secondary-yellow-2: #FEFCE5;
 }
 
-#bootstrap-overrides body {
-    font-family: "Frutiger Roman",
-}
-
 #bootstrap-overrides .modal-title {
     color: white;
 }
@@ -44,17 +40,25 @@
 }
 
 #bootstrap-overrides .btn-primary {
-    background-color: var(--primary-green);
-    border-radius: 0;
+    background-color: rgb(0, 94, 184);
+
     color: white;
-    border: 0.063rem solid black;
     border-radius: 0.25rem;
-    box-shadow: 0 0.25rem 0 #00401e;
-    font-size: 1rem
+
+    
+    border-color: transparent;
+    font-size: 1.125rem;
+    font-weight: 700 !important;
+    line-height: 1.5;
+    border: 0 !important;
+    text-decoration: none !important;
+    outline: 0;
+    border-radius: 30px;
+    transition: .3s;    
 }
 
 #bootstrap-overrides .btn-secondary {
-    background-color: var(--primary-mid-grey);
+    background-color: var(--primary-dark-blue);
     border-radius: 0;
     color: white;
     border: 0.063rem solid black;
@@ -74,8 +78,8 @@
 
 #bootstrap-overrides .btn:focus {
     background-image: none;
-    color: black;
-    background-color: var(--primary-yellow);
+    color: white;
+    background-color: var(--primary-dark-blue);
 }
 
 #bootstrap-overrides .form-control {
@@ -89,7 +93,7 @@
 
 #bootstrap-overrides .form-control:focus {
     border: 0.125rem solid black;
-    outline: 0.25rem solid var(--primary-yellow)
+    outline: 0.25rem solid var(--primary-dark-blue)
 }
 
 #bootstrap-overrides .page-title {
@@ -121,3 +125,22 @@
     line-height: 3.75rem; 
     background-color: var(--primary-light-grey);
   }
+
+  .logo {
+    display: inline; /* Ensures the logo is inline with the link */
+    margin-left: auto; /* Pushes the logo to the right */
+    max-width: 100%; /* Limits the logo width to the container width */
+    max-height: 100%; /* Limits the logo height to the container height */
+    object-fit: contain; /* Preserves aspect ratio and fits the entire image */
+}
+.h1, .h2, .h3, body, .a{
+    font-family: "Frutiger Roman";
+}
+
+.a{
+    font-weight: inherit;
+    line-height: 1.5;
+    color: #005eb8;
+    text-decoration: underline;
+    transition: .3s;
+}
