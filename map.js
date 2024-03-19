@@ -125,9 +125,6 @@ function DrawNode(node, fillColor = 'green') {
 }
 
 function HandleSelection(event) {
-    const name = "test";
-    const category = 0;
-
     if (currentState === "connection") {
         if (hoveredNode != null) {
             const alreadySelected = newConnectionSelectedNodes.findIndex(node => node.node_id === hoveredNode.node_id);
@@ -541,7 +538,7 @@ function CreateConnection() {
 
         edges.push(edge);
         edges.push(alternate);
-
+        
         console.log("Created");
     })
     .catch((error) => {
