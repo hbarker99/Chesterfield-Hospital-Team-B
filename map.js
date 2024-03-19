@@ -40,8 +40,8 @@ function SetupEventListeners() {
         const startY = event.pageY;
 
         function handleMouseMove(event) {
-            const dx = event.pageX - startX;
-            const dy = event.pageY - startY;
+            let dx = event.pageX - startX;
+            let dy = event.pageY - startY;
             PanCanvas(dx, dy);
             startX = event.pageX;
             startY = event.pageY;
@@ -108,7 +108,7 @@ function SetupNodes() {
 }
 
 function SetMousePos(event) {
-    mousePos = { x: event.pageX - canvasLeft - offsetX, y: event.pageY - canvasTop - offsetY };
+    mousePos = { x: event.pageX - canvasLeft, y: event.pageY - canvasTop};
 }
 
 function DrawNode(node, fillColor = 'green') {
@@ -267,12 +267,12 @@ function SizeCanvas() {
     canvas.height = canvas.offsetHeight;
 }
 
-function GetNodeAtLocation(selected, activeNodes = nodes) {
+function GetNodeAtLocation(location, activeNodes = nodes) {
     return activeNodes.find(point => {
-        return selected.y - nodeSize / 2 > point.y - ((nodeSize / 2) + 3)
-            && selected.y - nodeSize / 2 < point.y + ((nodeSize / 2) + 3)
-            && selected.x - nodeSize / 2 > point.x - ((nodeSize / 2) + 3)
-            && selected.x - nodeSize / 2 < point.x + ((nodeSize / 2) + 3)
+        return location.y - nodeSize / 2 > point.y - ((nodeSize / 2) + 3)
+            && location.y - nodeSize / 2 < point.y + ((nodeSize / 2) + 3)
+            && location.x - nodeSize / 2 > point.x - ((nodeSize / 2) + 3)
+            && location.x - nodeSize / 2 < point.x + ((nodeSize / 2) + 3)
     });
 }
 
@@ -407,15 +407,15 @@ function SetHoveredStates() {
     }
 
     function DrawEdge(startNode, endNode) {
-        const start = { x: startNode.x + (nodeSize / 2), y: startNode.y + (nodeSize / 2) };
-        const end = { x: endNode.x + (nodeSize / 2), y: endNode.y + (nodeSize / 2) };
+        const start = { x: startNode.x + (nodeSize / 2) - offsetX, y: startNode.y + (nodeSize / 2) - offsetY };
+        const end = { x: endNode.x + (nodeSize / 2) - offsetX, y: endNode.y + (nodeSize / 2) - offsetY };
 
         let edgeChecking = hoveredEdge;
 
         if (currentState === "edge")
             edgeChecking = selectedEdge;
 
-        //Highlight hovered edge / selected edge
+        // Highlight hovered edge / selected edge
         if (edgeChecking && edgeChecking.start_node_id === startNode.node_id && edgeChecking.end_node_id === endNode.node_id)
             DrawLine(start, end, 'gold', 6);
 
@@ -433,8 +433,8 @@ function SetHoveredStates() {
 
     function HighlightEdge(startNode, endNode) {
         context.beginPath();
-        context.moveTo(startNode.x + (nodeSize / 2), startNode.y + (nodeSize / 2));
-        context.lineTo(endNode.x + (nodeSize / 2), endNode.y + (nodeSize / 2));
+        context.moveTo(startNode.x + (nodeSize / 2) - offsetX, startNode.y + (nodeSize / 2) - offsetY);
+        context.lineTo(endNode.x + (nodeSize / 2) - offsetX, endNode.y + (nodeSize / 2) - offsetY);
         context.strokeStyle = 'gold';
         context.lineWidth = 1;
         context.stroke();
@@ -669,4 +669,5 @@ function NewDoorMode() {
     function moveMap(x, y) {
         document.getElementById("map").style.backgroundPosition = x + 'px ' + y + 'px';
         // $("map").css('background-position', x+'px '+y+'px');
+        Frame();
     }
