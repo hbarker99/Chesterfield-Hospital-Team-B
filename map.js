@@ -57,6 +57,11 @@ function SetupEventListeners() {
         NewConnectionMode();
         Frame();
     });
+
+    document.getElementById('new-door').addEventListener('click', () => {
+        NewDoorMode();
+        Frame();
+    });
 }
 
 function HandleCancel() {
@@ -131,11 +136,15 @@ function HandleSelection(event) {
     }
 
     if (currentState === "new door") {
-        const x = mousePos.x;
-        const y = mousePos.y;
-        const newnode = { name, category, x, y };
-        AddNewNode(newnode);
+        const newDoor = {
+            name: "New Door",
+            category: 0,
+            x: mousePos.x,
+            y: mousePos.y
+        };
+        AddNewNode(newDoor);
 
+        currentState = null;
         return;
     }
 
@@ -520,4 +529,9 @@ function ResetInformationTo(displaying) {
     displaying.style.display = "block";
 
     return displaying;
+}
+
+function NewDoorMode() {
+    ResetSelectedInformation();
+    currentState = "new door";
 }
