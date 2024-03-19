@@ -45,6 +45,19 @@ function ClickCanvas(event) {
     const x = event.pageX - canvasLeft;
     const y = event.pageY - canvasTop;
 
+     // Check if we are in "adding door mode"
+     if (window.currentNodeType === 'door') {
+        const doorNode = {
+            name: "New Door", // Default name, consider prompting the user for a name
+            category: 0, // Assuming '0' is the category ID for doors
+            x: x,
+            y: y
+        };
+        AddNewNode(doorNode); // Add the door node
+        window.currentNodeType = null; // Reset the currentNodeType to stop adding doors
+        return; // Exit the function to avoid additional logic intended for other clicks
+    }
+
     const nodeSelected = GetSelectedNode({ x, y });
 
     if (nodeSelected != null) {
@@ -171,6 +184,12 @@ function fetchEdges() {
 document.addEventListener('DOMContentLoaded', () => {
     fetchDatabaseNodes();
     fetchEdges();
+    const newDoorButton = document.getElementById('new-door');
+    newDoorButton.addEventListener('click', () => {
+        addingNewNode = true; // Assuming this flag controls if you're adding a node
+        // Set a global variable or state indicating you're adding a "door" node specifically
+        window.currentNodeType = 'door'; // Use this state in your ClickCanvas function
+    });
 });
 
 canvas.addEventListener('mousemove', (event) => {
