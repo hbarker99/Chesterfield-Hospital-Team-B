@@ -284,21 +284,21 @@ function DrawEdges(currentNode) {
 }
 
 function DrawEdge(startNode, endNode) {
+    const start = { x: startNode.x + (nodeSize / 2), y: startNode.y + (nodeSize / 2) };
+    const end = { x: endNode.x + (nodeSize / 2), y: endNode.y + (nodeSize / 2) };
 
-    if (selectedEdge && selectedEdge.start.node_id === startNode.node_id && selectedEdge.end.node_id === endNode.node_id) {
-        context.beginPath();
-        context.moveTo(startNode.x + (nodeSize / 2), startNode.y + (nodeSize / 2));
-        context.lineTo(endNode.x + (nodeSize / 2), endNode.y + (nodeSize / 2));
-        context.strokeStyle = 'gold';
-        context.lineWidth = 6;
-        context.stroke();
-    }
+    if (selectedEdge && selectedEdge.start.node_id === startNode.node_id && selectedEdge.end.node_id === endNode.node_id)
+        DrawLine(start, end, 'gold', 6);
 
+    DrawLine(start, end);
+}
+
+function DrawLine(start, end, color='black', thickness=3) {
     context.beginPath();
-    context.moveTo(startNode.x + (nodeSize / 2), startNode.y + (nodeSize / 2));
-    context.lineTo(endNode.x + (nodeSize / 2), endNode.y + (nodeSize / 2));
-    context.strokeStyle = 'black';
-    context.lineWidth = 3;
+    context.moveTo(start.x, start.y);
+    context.lineTo(end.x, end.y);
+    context.strokeStyle = color;
+    context.lineWidth = thickness;
     context.stroke();
 }
 
