@@ -8,7 +8,7 @@ if(isset($_POST['next'])){
         $_SESSION['current_step']++;
     }
 } else if (isset($_POST['previous'])){
-    
+
     if($_SESSION['current_step'] > 0) {
         $_SESSION['current_step']--;
     }
@@ -64,12 +64,10 @@ if (!isset($_SESSION['show_instructions'])) {
                     <?php endif ?>
                 </div>
             </div>
-            <form method="post">
-                <div class="button-container">
-                    <input <?php if($_SESSION['current_step'] == 0) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="previous" value="Back" />
-                    <input <?php if($_SESSION['current_step'] == count($final_path) - 1) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="next" value="Next" />
-                </div>
-            </form>
+            <div class="button-container">
+                <button id="previousStep" style="visibility: hidden"; class="btn btn-primary">Back</button>
+                <button id="nextStep"class="btn btn-primary">Next</button>
+            </div>
         </div>
     </body>
 

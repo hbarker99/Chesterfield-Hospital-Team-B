@@ -1,6 +1,6 @@
 @font-face { font-family: "Frutiger Regular"; src: url('./fonts/Frutiger/Frutiger Regular/Frutiger Regular.ttf'); } 
-@font-face { font-family: "Frutiger Light"; src: url('./fonts/Frutiger/Frutiger Light/Frutiger Light.ttf'); } 
-@font-face { font-family: "Frutiger Roman"; src: url('./fonts/Frutiger/Frutiger Roman/Frutiger Roman.ttf'); } 
+@font-face { font-family: "Frutiger Light"; src: url('./fonts/Frutiger/Frutiger Light/Frutiger Light.ttf'); }
+@font-face { font-family: "Frutiger Roman"; src: url('./fonts/Frutiger/Frutiger Roman/Frutiger Roman.ttf'); }
 
 :root {
     --primary-bright-blue: #0072CE;
@@ -47,10 +47,16 @@
     background-color: var(--primary-green);
     border-radius: 0;
     color: white;
-    border: 0.063rem solid black;
     border-radius: 0.25rem;
-    box-shadow: 0 0.25rem 0 #00401e;
-    font-size: 1rem
+    border-color: transparent;
+    font-size: 1.125rem;
+    font-weight: 700 !important;
+    line-height: 1.5;
+    border: 0 !important;
+    text-decoration: none !important;
+    outline: 0;
+    border-radius: 30px;
+    transition: .3s;
 }
 
 #bootstrap-overrides .btn-secondary {
@@ -118,6 +124,6 @@
     width: 100%;
     white-space: nowrap;
     color: black;
-    line-height: 3.75rem; 
+    line-height: 3.75rem;
     background-color: var(--primary-light-grey);
   }

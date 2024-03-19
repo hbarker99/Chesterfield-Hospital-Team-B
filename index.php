@@ -1,5 +1,9 @@
 <?php
 include_once("dbString.php");
+global $mysqli;
+include_once('./components/database.php');
+
+
 include("./components/indexPHP/startLocation.php");
 require("sessionHandling.php");
 

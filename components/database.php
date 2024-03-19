@@ -1,22 +1,18 @@
 <?php 
-/*
-$host = "localhost";
-$dbname = "your_database_name";
-$username = "your_username";
-$password = "your_password";
 
+$host = 'localhost'; // Replace with hosted server
+$username = 'root';
+$password = '1234';
+$database = 'arundel';
+// Create a connection
+$mysqli = new mysqli($host, $username, $password, $database);
 
-try {
-    $dsn = "mysql:host=$host;dbname=$dbname";
-    $pdo = new PDO($dsn, $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}
-catch (PDOException $e) {
-    echo "Error : " . $e->getMessage() . "<br/>";
-    die();
+// Check connection
+if ($mysqli->connect_error) {
+    die('Connection failed: ' . $mysqli->connect_error);
 }
 
-*/
+
 class DatabaseConnection{
 
     private PDO $pdo;
