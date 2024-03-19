@@ -1,5 +1,5 @@
 var canvas, context;
-var currentState;
+var currentState, isDragging;
 var activeNodes;
 var hoveredNode, hoveredEdge;
 var selectedNode, selectedEdge;
@@ -8,6 +8,7 @@ var newConnectionSelectedNodes = [];
 
 var canvasPos, worldPos;
 
+var mouseDown = false;
 
 var offsetX = 0;
 var offsetY = 0;
@@ -37,18 +38,16 @@ ResetSelectedInformation();
 
 function SetupEventListeners() {
 
-    canvas.addEventListener('mousedown', function (event) {
-        setUpStartPos(event);
-
-
-        function handleMouseUp(event) {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        }
-
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
+    canvas.addEventListener('mousedown', () => {
+        SetUpStartPos();
+        mouseDown = true;
     });
+
+    canvas.addEventListener('mouseup', () => {
+        mouseDown = false;
+        setTimeout(() => isDragging = false, 10);
+    })
+
     canvas.addEventListener('click', (event) => {
         SetPositions(event);
         HandleSelection();
@@ -56,6 +55,7 @@ function SetupEventListeners() {
     });
 
     canvas.addEventListener('mousemove', (event) => {
+        HandleMouseMove();
         SetPositions(event);
         Frame();
     });
@@ -81,11 +81,14 @@ function SetupEventListeners() {
     });
 }
 
-function handleMouseMove(event) {
-    PanCanvas();
+function HandleMouseMove(event) {
+    if (mouseDown)
+        isDragging = true;
 
+    if (isDragging)
+        PanCanvas();
 }
-function setUpStartPos(){
+function SetUpStartPos(){
     startX = canvasPos.x +offsetX;
     startY = canvasPos.y + offsetY;
 }
@@ -128,6 +131,9 @@ function DrawNode(node, fillColor = 'green') {
 }
 
 function HandleSelection(event) {
+    if (isDragging)
+        return;
+
     if (currentState === "connection") {
         if (hoveredNode != null) {
             const alreadySelected = newConnectionSelectedNodes.findIndex(node => node.node_id === hoveredNode.node_id);
