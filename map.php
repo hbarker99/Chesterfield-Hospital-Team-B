@@ -8,7 +8,8 @@
 <div class="map-page-container" id="bootstrap-overrides">
 	<div class="map-container">
 		<div id="toolbar">
-		
+			<button class="btn btn-primary" id="new-connection">New Connection</button>
+			<button class="btn btn-primary" id="new-door">New Door</button>
 		</div>
 		<div id="canvas-container">
 			<canvas id="map">
@@ -39,6 +40,10 @@
 						<img src="./img/edge_1.jpg" width="200" height="200"/>
 					</div>
 				</div>
+			</div>
+			<div id="connection-info-container">
+				<div class="title"></div>
+				<div id="from"></div>
 			</div>
 			<div class="button-container">
 				<input type="submit" class="btn btn-primary" name="previous" value="Cancel" />

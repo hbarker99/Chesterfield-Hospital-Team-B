@@ -3,6 +3,9 @@ var currentState;
 var activeNodes;
 var hoveredNode, hoveredEdge;
 var selectedNode, selectedEdge;
+
+var newConnectionSelectedNodes = { start: null, end: null };
+
 var mousePos;
 
 var primaryColor = 'red';
@@ -36,6 +39,8 @@ canvas.addEventListener('mousemove', (event) => {
     HandleHover();
 });
 
+document.getElementById('new-connection').addEventListener('click', NewConnection);
+
 function SetupNodes() {
     nodes.forEach(node => {
         DrawNode(node);
@@ -65,7 +70,7 @@ function HandleSelection(event) {
 
     if (hoveredNode != null) {
         selectedNode = hoveredNode;
-        DisplayNode();
+        DisplayNodeInfo();
 
         currentState = "node";
         return;
@@ -73,7 +78,7 @@ function HandleSelection(event) {
 
     if (hoveredEdge != null) {
         selectedEdge = hoveredEdge;
-        DisplayEdge();
+        DisplayEdgeInfo();
 
         currentState = "edge";
         return;
@@ -91,24 +96,16 @@ function HandleSelection(event) {
     currentState = null;
 }
 
-function DisplayNode() {
-    document.getElementById("edge-info-container").style.display = "none";
+function DisplayNodeInfo() {
+    const specificInfo = ResetInformationTo('node');
 
-    var info = document.getElementById("info-container");
-
-    const title = info.querySelector("#title");
+    const title = specificInfo.querySelector("#title");
     title.textContent = GetCategoryName(selectedNode.category);
-
-    const specificInfo = info.querySelector("#node-info-container");
-    specificInfo.style.display = "block";
 
     const name = specificInfo.querySelector("#visible-name");
     const nameInput = name.querySelector("input");
     nameInput.initialValue = 'Hiya';
     formEvents = nameInput.addEventListener("keyup", HandleInputChange);
-
-    ResetCanvas();
-    DrawConnectedNodes(selectedNode);
 }
 
 function ResetCanvas() {
@@ -125,7 +122,6 @@ function DrawConnectedNodes(currentNode) {
     DrawNode(currentNode, 'gold');
 }
 
-
 function GetConnectedNodes(currentNode) {
 
     const connectedNodeIds = edges.filter(edge => edge.start_node_id === currentNode.node_id).map(edge => edge.end_node_id);
@@ -134,13 +130,10 @@ function GetConnectedNodes(currentNode) {
     return connectedNodes;
 }
 
-function DisplayEdge() {
-    document.getElementById("node-info-container").style.display = "none";
+function DisplayEdgeInfo() {
+    const specificInfo = ResetInformationTo('edge');
 
     var info = document.getElementById("info-container");
-
-    const specificInfo = info.querySelector("#edge-info-container");
-    specificInfo.style.display = "block";
 
     routes = ["one", "two"];
 
@@ -208,7 +201,6 @@ function fetchDatabaseNodes() {
         });
 }
 
-
 function fetchDatabaseEdges() {
     fetch('getEdges.php')
         .then(response => response.json())
@@ -218,7 +210,6 @@ function fetchDatabaseEdges() {
         })
         .catch(error => console.error('Error fetching edges:', error));
 }
-
 
 function HandleHover() {
     SetHoveredStates();
@@ -277,7 +268,6 @@ function SetHoveredEdge() {
         }
     })
 }
-
 
 function LinepointNearestMouse(line, x, y) {
 
@@ -418,15 +408,39 @@ function GetCategoryName(categoryId) {
     }
 }
 
-function CreateNode(node) {
-    const creatingNode = { name: "New node", category: 1, x: 100, y: 100 };
-    //Create the node in the database
-    //Return the new node id - just a number
+function DisplayConnectionInformation() {
+
+
 }
 
-function NewEdge() {
+function NewConnection() {
+    ResetSelectedInformation();
+    DisplayConnectionInformation();
 
-    //Start node,
-    //End node
-    //
+
+    currentState = "new connection";
+}
+
+function DisplayConnectionInformation() {
+    const specificInfo = ResetInformationTo('connection');
+
+    specificInfo.querySelector('.title').textContent = 'Creating new connection';
+}
+
+function ResetSelectedInformation() {
+    newConnectionSelectedNodes = { start: null, end: null }
+    selectedNode = null;
+    selectedEdge = null;
+    currentState = null;
+}
+
+function ResetInformationTo(displaying) {
+    document.getElementById("connection-info-container").style.display = "none";
+    document.getElementById("node-info-container").style.display = "none";
+    document.getElementById("edge-info-container").style.display = "none";
+
+    var displaying = document.getElementById(displaying + "-info-container");
+    displaying.style.display = "block";
+
+    return displaying;
 }
