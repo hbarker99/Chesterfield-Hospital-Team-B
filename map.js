@@ -206,7 +206,7 @@ function GetNodeFromId(id) {
 }
 
 function HandleInputChange(event) {
-    
+
 }
 
 function SetupCanvas() {
@@ -373,7 +373,7 @@ function DrawEdge(startNode, endNode) {
     let edgeChecking = hoveredEdge;
 
     if (currentState === "edge")
-        edgeChecking = selectedEdge;    
+        edgeChecking = selectedEdge;
 
     //Highlight hovered edge / selected edge
     if (edgeChecking && edgeChecking.start_node_id === startNode.node_id && edgeChecking.end_node_id === endNode.node_id)
@@ -382,7 +382,7 @@ function DrawEdge(startNode, endNode) {
     DrawLine(start, end);
 }
 
-function DrawLine(start, end, color='black', thickness=3) {
+function DrawLine(start, end, color = 'black', thickness = 3) {
     context.beginPath();
     context.moveTo(start.x, start.y);
     context.lineTo(end.x, end.y);
@@ -409,33 +409,33 @@ function AddNewNode(node) {
         },
         body: JSON.stringify(node),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.error) {
-            console.error('Error:', data.error);
-            alert('Error: ' + data.error); 
-        } else {
-            console.log('Success:', data);
-            const newNode = {
-                id: data.id,
-                name: node.name,
-                category: node.category,
-                x: node.x,
-                y: node.y
-            };
-            nodes.push(newNode);
-            DrawNode(newNode);
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        alert('Network or server error occurred');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+                alert('Error: ' + data.error);
+            } else {
+                console.log('Success:', data);
+                const newNode = {
+                    id: data.id,
+                    name: node.name,
+                    category: node.category,
+                    x: node.x,
+                    y: node.y
+                };
+                nodes.push(newNode);
+                DrawNode(newNode);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Network or server error occurred');
+        });
 }
 
 function GetNodeName(node) {
@@ -478,7 +478,8 @@ function NewConnectionMode() {
 }
 
 function CreateConnection() {
-
+    const to = newConnectionSelectedNodes[0];
+    const from = 0;
 }
 
 function DisplayConnectionInformation() {
