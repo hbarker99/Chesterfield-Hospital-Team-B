@@ -1,37 +1,94 @@
 var canvas, context;
-formEvents = [];
+var currentState;
+var activeNodes;
+var hoveredNode, hoveredEdge;
+var selectedNode, selectedEdge;
+
+var newConnectionSelectedNodes = [];
+
+var mousePos;
+
+var primaryColor = 'red';
+var secondaryColor = 'blue';
 
 SetupCanvas();
 SizeCanvas();
 
+fetchDatabaseNodes();
+fetchDatabaseEdges();
+
 var canvasLeft = canvas.offsetLeft + canvas.clientLeft;
 var canvasTop = canvas.offsetTop + canvas.clientTop;
 
-const nodeRadius = 20;
+const nodeSize = 20;
+const edgeSize = 6;
 
 var nodes = [];
 let edges = [];
 
-var addingNewNode = true;
+SetupEventListeners();
+ResetInformationTo();
+ResetSelectedInformation();
 
-canvas.addEventListener('click', ClickCanvas)
+function SetupEventListeners() {
 
-function SetupPoints() {
+    canvas.addEventListener('click', (event) => {
+        SetMousePos(event);
+        HandleSelection();
+        Frame();
+    });
+
+    canvas.addEventListener('mousemove', (event) => {
+        SetMousePos(event);
+        Frame();
+    });
+
+    document.getElementById('cancel').addEventListener('click', () => {
+        HandleCancel();
+        Frame();
+    });
+
+    document.getElementById('apply').addEventListener('click', () => {
+        HandleApply();
+        Frame();
+    });
+
+    document.getElementById('new-connection').addEventListener('click', () => {
+        NewConnectionMode();
+        Frame();
+    });
+}
+
+function HandleCancel() {
+    ResetInformationTo();
+    ResetSelectedInformation();
+}
+
+function HandleApply() {
+    if (currentState === "connection") {
+        if (newConnectionSelectedNodes.length !== 2)
+            return;
+
+        CreateConnection();
+    }
+}
+
+function SetupNodes() {
     nodes.forEach(node => {
         DrawNode(node);
     });
-
-
-    DisplayEdge({
-        start_node: { category: 0 },
-        end_node: { category: 1 }
-    });
-
 }
 
-function DrawNode(node, fillColor='green') {
+function SetMousePos(event) {
+    mousePos = { x: event.pageX - canvasLeft, y: event.pageY - canvasTop };
+}
+
+function DrawNode(node, fillColor = 'green') {
+    if (currentState == "node" && node.node_id == selectedNode.node_id)
+        fillColor = 'gold';
+
     context.beginPath();
-    context.rect(node.x, node.y, nodeRadius, nodeRadius);
+    context.rect(node.x, node.y, nodeSize, nodeSize);
     context.fillStyle = fillColor;
     context.fill();
     context.lineWidth = 3;
@@ -39,54 +96,63 @@ function DrawNode(node, fillColor='green') {
     context.stroke();
 }
 
-function ClickCanvas(event) {
+function HandleSelection(event) {
     const name = "test";
     const category = 0;
-    const x = event.pageX - canvasLeft;
-    const y = event.pageY - canvasTop;
 
-     if (window.currentNodeType === 'door') {
-        const doorNode = {
-            name: "New Door",
-            category: 0,
-            x: x,
-            y: y
-        };
-        AddNewNode(doorNode);
-        window.currentNodeType = null;
+    if (currentState === "connection") {
+        if (hoveredNode != null) {
+            const alreadySelected = newConnectionSelectedNodes.findIndex(node => node.node_id === hoveredNode.node_id);
+            if (alreadySelected < 0 && newConnectionSelectedNodes.length < 2)
+                newConnectionSelectedNodes.push(hoveredNode);
+
+            else if (alreadySelected > -1)
+                newConnectionSelectedNodes.splice(alreadySelected, 1);
+        }
+
+        DisplayConnectionInformation();
         return;
     }
 
-    const nodeSelected = GetSelectedNode({ x, y });
+    if (hoveredNode != null) {
+        selectedNode = hoveredNode;
+        DisplayNodeInfo();
 
-    if (nodeSelected != null) {
-        DisplayNode(nodeSelected);
+        currentState = "node";
         return;
     }
-    const newnode = {name, category, x, y};
 
-    AddNewNode(newnode);
+    if (hoveredEdge != null) {
+        selectedEdge = hoveredEdge;
+        DisplayEdgeInfo();
+
+        currentState = "edge";
+        return;
+    }
+
+    if (currentState === "new door") {
+        const x = mousePos.x;
+        const y = mousePos.y;
+        const newnode = { name, category, x, y };
+        AddNewNode(newnode);
+
+        return;
+    }
+
+    currentState = null;
 }
 
-function DisplayNode(node) {
-    console.log(node);
-    document.getElementById("edge-info-container").style.display = "none";
 
-    var info = document.getElementById("info-container");
+function DisplayNodeInfo() {
+    const specificInfo = ResetInformationTo('node');
 
-    const title = info.querySelector("#title");
-    title.textContent = GetCategoryName(node.category);
-
-    const specificInfo = info.querySelector("#node-info-container");
-    specificInfo.style.display = "block";
+    const title = specificInfo.querySelector("#title");
+    title.textContent = GetNodeName(selectedNode);
 
     const name = specificInfo.querySelector("#visible-name");
     const nameInput = name.querySelector("input");
     nameInput.initialValue = 'Hiya';
     formEvents = nameInput.addEventListener("keyup", HandleInputChange);
-
-    ResetCanvas();
-    DrawConnectedNodes(node);
 }
 
 function ResetCanvas() {
@@ -94,41 +160,54 @@ function ResetCanvas() {
 }
 
 function DrawConnectedNodes(currentNode) {
-    const connectedNodeIds = edges.filter(edge => edge.start_node_id === currentNode.node_id).map(edge => edge.end_node_id);
-    const connectedNodes = connectedNodeIds.map(nodeId => nodes.find(node => node.node_id === nodeId));
-    console.log(connectedNodeIds)
+    connectedNodes = GetConnectedNodes(currentNode);
+    DrawEdges(currentNode);
+
     connectedNodes.forEach(node => {
         DrawNode(node);
     });
-
-    DrawNode(currentNode, 'purple');
+    DrawNode(currentNode, 'gold');
 }
 
-function DisplayEdge(edge) {
-    document.getElementById("node-info-container").style.display = "none";
+function GetConnectedNodes(currentNode) {
+
+    const connectedNodeIds = edges.filter(edge => edge.start_node_id === currentNode.node_id).map(edge => edge.end_node_id);
+    const connectedNodes = connectedNodeIds.map(nodeId => nodes.find(node => node.node_id === nodeId));
+
+    return connectedNodes;
+}
+
+function DisplayEdgeInfo() {
+    const specificInfo = ResetInformationTo('edge');
 
     var info = document.getElementById("info-container");
-
-    const specificInfo = info.querySelector("#edge-info-container");
-    specificInfo.style.display = "block";
 
     routes = ["one", "two"];
 
     routes.forEach(route => {
         const routeInfo = specificInfo.querySelector("#route-" + route);
 
-        const startCategory = route === "one" ? edge.start_node.category : edge.end_node.category;
-        const endCategory = route === "one" ? edge.end_node.category : edge.start_node.category;
+        const startNode = GetNodeFromId(selectedEdge.start_node_id);
+        const endNode = GetNodeFromId(selectedEdge.end_node_id);
 
-        routeInfo.querySelector("#route-title").textContent = "From " + GetCategoryName(startCategory) + " to " + GetCategoryName(endCategory);
+        const startDisplayNode = route === "one" ? startNode : endNode;
+        const endDisplayNode = route === "one" ? endNode : startNode;
+
+        const primary = route === "one" ? primaryColor : secondaryColor;
+        const secondary = route === "one" ? secondaryColor : primaryColor;
+
+        routeInfo.querySelector("#route-title").innerHTML = "From <span style=\"color: " + primary + "\">" + GetNodeName(startDisplayNode) + "</span> to <span style=\"color: " + secondary + "\">" + GetNodeName(endDisplayNode) + "</span>";
     })
 
 }
 
-function HandleInputChange(event) {
-    
+function GetNodeFromId(id) {
+    return nodes.find(node => node.node_id === id);
 }
 
+function HandleInputChange(event) {
+
+}
 
 function SetupCanvas() {
     canvas = document.getElementById('map');
@@ -136,7 +215,7 @@ function SetupCanvas() {
 
     addEventListener("resize", event => {
         SizeCanvas();
-        SetupPoints();
+        SetupNodes();
     });
 }
 function SizeCanvas() {
@@ -148,12 +227,12 @@ function SizeCanvas() {
     canvas.height = canvas.offsetHeight;
 }
 
-function GetSelectedNode(selected) {
-    return nodes.find(point => {
-        return selected.y > point.y - nodeRadius
-            && selected.y < point.y + nodeRadius
-            && selected.x > point.x - nodeRadius
-            && selected.x < point.x + nodeRadius
+function GetNodeAtLocation(selected, activeNodes = nodes) {
+    return activeNodes.find(point => {
+        return selected.y - nodeSize / 2 > point.y - ((nodeSize / 2) + 3)
+            && selected.y - nodeSize / 2 < point.y + ((nodeSize / 2) + 3)
+            && selected.x - nodeSize / 2 > point.x - ((nodeSize / 2) + 3)
+            && selected.x - nodeSize / 2 < point.x + ((nodeSize / 2) + 3)
     });
 }
 
@@ -162,15 +241,14 @@ function fetchDatabaseNodes() {
         .then(response => response.json())
         .then(recievedNodes => {
             recievedNodes.forEach(node => nodes.push(node));
-            SetupPoints();
+            SetupNodes();
         })
         .catch(error => {
             console.error('Error fetching nodes:', error);
         });
 }
 
-
-function fetchEdges() {
+function fetchDatabaseEdges() {
     fetch('getEdges.php')
         .then(response => response.json())
         .then(data => {
@@ -180,47 +258,145 @@ function fetchEdges() {
         .catch(error => console.error('Error fetching edges:', error));
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchDatabaseNodes();
-    fetchEdges();
-    const newDoorButton = document.getElementById('new-door');
-    newDoorButton.addEventListener('click', () => {
-        addingNewNode = true;
-
-        window.currentNodeType = 'door';
-    });
-});
-
-canvas.addEventListener('mousemove', (event) => {
-    const mouseX = event.pageX - canvasLeft;
-    const mouseY = event.pageY - canvasTop;
-
-    nodes.forEach(node => {
-        const distance = Math.sqrt(Math.pow(mouseX - node.x, 2) + Math.pow(mouseY - node.y, 2));
-        if (distance < nodeRadius) {
-            highlightNodeAndEdges(node);
-        }
-    });
-});
-
-function highlightNodeAndEdges(node) {
-    
-    DrawNode(node, 'red');
-
-    
-    edges.filter(edge => edge.start_node_id === node.id || edge.end_node_id === node.id)
-         .forEach(edge => {
-             const startNode = nodes.find(n => n.id === edge.start_node_id);
-             const endNode = nodes.find(n => n.id === edge.end_node_id);
-             drawEdge(startNode, endNode);
-         });
+function Frame() {
+    SetHoveredStates();
+    ResetCanvas();
+    DrawFrame();
 }
 
-function drawEdge(startNode, endNode) {
+function SetHoveredStates() {
+    if (currentState === "node")
+        activeNodes = GetConnectedNodes(selectedNode);
+
+    else if (currentState === "edge")
+        activeNodes = [
+            GetNodeFromId(selectedEdge.start_node_id),
+            GetNodeFromId(selectedEdge.end_node_id)
+        ];
+
+    else
+        activeNodes = nodes;
+
+    hoveredNode = GetNodeAtLocation({ x: mousePos.x, y: mousePos.y }, activeNodes);
+}
+
+function DrawFrame() {
+    if (currentState === "node" || currentState === "edge")
+        SetHoveredEdge();
+
+    if (currentState === "node")
+        DrawConnectedNodes(selectedNode);
+
+    else if (currentState === "edge") {
+        DrawEdge(activeNodes[0], activeNodes[1]);
+        DrawNode(activeNodes[0], primaryColor);
+        DrawNode(activeNodes[1], secondaryColor);
+    }
+
+    else
+        SetupNodes();
+
+    if (currentState === "connection") {
+        const from = newConnectionSelectedNodes[0];
+        const to = newConnectionSelectedNodes[1];
+
+        if (from)
+            DrawNode(from, "gold");
+
+        if (to)
+            DrawNode(to, "gold");
+    }
+
+    if (hoveredNode)
+        DrawConnectedNodes(hoveredNode);
+}
+
+function SetHoveredEdge() {
+    hoveredEdge = null;
+
+    GetConnectedNodes(selectedNode).forEach(endNode => {
+        nearestPoint = LinepointNearestMouse({ start: selectedNode, end: endNode }, mousePos.x, mousePos.y);
+        var dx = nearestPoint.x - mousePos.x;
+        var dy = nearestPoint.y - mousePos.y;
+
+        const distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+
+        if (distance < 10) {
+            hoveredEdge = edges.find(edge => edge.start_node_id === selectedNode.node_id && edge.end_node_id === endNode.node_id);
+        }
+    })
+}
+
+function LinepointNearestMouse(line, x, y) {
+
+    const endX = line.end.x + (nodeSize / 2);
+    const endY = line.end.y + (nodeSize / 2);
+    const startX = line.start.x + (nodeSize / 2);
+    const startY = line.start.y + (nodeSize / 2);
+
+    lerp = function (a, b, x) {
+        return (a + x * (b - a));
+    };
+    var dx = endX - startX;
+    var dy = endY - startY;
+
+    var t = ((x - startX) * dx + (y - startY) * dy) / (dx * dx + dy * dy);
+
+    var lineX = lerp(startX, endX, t);
+    var lineY = lerp(startY, endY, t);
+
+    smallX = Math.min(startX, endX) + 10;
+    bigX = Math.max(startX, endX) - 10;
+    smallY = Math.min(startY, endY) + 10;
+    bigY = Math.max(startY, endY) - 10;
+
+    clampedX = Math.max(Math.min(lineX, bigX), smallX);
+    clampedY = Math.max(Math.min(lineY, bigY), smallY);
+
+    return ({
+        x: clampedX,
+        y: clampedY
+    });
+};
+
+function DrawEdges(currentNode) {
+    connectedNodes = GetConnectedNodes(currentNode);
+    connectedNodes.forEach(endNode => {
+        DrawEdge(currentNode, endNode);
+    });
+}
+
+function DrawEdge(startNode, endNode) {
+    const start = { x: startNode.x + (nodeSize / 2), y: startNode.y + (nodeSize / 2) };
+    const end = { x: endNode.x + (nodeSize / 2), y: endNode.y + (nodeSize / 2) };
+
+    let edgeChecking = hoveredEdge;
+
+    if (currentState === "edge")
+        edgeChecking = selectedEdge;
+
+    //Highlight hovered edge / selected edge
+    if (edgeChecking && edgeChecking.start_node_id === startNode.node_id && edgeChecking.end_node_id === endNode.node_id)
+        DrawLine(start, end, 'gold', 6);
+
+    DrawLine(start, end);
+}
+
+function DrawLine(start, end, color = 'black', thickness = 3) {
     context.beginPath();
-    context.moveTo(startNode.x, startNode.y);
-    context.lineTo(endNode.x, endNode.y);
-    context.strokeStyle = '#ff0000'; 
+    context.moveTo(start.x, start.y);
+    context.lineTo(end.x, end.y);
+    context.strokeStyle = color;
+    context.lineWidth = thickness;
+    context.stroke();
+}
+
+function HighlightEdge(startNode, endNode) {
+    context.beginPath();
+    context.moveTo(startNode.x + (nodeSize / 2), startNode.y + (nodeSize / 2));
+    context.lineTo(endNode.x + (nodeSize / 2), endNode.y + (nodeSize / 2));
+    context.strokeStyle = 'gold';
+    context.lineWidth = 1;
     context.stroke();
 }
 
@@ -233,37 +409,41 @@ function AddNewNode(node) {
         },
         body: JSON.stringify(node),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.error) {
-            console.error('Error:', data.error);
-            alert('Error: ' + data.error); 
-        } else {
-            console.log('Success:', data);
-            const newNode = {
-                id: data.id,
-                name: node.name,
-                category: node.category,
-                x: node.x,
-                y: node.y
-            };
-            nodes.push(newNode);
-            DrawNode(newNode);
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        alert('Network or server error occurred');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+                alert('Error: ' + data.error);
+            } else {
+                console.log('Success:', data);
+                const newNode = {
+                    id: data.id,
+                    name: node.name,
+                    category: node.category,
+                    x: node.x,
+                    y: node.y
+                };
+                nodes.push(newNode);
+                DrawNode(newNode);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Network or server error occurred');
+        });
 }
 
-function GetCategoryName(categoryId) {
-    switch (categoryId) {
+function GetNodeName(node) {
+
+    if (node.name)
+        return node.name;
+
+    switch (node.category) {
         case 0:
             return "Door";
             break;
@@ -290,15 +470,54 @@ function GetCategoryName(categoryId) {
     }
 }
 
-function CreateNode(node) {
-    const creatingNode = { name: "New node", category: 1, x: 100, y: 100 };
-    //Create the node in the database
-    //Return the new node id - just a number
+function NewConnectionMode() {
+    ResetSelectedInformation();
+    DisplayConnectionInformation();
+
+    currentState = "connection";
 }
 
-function NewEdge() {
+function CreateConnection() {
+    const to = newConnectionSelectedNodes[0];
+    const from = 0;
+}
 
-    //Start node,
-    //End node
-    //
+function DisplayConnectionInformation() {
+    const specificInfo = ResetInformationTo("connection");
+
+    specificInfo.querySelector(".title").textContent = "Creating new connection";
+
+    const nodeFrom = newConnectionSelectedNodes[0];
+    const nodeTo = newConnectionSelectedNodes[1];
+
+    const fromText = specificInfo.querySelector("#from");
+    const toText = specificInfo.querySelector("#to");
+
+    fromText.textContent = nodeFrom ? "From " + GetNodeName(nodeFrom) : "";
+    toText.textContent = nodeTo ? "To " + GetNodeName(nodeTo) : "";
+}
+
+function ResetSelectedInformation() {
+    newConnectionSelectedNodes = [];
+    selectedNode = null;
+    selectedEdge = null;
+    currentState = null;
+}
+
+function ResetInformationTo(displaying) {
+    document.getElementById("connection-info-container").style.display = "none";
+    document.getElementById("node-info-container").style.display = "none";
+    document.getElementById("edge-info-container").style.display = "none";
+
+    const buttons = document.getElementById("button-container");
+    buttons.style.display = "none";
+
+    if (!displaying)
+        return;
+
+    buttons.style.display = "flex";
+    var displaying = document.getElementById(displaying + "-info-container");
+    displaying.style.display = "block";
+
+    return displaying;
 }
