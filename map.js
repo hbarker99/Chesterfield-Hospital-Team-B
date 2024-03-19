@@ -4,7 +4,7 @@ var activeNodes;
 var hoveredNode, hoveredEdge;
 var selectedNode, selectedEdge;
 
-var newConnectionSelectedNodes = { start: null, end: null };
+var newConnectionSelectedNodes = [];
 
 var mousePos;
 
@@ -26,20 +26,36 @@ const edgeSize = 6;
 var nodes = [];
 let edges = [];
 
-var addingNewNode = true;
+SetupEventListeners();
 
-canvas.addEventListener('click', (event) => {
-    SetMousePos(event);
-    HandleSelection();
-    HandleHover();
-});
+function SetupEventListeners() {
 
-canvas.addEventListener('mousemove', (event) => {
-    SetMousePos(event);
-    HandleHover();
-});
+    canvas.addEventListener('click', (event) => {
+        SetMousePos(event);
+        HandleSelection();
+        Frame();
+    });
 
-document.getElementById('new-connection').addEventListener('click', NewConnection);
+    canvas.addEventListener('mousemove', (event) => {
+        SetMousePos(event);
+        Frame();
+    });
+
+    document.getElementById('cancel').addEventListener('click', () => {
+        HandleCancel();
+        Frame();
+    });
+
+    document.getElementById('apply').addEventListener('click', () => {
+        HandleApply();
+        Frame();
+    });
+
+    document.getElementById('new-connection').addEventListener('click', () => {
+        NewConnection();
+        Frame();
+    });
+}
 
 function SetupNodes() {
     nodes.forEach(node => {
@@ -67,6 +83,20 @@ function DrawNode(node, fillColor = 'green') {
 function HandleSelection(event) {
     const name = "test";
     const category = 0;
+
+    if (currentState === "connection") {
+        if (hoveredNode != null) {
+            const alreadySelected = newConnectionSelectedNodes.findIndex(node => node.node_id === hoveredNode.node_id);
+            if (alreadySelected < 0 && newConnectionSelectedNodes.length < 2)
+                newConnectionSelectedNodes.push(hoveredNode);
+
+            else if (alreadySelected > -1)
+                newConnectionSelectedNodes.splice(alreadySelected, 1);
+        }
+
+        DisplayConnectionInformation();
+        return;
+    }
 
     if (hoveredNode != null) {
         selectedNode = hoveredNode;
@@ -96,11 +126,12 @@ function HandleSelection(event) {
     currentState = null;
 }
 
+
 function DisplayNodeInfo() {
     const specificInfo = ResetInformationTo('node');
 
     const title = specificInfo.querySelector("#title");
-    title.textContent = GetCategoryName(selectedNode.category);
+    title.textContent = GetNodeName(selectedNode);
 
     const name = specificInfo.querySelector("#visible-name");
     const nameInput = name.querySelector("input");
@@ -143,13 +174,13 @@ function DisplayEdgeInfo() {
         const startNode = GetNodeFromId(selectedEdge.start_node_id);
         const endNode = GetNodeFromId(selectedEdge.end_node_id);
 
-        const startCategory = route === "one" ? startNode.category : endNode.category;
-        const endCategory = route === "one" ? endNode.category : startNode.category;
+        const startDisplayNode = route === "one" ? startNode : endNode;
+        const endDisplayNode = route === "one" ? endNode : startNode;
 
         const primary = route === "one" ? primaryColor : secondaryColor;
         const secondary = route === "one" ? secondaryColor : primaryColor;
 
-        routeInfo.querySelector("#route-title").innerHTML = "From <span style=\"color: " + primary + "\">" + GetCategoryName(startCategory) + "</span> to <span style=\"color: " + secondary + "\">" + GetCategoryName(endCategory) + "</span>";
+        routeInfo.querySelector("#route-title").innerHTML = "From <span style=\"color: " + primary + "\">" + GetNodeName(startDisplayNode) + "</span> to <span style=\"color: " + secondary + "\">" + GetNodeName(endDisplayNode) + "</span>";
     })
 
 }
@@ -211,7 +242,7 @@ function fetchDatabaseEdges() {
         .catch(error => console.error('Error fetching edges:', error));
 }
 
-function HandleHover() {
+function Frame() {
     SetHoveredStates();
     ResetCanvas();
     DrawFrame();
@@ -248,6 +279,17 @@ function DrawFrame() {
 
     else
         SetupNodes();
+
+    if (currentState === "connection") {
+        const from = newConnectionSelectedNodes[0];
+        const to = newConnectionSelectedNodes[1];
+
+        if (from)
+            DrawNode(from, "gold");
+
+        if (to)
+            DrawNode(to, "gold");
+    }
 
     if (hoveredNode)
         DrawConnectedNodes(hoveredNode);
@@ -380,8 +422,12 @@ function AddNewNode(node) {
     });
 }
 
-function GetCategoryName(categoryId) {
-    switch (categoryId) {
+function GetNodeName(node) {
+
+    if (node.name)
+        return node.name;
+
+    switch (node.category) {
         case 0:
             return "Door";
             break;
@@ -408,27 +454,30 @@ function GetCategoryName(categoryId) {
     }
 }
 
-function DisplayConnectionInformation() {
-
-
-}
-
 function NewConnection() {
     ResetSelectedInformation();
     DisplayConnectionInformation();
 
-
-    currentState = "new connection";
+    currentState = "connection";
 }
 
 function DisplayConnectionInformation() {
-    const specificInfo = ResetInformationTo('connection');
+    const specificInfo = ResetInformationTo("connection");
 
-    specificInfo.querySelector('.title').textContent = 'Creating new connection';
+    specificInfo.querySelector(".title").textContent = "Creating new connection";
+
+    const nodeFrom = newConnectionSelectedNodes[0];
+    const nodeTo = newConnectionSelectedNodes[1];
+
+    const fromText = specificInfo.querySelector("#from");
+    const toText = specificInfo.querySelector("#to");
+
+    fromText.textContent = nodeFrom ? "From " + GetNodeName(nodeFrom) : "";
+    toText.textContent = nodeTo ? "To " + GetNodeName(nodeTo) : "";
 }
 
 function ResetSelectedInformation() {
-    newConnectionSelectedNodes = { start: null, end: null }
+    newConnectionSelectedNodes = [];
     selectedNode = null;
     selectedEdge = null;
     currentState = null;

@@ -44,10 +44,11 @@
 			<div id="connection-info-container">
 				<div class="title"></div>
 				<div id="from"></div>
+				<div id="to"></div>
 			</div>
 			<div class="button-container">
-				<input type="submit" class="btn btn-primary" name="previous" value="Cancel" />
-				<input type="submit" class="btn btn-primary" name="apply" value="Apply Changes" />
+				<button class="btn btn-primary" id="cancel">Cancel</button>
+				<button class="btn btn-primary" id="apply">Apply Changes</button>
 			</div>
 		</div>
 	</div>
