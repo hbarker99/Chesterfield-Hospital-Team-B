@@ -401,7 +401,6 @@ function HighlightEdge(startNode, endNode) {
 }
 
 function AddNewNode(node) {
-    console.log("Sending node data:", node); //Testing
     fetch('addNode.php', {
         method: 'POST',
         headers: {
@@ -409,33 +408,33 @@ function AddNewNode(node) {
         },
         body: JSON.stringify(node),
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.error) {
-                console.error('Error:', data.error);
-                alert('Error: ' + data.error);
-            } else {
-                console.log('Success:', data);
-                const newNode = {
-                    id: data.id,
-                    name: node.name,
-                    category: node.category,
-                    x: node.x,
-                    y: node.y
-                };
-                nodes.push(newNode);
-                DrawNode(newNode);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('Network or server error occurred');
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            console.error('Error:', data.error);
+            alert('Error: ' + data.error);
+        } else {
+            console.log('Success:', data);
+            const newNode = {
+                id: data.id,
+                name: node.name,
+                category: node.category,
+                x: node.x,
+                y: node.y
+            };
+            nodes.push(newNode);
+            DrawNode(newNode);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Network or server error occurred');
+    });
 }
 
 function GetNodeName(node) {
@@ -479,7 +478,96 @@ function NewConnectionMode() {
 
 function CreateConnection() {
     const to = newConnectionSelectedNodes[0];
-    const from = 0;
+    const from = newConnectionSelectedNodes[1];
+
+    const edge = {
+        start_node_id: from.node_id,
+        end_node_id: to.node_id,
+        distance: 1,
+        direction: GetDirection(from.node_id, to.node_id)
+    };
+
+    fetch('createEdge.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(edge),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const alternate = {
+            start_node_id: to.node_id,
+            end_node_id: from.node_id,
+            distance: 1,
+            direction: (edge.direction + 2) % 4
+        }
+
+        edges.push(edge);
+        edges.push(alternate);
+
+        console.log("Created");
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Network or server error occurred');
+    });
+}
+
+function GetDirection(startNodeId, endNodeId) {
+    const start = GetNodeFromId(startNodeId);
+    const end = GetNodeFromId(endNodeId);
+
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+
+    let theta;
+
+    if (dx === 0) {
+        if (dy === 0)
+            theta = 0;
+
+        else if (dy > 0)
+            theta = 90;
+
+        else
+            theta = -90;
+
+    }
+
+    else if (dy == 0) {
+        if (dx > 0)
+            theta = 0;
+
+        else
+            theta = 180;
+    }
+
+    else
+        theta = Math.atan2(dy / dx);
+
+    thetaDeg = theta / Math.PI;
+    return AngleToDirection(theta);
+    
+}
+
+function AngleToDirection(angle) {
+    if (angle > 135)
+        return 4;
+
+    if (angle > 45)
+        return 1;
+
+    if (angle > -45)
+        return 2;
+
+    if (angle > -135)
+        return 3
+
+    return 4;
 }
 
 function DisplayConnectionInformation() {
