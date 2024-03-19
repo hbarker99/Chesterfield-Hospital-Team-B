@@ -1,8 +1,12 @@
 var canvas, context;
 var currentState;
+var activeNodes;
+var hoveredNode, hoveredEdge;
 var selectedNode, selectedEdge;
 var mousePos;
 
+var primaryColor = 'red';
+var secondaryColor = 'blue';
 
 SetupCanvas();
 SizeCanvas();
@@ -21,23 +25,21 @@ let edges = [];
 
 var addingNewNode = true;
 
-canvas.addEventListener('click', ClickCanvas);
+canvas.addEventListener('click', (event) => {
+    SetMousePos(event);
+    HandleSelection();
+    HandleHover();
+});
+
 canvas.addEventListener('mousemove', (event) => {
     SetMousePos(event);
-    HandleHover(event);
+    HandleHover();
 });
 
 function SetupNodes() {
     nodes.forEach(node => {
         DrawNode(node);
     });
-
-
-    DisplayEdge({
-        start_node: { category: 0 },
-        end_node: { category: 1 }
-    });
-
 }
 
 function SetMousePos(event) {
@@ -57,32 +59,45 @@ function DrawNode(node, fillColor = 'green') {
     context.stroke();
 }
 
-function ClickCanvas(event) {
+function HandleSelection(event) {
     const name = "test";
     const category = 0;
-    const x = event.pageX - canvasLeft;
-    const y = event.pageY - canvasTop;
 
-    const nodeSelected = GetNodeAtLocation({ x, y });
+    if (hoveredNode != null) {
+        selectedNode = hoveredNode;
+        DisplayNode();
 
-    if (nodeSelected != null) {
-        DisplayNode(nodeSelected);
+        currentState = "node";
         return;
     }
 
-    if (currentState == "new door") {
+    if (hoveredEdge != null) {
+        selectedEdge = hoveredEdge;
+        DisplayEdge();
+
+        currentState = "edge";
+        return;
+    }
+
+    if (currentState === "new door") {
+        const x = mousePos.x;
+        const y = mousePos.y;
         const newnode = { name, category, x, y };
         AddNewNode(newnode);
+
+        return;
     }
+
+    currentState = null;
 }
 
-function DisplayNode(node) {
+function DisplayNode() {
     document.getElementById("edge-info-container").style.display = "none";
 
     var info = document.getElementById("info-container");
 
     const title = info.querySelector("#title");
-    title.textContent = GetCategoryName(node.category);
+    title.textContent = GetCategoryName(selectedNode.category);
 
     const specificInfo = info.querySelector("#node-info-container");
     specificInfo.style.display = "block";
@@ -93,9 +108,7 @@ function DisplayNode(node) {
     formEvents = nameInput.addEventListener("keyup", HandleInputChange);
 
     ResetCanvas();
-    DrawConnectedNodes(node);
-    currentState = "node";
-    selectedNode = node;
+    DrawConnectedNodes(selectedNode);
 }
 
 function ResetCanvas() {
@@ -112,6 +125,7 @@ function DrawConnectedNodes(currentNode) {
     DrawNode(currentNode, 'gold');
 }
 
+
 function GetConnectedNodes(currentNode) {
 
     const connectedNodeIds = edges.filter(edge => edge.start_node_id === currentNode.node_id).map(edge => edge.end_node_id);
@@ -120,7 +134,7 @@ function GetConnectedNodes(currentNode) {
     return connectedNodes;
 }
 
-function DisplayEdge(edge) {
+function DisplayEdge() {
     document.getElementById("node-info-container").style.display = "none";
 
     var info = document.getElementById("info-container");
@@ -133,12 +147,22 @@ function DisplayEdge(edge) {
     routes.forEach(route => {
         const routeInfo = specificInfo.querySelector("#route-" + route);
 
-        const startCategory = route === "one" ? edge.start_node.category : edge.end_node.category;
-        const endCategory = route === "one" ? edge.end_node.category : edge.start_node.category;
+        const startNode = GetNodeFromId(selectedEdge.start_node_id);
+        const endNode = GetNodeFromId(selectedEdge.end_node_id);
 
-        routeInfo.querySelector("#route-title").textContent = "From " + GetCategoryName(startCategory) + " to " + GetCategoryName(endCategory);
+        const startCategory = route === "one" ? startNode.category : endNode.category;
+        const endCategory = route === "one" ? endNode.category : startNode.category;
+
+        const primary = route === "one" ? primaryColor : secondaryColor;
+        const secondary = route === "one" ? secondaryColor : primaryColor;
+
+        routeInfo.querySelector("#route-title").innerHTML = "From <span style=\"color: " + primary + "\">" + GetCategoryName(startCategory) + "</span> to <span style=\"color: " + secondary + "\">" + GetCategoryName(endCategory) + "</span>";
     })
 
+}
+
+function GetNodeFromId(id) {
+    return nodes.find(node => node.node_id === id);
 }
 
 function HandleInputChange(event) {
@@ -196,39 +220,50 @@ function fetchDatabaseEdges() {
 }
 
 
-function HandleHover(event) {
-    if (currentState && currentState !== "node")
-        return;
+function HandleHover() {
+    SetHoveredStates();
+    ResetCanvas();
+    DrawFrame();
+}
 
-    let activeNodes = [];
-    if (currentState == "node")
+function SetHoveredStates() {
+    if (currentState === "node")
         activeNodes = GetConnectedNodes(selectedNode);
+
+    else if (currentState === "edge")
+        activeNodes = [
+            GetNodeFromId(selectedEdge.start_node_id),
+            GetNodeFromId(selectedEdge.end_node_id)
+        ];
 
     else
         activeNodes = nodes;
 
-    hoveredNode = GetNodeAtLocation({ x: mousePos.x, y: mousePos.y}, activeNodes);
+    hoveredNode = GetNodeAtLocation({ x: mousePos.x, y: mousePos.y }, activeNodes);
+}
 
-    if (currentState == "node")
+function DrawFrame() {
+    if (currentState === "node" || currentState === "edge")
         SetHoveredEdge();
 
-    ResetCanvas();
-
-    if (currentState == "node") {
+    if (currentState === "node")
         DrawConnectedNodes(selectedNode);
-    } else {
-        SetupNodes();
+
+    else if (currentState === "edge") {
+        DrawEdge(activeNodes[0], activeNodes[1]);
+        DrawNode(activeNodes[0], primaryColor);
+        DrawNode(activeNodes[1], secondaryColor);
     }
+
+    else
+        SetupNodes();
 
     if (hoveredNode)
         DrawConnectedNodes(hoveredNode);
-
-
-    
 }
 
 function SetHoveredEdge() {
-    selectedEdge = null;
+    hoveredEdge = null;
 
     GetConnectedNodes(selectedNode).forEach(endNode => {
         nearestPoint = LinepointNearestMouse({ start: selectedNode, end: endNode }, mousePos.x, mousePos.y);
@@ -238,7 +273,7 @@ function SetHoveredEdge() {
         const distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
 
         if (distance < 10) {
-            selectedEdge = { start: selectedNode, end: endNode };
+            hoveredEdge = edges.find(edge => edge.start_node_id === selectedNode.node_id && edge.end_node_id === endNode.node_id);
         }
     })
 }
@@ -287,7 +322,13 @@ function DrawEdge(startNode, endNode) {
     const start = { x: startNode.x + (nodeSize / 2), y: startNode.y + (nodeSize / 2) };
     const end = { x: endNode.x + (nodeSize / 2), y: endNode.y + (nodeSize / 2) };
 
-    if (selectedEdge && selectedEdge.start.node_id === startNode.node_id && selectedEdge.end.node_id === endNode.node_id)
+    let edgeChecking = hoveredEdge;
+
+    if (currentState === "edge")
+        edgeChecking = selectedEdge;    
+
+    //Highlight hovered edge / selected edge
+    if (edgeChecking && edgeChecking.start_node_id === startNode.node_id && edgeChecking.end_node_id === endNode.node_id)
         DrawLine(start, end, 'gold', 6);
 
     DrawLine(start, end);
