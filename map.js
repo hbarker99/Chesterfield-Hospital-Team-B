@@ -6,7 +6,7 @@ var selectedNode, selectedEdge;
 
 var newConnectionSelectedNodes = [];
 
-var mousePos;
+var canvasPos, worldPos;
 
 
 var offsetX = 0;
@@ -56,13 +56,13 @@ function SetupEventListeners() {
         document.addEventListener('mouseup', handleMouseUp);
     });
     canvas.addEventListener('click', (event) => {
-        SetMousePos(event);
+        SetPositions(event);
         HandleSelection();
         Frame();
     });
 
     canvas.addEventListener('mousemove', (event) => {
-        SetMousePos(event);
+        SetPositions(event);
         Frame();
     });
 
@@ -107,8 +107,9 @@ function SetupNodes() {
     });
 }
 
-function SetMousePos(event) {
-    mousePos = { x: event.pageX - canvasLeft, y: event.pageY - canvasTop};
+function SetPositions(event) {
+    canvasPos = { x: event.pageX - canvasLeft, y: event.pageY - canvasTop };
+    worldPos = { x: event.pageX - canvasLeft + offsetX, y: event.pageY - canvasTop + offsetY};
 }
 
 function DrawNode(node, fillColor = 'green') {
@@ -153,8 +154,8 @@ function HandleSelection(event) {
         const newDoor = {
             name: "New Door",
             category: 0,
-            x: mousePos.x,
-            y: mousePos.y
+            x: canvasPos.x,
+            y: canvasPos.y
         };
         AddNewNode(newDoor);
 
@@ -317,7 +318,7 @@ function SetHoveredStates() {
     else
         activeNodes = nodes;
 
-    hoveredNode = GetNodeAtLocation({ x: mousePos.x + offsetX, y: mousePos.y + offsetY }, activeNodes);
+    hoveredNode = GetNodeAtLocation({ x: worldPos.x, y: worldPos.y }, activeNodes);
 }
 
     function DrawFrame() {
@@ -355,9 +356,9 @@ function SetHoveredStates() {
         hoveredEdge = null;
 
         GetConnectedNodes(selectedNode).forEach(endNode => {
-            nearestPoint = LinepointNearestMouse({ start: selectedNode, end: endNode }, mousePos.x, mousePos.y);
-            var dx = nearestPoint.x - mousePos.x;
-            var dy = nearestPoint.y - mousePos.y;
+            nearestPoint = LinepointNearestMouse({ start: selectedNode, end: endNode }, worldPos.x, worldPos.y);
+            var dx = nearestPoint.x - worldPos.x;
+            var dy = nearestPoint.y - worldPos.y;
 
             const distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
 
