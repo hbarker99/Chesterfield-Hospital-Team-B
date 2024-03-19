@@ -140,18 +140,12 @@ function HandleSelection(event) {
     }
 
     if (hoveredNode != null) {
-        selectedNode = hoveredNode;
-        DisplayNodeInfo();
-
-        currentState = "node";
+        SelectNode(hoveredNode);
         return;
     }
 
     if (hoveredEdge != null) {
-        selectedEdge = hoveredEdge;
-        DisplayEdgeInfo();
-
-        currentState = "edge";
+        SelectEdge(hoveredEdge);
         return;
     }
 
@@ -169,6 +163,23 @@ function HandleSelection(event) {
     }
 
     currentState = null;
+}
+
+function SelectEdge(edge) {
+    if (selectedNode == null)
+        selectedNode = nodes.find(node => node.node_id === edge.start_node_id);
+
+    selectedEdge = edge;
+    DisplayEdgeInfo();
+
+    currentState = "edge";
+}
+
+function SelectNode(node) {
+    selectedNode = node;
+    DisplayNodeInfo();
+
+    currentState = "node";
 }
 
 
@@ -539,7 +550,8 @@ function CreateConnection() {
         edges.push(edge);
         edges.push(alternate);
         
-        console.log("Created");
+        SelectEdge(edge);
+        Frame();
     })
     .catch((error) => {
         console.error('Error:', error);
