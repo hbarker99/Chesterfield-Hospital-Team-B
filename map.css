@@ -68,6 +68,10 @@ body {
     display: none;
 }
 
+#button-container {
+    display: none;
+}
+
 .button-container {
     flex: 0 1 0;
     display: flex;

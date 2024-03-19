@@ -46,7 +46,7 @@
 				<div id="from"></div>
 				<div id="to"></div>
 			</div>
-			<div class="button-container">
+			<div class="button-container" id="button-container">
 				<button class="btn btn-primary" id="cancel">Cancel</button>
 				<button class="btn btn-primary" id="apply">Apply Changes</button>
 			</div>

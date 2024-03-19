@@ -27,6 +27,8 @@ var nodes = [];
 let edges = [];
 
 SetupEventListeners();
+ResetInformationTo();
+ResetSelectedInformation();
 
 function SetupEventListeners() {
 
@@ -497,9 +499,13 @@ function ResetInformationTo(displaying) {
     document.getElementById("node-info-container").style.display = "none";
     document.getElementById("edge-info-container").style.display = "none";
 
+    const buttons = document.getElementById("button-container");
+    buttons.style.display = "none";
+
     if (!displaying)
         return;
 
+    buttons.style.display = "flex";
     var displaying = document.getElementById(displaying + "-info-container");
     displaying.style.display = "block";
 
