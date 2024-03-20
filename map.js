@@ -96,12 +96,7 @@ function HandleCancel() {
 }
 
 function HandleApply() {
-    if (currentState === "connection") {
-        if (newConnectionSelectedNodes.length !== 2)
-            return;
 
-        CreateConnection();
-    }
 }
 
 function SetupNodes() {
@@ -143,6 +138,10 @@ function HandleSelection(event) {
         }
 
         DisplayConnectionInformation();
+
+        if (newConnectionSelectedNodes.length == 2)
+            CreateConnection();
+
         return;
     }
 
@@ -172,8 +171,8 @@ function HandleSelection(event) {
             x: worldPos.x - nodeSize/2,
             y: worldPos.y - nodeSize/2
         };
+        Reset();
         AddNewNode(newDoor);
-
         return;
     }
 
@@ -502,6 +501,8 @@ function AddNewNode(node) {
             };
             nodes.push(newNode);
             DrawNode(newNode);
+            SelectNode(newNode);
+            Frame();
         }
     })
     .catch((error) => {
