@@ -100,6 +100,7 @@ function HandleApply() {
         if (newConnectionSelectedNodes.length !== 2)
             return;
 
+    }
     else{
         const nodeId = selectedNode.node_id;
         const newName = document.querySelector('#visible-name input').value;
@@ -338,7 +339,7 @@ function updateNodeName(nodeId, newName) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Node name updated successfully!');
+            console.log("Node name updated successfully!");
             const Result = GetNodeFromId(nodeId);
             Result.name = newName;
             Result.title = newName;
