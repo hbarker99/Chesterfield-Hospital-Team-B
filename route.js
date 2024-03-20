@@ -1,6 +1,6 @@
 let json;
-let nodes;
-FetchNodesJSON();
+//let nodes;
+//FetchNodesJSON();
 FetchRouteJSON();
 
 
@@ -9,10 +9,6 @@ let currentStep = 0;
 
 
 let totalSteps;
-for(var e in nodes){
-    document.write(e.name);
-    console.log(e.name);
-}
 
 /*
 $requestType = $_GET['request_type'];
@@ -54,7 +50,7 @@ function FetchRouteJSON(){
     .catch(error => {
         console.error('Error fetching JSON', error);
         // Redirect to the custom error page
-        window.location.href = './error.html';
+        //window.location.href = './error.html';
     });
 
 }
@@ -85,7 +81,7 @@ function Display(currentStep) {
 
 function process(response) {
     if(!response.ok){
-        window.location.href = './error.html';
+        //window.location.href = './error.html';
         throw new Error(response.error)
 
     }

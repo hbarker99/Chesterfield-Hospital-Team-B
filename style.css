@@ -81,8 +81,11 @@
 }
 
 #bootstrap-overrides .form-control {
-    border-radius: 0;
+    
     border: 0.125rem solid var(--primary-dark-grey);
+    padding: 12px 70px 12px 30px;
+    border-radius: 30px;
+    box-shadow: 0 0 0 1px #959595;
 }
 
 #bootstrap-overrides .error {
@@ -95,7 +98,9 @@
 }
 
 #bootstrap-overrides .page-title {
-    margin-bottom: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
 }
 
 #bootstrap-overrides .page-container {
@@ -122,6 +127,7 @@
     color: black;
     line-height: 3.75rem;
     background-color: var(--primary-light-grey);
+    background-color: #f0f2f4;
   }
 
   .logo {
@@ -131,7 +137,8 @@
     max-height: 100%; /* Limits the logo height to the container height */
     object-fit: contain; /* Preserves aspect ratio and fits the entire image */
 }
-.h1, .h2, .h3, body, .a{
+
+.h1, .h2, .h3, body, .a, label, div{
     font-family: "Frutiger Roman";
 }
 

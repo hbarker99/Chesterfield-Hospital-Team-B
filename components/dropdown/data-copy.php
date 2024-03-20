@@ -4,7 +4,7 @@
 function locationFill(){
     $host = 'localhost'; // Replace with hosted server
     $username = 'root';
-    $password = '';
+    $password = '1234';
     $database = 'arundel';
     // Create a connection
     $mysqli = new mysqli($host, $username, $password, $database);

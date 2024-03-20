@@ -5,9 +5,8 @@ require("./components/dijkstra_class.php");
 
 $db_pdo = new DatabaseConnection();
 
-$startPoint = $_GET['start_node'] ?? null;
-$endPoint = $_GET['end_node'] ?? null;
-
+$startPoint = $_GET['start_node'] ?? $_SESSION['start_point'];
+$endPoint = $_GET['end_node'] ?? $_SESSION['end_point'];
 
 /*  
 *   IN
@@ -17,7 +16,7 @@ $endPoint = $_GET['end_node'] ?? null;
 *
 */
 
-function check_for_precalculated_path($db_pdo, $startPoint, $endPoint)
+function check_for_precalculated_path($startPoint, $endPoint)
 {
     $db = new SQLite3("database.db");
     $stmt = $db->prepare("SELECT path_id FROM Path WHERE (start_node_id = $startPoint) AND (end_node_id = $endPoint)");
@@ -27,7 +26,7 @@ function check_for_precalculated_path($db_pdo, $startPoint, $endPoint)
     return $data;
 }
 
-$exists = check_for_precalculated_path($db_pdo, $startPoint, $endPoint);
+$exists = check_for_precalculated_path($startPoint, $endPoint);
 
 if($exists == null)
 {
@@ -75,7 +74,7 @@ if($exists == null)
     $nodeObjects['node_'.$startPoint]->distance = 0; // Set the starting node's distance to 0
     $path = Dijkstra::calculateShortestPathFrom($nodeObjects['node_'.$startPoint], $nodeObjects['node_'.$endPoint]);
 
-    var_dump($path);
+    //var_dump($path);
     $dbFile = 'database.db'; // Replace with your actual database file path
     $dsn = "sqlite:$dbFile";
 

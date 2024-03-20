@@ -64,6 +64,7 @@ nextStep.addEventListener('click', () => {
     Display(currentStep);
     UpdateArrows(currentStep);
 });
+
 function UpdateArrows(currentStep){
     if(currentStep === 0){
         document.getElementById('instruction').innerHTML = "Begin facing the same direction as the image.";
