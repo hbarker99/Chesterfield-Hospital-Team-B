@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 20, 2024 at 03:41 PM
+-- Generation Time: Mar 20, 2024 at 05:18 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -43,29 +43,6 @@ INSERT INTO `category` (`category_id`, `category_notes`) VALUES
 (4, 'Stairs'),
 (5, 'Endpoint'),
 (6, 'Corridor');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `direction`
---
-
-CREATE TABLE `direction` (
-  `direction_id` tinyint(4) NOT NULL,
-  `direction` varchar(64) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `direction`
---
-
-INSERT INTO `direction` (`direction_id`, `direction`) VALUES
-(6, 'Down Stairs'),
-(2, 'East'),
-(1, 'North'),
-(3, 'South'),
-(5, 'Up Stairs'),
-(4, 'West');
 
 -- --------------------------------------------------------
 
@@ -202,6 +179,20 @@ CREATE TABLE `path` (
   `end_node_id` smallint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `path`
+--
+
+INSERT INTO `path` (`path_id`, `start_node_id`, `end_node_id`) VALUES
+(1, 0, 6),
+(2, 0, 11),
+(3, 20, 0),
+(4, 0, 20),
+(5, 20, 7),
+(6, 0, 14),
+(7, 21, 0),
+(8, 0, 10);
+
 -- --------------------------------------------------------
 
 --
@@ -209,10 +200,81 @@ CREATE TABLE `path` (
 --
 
 CREATE TABLE `steps` (
-  `step_id` int(11) NOT NULL,
+  `path_id` int(11) NOT NULL,
   `edge_id` smallint(6) NOT NULL,
   `position_in_path` smallint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `steps`
+--
+
+INSERT INTO `steps` (`path_id`, `edge_id`, `position_in_path`) VALUES
+(0, 1, 0),
+(0, 3, 1),
+(0, 5, 2),
+(0, 9, 3),
+(0, 15, 4),
+(2, 1, 0),
+(2, 3, 1),
+(2, 5, 2),
+(2, 9, 3),
+(2, 16, 4),
+(2, 24, 5),
+(3, 2, 9),
+(3, 4, 8),
+(3, 7, 7),
+(3, 10, 6),
+(3, 41, 5),
+(3, 43, 4),
+(3, 46, 3),
+(3, 47, 2),
+(3, 49, 1),
+(3, 52, 0),
+(4, 1, 0),
+(4, 3, 1),
+(4, 5, 2),
+(4, 8, 3),
+(4, 12, 4),
+(4, 42, 5),
+(4, 44, 6),
+(4, 45, 7),
+(4, 48, 8),
+(4, 50, 9),
+(5, 11, 6),
+(5, 15, 7),
+(5, 18, 8),
+(5, 41, 5),
+(5, 43, 4),
+(5, 46, 3),
+(5, 47, 2),
+(5, 49, 1),
+(5, 52, 0),
+(6, 1, 0),
+(6, 3, 1),
+(6, 5, 2),
+(6, 9, 3),
+(6, 16, 4),
+(6, 25, 5),
+(6, 37, 6),
+(6, 39, 7),
+(7, 2, 9),
+(7, 4, 8),
+(7, 7, 7),
+(7, 10, 6),
+(7, 41, 5),
+(7, 43, 4),
+(7, 46, 3),
+(7, 47, 2),
+(7, 49, 1),
+(7, 53, 0),
+(8, 1, 0),
+(8, 3, 1),
+(8, 5, 2),
+(8, 9, 3),
+(8, 16, 4),
+(8, 23, 5),
+(8, 27, 6);
 
 --
 -- Indexes for dumped tables
@@ -225,14 +287,6 @@ ALTER TABLE `category`
   ADD PRIMARY KEY (`category_id`),
   ADD KEY `category_id` (`category_id`),
   ADD KEY `category_id_2` (`category_id`);
-
---
--- Indexes for table `direction`
---
-ALTER TABLE `direction`
-  ADD PRIMARY KEY (`direction_id`),
-  ADD UNIQUE KEY `direction` (`direction`),
-  ADD KEY `direction_id` (`direction_id`);
 
 --
 -- Indexes for table `edges`
@@ -263,7 +317,7 @@ ALTER TABLE `path`
 -- Indexes for table `steps`
 --
 ALTER TABLE `steps`
-  ADD PRIMARY KEY (`step_id`,`edge_id`);
+  ADD PRIMARY KEY (`path_id`,`edge_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -276,33 +330,10 @@ ALTER TABLE `category`
   MODIFY `category_id` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `direction`
---
-ALTER TABLE `direction`
-  MODIFY `direction_id` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `node`
---
-ALTER TABLE `node`
-  MODIFY `node_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=223;
-
---
 -- AUTO_INCREMENT for table `path`
 --
 ALTER TABLE `path`
-  MODIFY `path_id` smallint(6) NOT NULL AUTO_INCREMENT;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `path`
---
-ALTER TABLE `path`
-  ADD CONSTRAINT `path_ibfk_1` FOREIGN KEY (`start_node_id`) REFERENCES `node` (`node_id`),
-  ADD CONSTRAINT `path_ibfk_2` FOREIGN KEY (`end_node_id`) REFERENCES `node` (`node_id`);
+  MODIFY `path_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
