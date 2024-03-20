@@ -25,8 +25,8 @@ fetchDatabaseEdges();
 var canvasLeft = canvas.offsetLeft + canvas.clientLeft;
 var canvasTop = canvas.offsetTop + canvas.clientTop;
 
-let startX;
-let startY;
+let startX, startY;
+let offsetStartX, offsetStartY;
 const nodeSize = 20;
 const edgeSize = 6;
 
@@ -134,8 +134,11 @@ function HandleMouseMove(event) {
         PanCanvas();
 }
 function SetUpStartPos(){
-    startX = canvasPos.x +offsetX;
-    startY = canvasPos.y + offsetY;
+    startX = canvasPos.x;
+    startY = canvasPos.y;
+
+    offsetStartX = offsetX;
+    offsetStartY = offsetY;
 }
 function HandleCancel() {
     Reset();
@@ -174,7 +177,7 @@ function DrawNode(node, fillColor = 'green') {
 }
 
 function HandleSelection(event) {
-    if (isDragging)
+    if (isDragging && DistanceMovedSinceDrag() > 3)
         return;
 
     if (currentState === "connection") {
@@ -227,6 +230,10 @@ function HandleSelection(event) {
     }
 
     Reset();
+}
+
+function DistanceMovedSinceDrag() {
+    return Math.sqrt(Math.pow(startX - canvasPos.x, 2) + Math.pow(startY - canvasPos.y, 2));
 }
 
 function SelectEdge(edge) {
@@ -867,8 +874,8 @@ function AddingActivity(addingCategory) {
 
 // Add function to handle panning
 function PanCanvas() {
-    offsetX =  startX - canvasPos.x;
-    offsetY = startY - canvasPos.y;
+    offsetX =  offsetStartX + startX - canvasPos.x;
+    offsetY = offsetStartY + startY - canvasPos.y;
     ResetCanvas();
     SetupNodes(); // Redraw all nodes and edges with new pan offset
     let x = String(-offsetX);
