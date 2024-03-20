@@ -25,8 +25,8 @@ fetchDatabaseEdges();
 var canvasLeft = canvas.offsetLeft + canvas.clientLeft;
 var canvasTop = canvas.offsetTop + canvas.clientTop;
 
-let startX;
-let startY;
+let startX, startY;
+let offsetStartX, offsetStartY;
 const nodeSize = 20;
 const edgeSize = 6;
 
@@ -57,6 +57,11 @@ function SetupEventListeners() {
     canvas.addEventListener('mousemove', (event) => {
         HandleMouseMove();
         SetPositions(event);
+        Frame();
+    });
+
+    document.getElementById('delete').addEventListener('click', () => {
+        HandleDelete();
         Frame();
     });
 
@@ -101,6 +106,26 @@ function SetupEventListeners() {
     });
 }
 
+function HandleDelete() {
+    if (currentState === "edge") {
+        const confirmed = confirm("Are you sure you want to delete this edge?");
+
+        if (!confirmed)
+            return;
+
+        DeleteEdge(selectedEdge, true);
+    }
+
+    else if (currentState === "node") {
+        const confirmed = confirm("Are you sure you want to delete this node and all it's connections?");
+
+        if (!confirmed)
+            return;
+
+        DeleteNode(selectedNode, true);
+    }
+}
+
 function HandleMouseMove(event) {
     if (mouseDown)
         isDragging = true;
@@ -109,8 +134,11 @@ function HandleMouseMove(event) {
         PanCanvas();
 }
 function SetUpStartPos(){
-    startX = canvasPos.x +offsetX;
-    startY = canvasPos.y + offsetY;
+    startX = canvasPos.x;
+    startY = canvasPos.y;
+
+    offsetStartX = offsetX;
+    offsetStartY = offsetY;
 }
 function HandleCancel() {
     Reset();
@@ -149,8 +177,8 @@ function DrawNode(node, fillColor = 'green') {
 }
 
 function HandleSelection(event) {
-    if (isDragging)
-        return;
+    if (isDragging && DistanceMovedSinceDrag() > 3)
+        return;   
 
     if (currentState === "connection") {
         if (hoveredNode != null) {
@@ -204,6 +232,10 @@ function HandleSelection(event) {
     Reset();
 }
 
+function DistanceMovedSinceDrag() {
+    return Math.sqrt(Math.pow(startX - canvasPos.x, 2) + Math.pow(startY - canvasPos.y, 2));
+}
+
 function SelectEdge(edge) {
     if (selectedNode == null)
         selectedNode = nodes.find(node => node.node_id === edge.start_node_id);
@@ -215,7 +247,6 @@ function SelectEdge(edge) {
 }
 
 function SelectNode(node) {
-    console.log(node)
     selectedNode = node;
     DisplayNodeInfo();
 
@@ -229,6 +260,53 @@ function DeselectNode() {
 function DeselectEdge() {
     Reset();
     hoveredEdge = null;
+}
+
+function DeleteEdge(edge, requiresReset) {
+
+    fetch('deleteEdge.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(edge)
+    })
+        .then((response) => {
+            if (!response.ok) {
+                alert("Failed to delete edge.");
+                throw new Error("Failed to delete");
+            }
+            edges.splice(edges.findIndex(edge => edge.start_node_id === selectedEdge.start_node_id && edge.end_node_id === selectedEdge.end_node_id), 1);
+            edges.splice(edges.findIndex(edge => edge.start_node_id === selectedEdge.end_node_id && edge.end_node_id === selectedEdge.start_node_id), 1);
+
+            if (requiresReset) {
+                Reset();
+                Frame();
+            }
+        });
+}
+
+function DeleteNode(node) {
+
+    GetNodeEdges().forEach(edge => DeleteEdge(edge, false));
+
+    fetch('deleteNode.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(selectedNode)
+    })
+        .then((response) => {
+            if (!response.ok) {
+                alert("Failed to delete node.");
+                throw new Error("Failed to node");
+            }
+            nodes.splice(nodes.findIndex(nodeInList => nodeInList.node_id === node.node_id), 1);
+
+            Reset();
+            Frame();
+        });
+}
+
+function GetNodeEdges() {
+    return edges.filter(edge => edge.start_node_id === selectedNode.node_id);
 }
 
 
@@ -728,7 +806,7 @@ function AngleToDirection(angle) {
 }
 
 function DisplayConnectionInformation() {
-    const specificInfo = ResetInformationTo("connection");
+    const specificInfo = ResetInformationTo("connection", false, false);
 
     specificInfo.querySelector(".title").textContent = "Creating new connection";
 
@@ -755,7 +833,7 @@ function ResetSelectedInformation() {
     currentState = null;
     currentAddingCategory = null;
 }
-function ResetInformationTo(displaying, includeApplyButton = true) {
+function ResetInformationTo(displaying, includeApplyButton = true, includeDeleteButton = true) {
     document.getElementById("connection-info-container").style.display = "none";
     document.getElementById("node-info-container").style.display = "none";
     document.getElementById("edge-info-container").style.display = "none";
@@ -764,6 +842,7 @@ function ResetInformationTo(displaying, includeApplyButton = true) {
     const buttons = document.getElementById("button-container");
     buttons.style.display = "none";
     document.getElementById("apply").style.display = "block";
+    document.getElementById("delete").style.display = "block";
 
 
     if (!displaying)
@@ -773,6 +852,9 @@ function ResetInformationTo(displaying, includeApplyButton = true) {
 
     if(!includeApplyButton)
         document.getElementById("apply").style.display = "none";
+
+    if (!includeDeleteButton)
+        document.getElementById("delete").style.display = "none";
 
     var displaying = document.getElementById(displaying + "-info-container");
     displaying.style.display = "block";
@@ -785,15 +867,15 @@ function AddingActivity(addingCategory) {
     Reset();
 
     currentAddingCategory = addingCategory;
-    const specificInfo = ResetInformationTo("adding", false);
+    const specificInfo = ResetInformationTo("adding", false, false);
     specificInfo.querySelector(".title").textContent = "New " + GetCategoryName(addingCategory);
     currentState = "new node";
 }
 
 // Add function to handle panning
 function PanCanvas() {
-    offsetX =  startX - canvasPos.x;
-    offsetY = startY - canvasPos.y;
+    offsetX =  offsetStartX + startX - canvasPos.x;
+    offsetY = offsetStartY + startY - canvasPos.y;
     ResetCanvas();
     SetupNodes(); // Redraw all nodes and edges with new pan offset
     let x = String(-offsetX);
