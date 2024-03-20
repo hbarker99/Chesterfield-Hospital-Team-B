@@ -1,6 +1,15 @@
 <?php
 session_start();
 
+
+
+$json = file_get_contents('php://input');
+error_log("Raw POST data:$json");
+$params = json_decode($json);
+
+$_SESSION['start_point'] = $_POST['startPoint'];
+$_SESSION['end_point'] = $_POST['endPoint'];
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['getRoute'])) {
         // Store POST data in session

@@ -1,9 +1,10 @@
 <?php
-include_once("dbString.php");
+include_once('./components/database.php');
+
+
 include("./components/indexPHP/startLocation.php");
 require("sessionHandling.php");
 
-$_SESSION['current_step'] = 0;
 ?>
 
 <!doctype html>
@@ -21,7 +22,10 @@ $_SESSION['current_step'] = 0;
     <body id="bootstrap-overrides">
         <div class="page-container">
             <div> 
-                <h1 class="page-title">Plan your route</h1>
+                <div class="header-container">
+                    <h1 class="page-title">Plan Your Route</h1>
+                    <img src="./chesterfield_royal_hospital_logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
+                </div>
                 <form method="post" action="indexRedirect.php" autocomplete="off">
                     <div class="form-container">
                         <?php if(!isset($_GET['location'])):?>
@@ -73,8 +77,10 @@ form.addEventListener(
     event => {
         invalidInputs = GetRouteDropdowns().filter(x => x.value === '');
 
-        if (invalidInputs.length === 0)
+        if (invalidInputs.length === 0){
+            SetRoute();
             return;
+        }
 
         invalidInputs.forEach(input => {
             input.parentNode.classList.add('error');
@@ -87,5 +93,18 @@ form.addEventListener(
 <script>
     function GetRouteDropdowns() {
         return [document.getElementById("startPoint"), document.getElementById("endPoint")]
+    }
+
+    async function SetRoute(){
+        const start = document.getElementById("startPoint").value;
+        const end = document.getElementById("endPoint").value
+
+        sessionStorage.setItem("startPoint", start);
+        sessionStorage.setItem("endPoint", end);
+        console.log("Sart");
+        await fetch("saveRouteInfo.php", {
+            body: JSON.stringify({start_point: start, end_point: end })
+        }).then(() => {console.log("Fin");});
+        console.log(sessionStorage.getItem("startPoint"));
     }
 </script>
