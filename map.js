@@ -245,7 +245,7 @@ function DisplayNodeInfo() {
 
     const name = specificInfo.querySelector("#visible-name");
     const nameInput = name.querySelector("input");
-    nameInput.value = GetNodeName(selectedNode);
+    nameInput.value = selectedNode.name;
 
 }
 
