@@ -363,7 +363,6 @@ function DisplayEdgeInfo() {
 
         routeInfo.querySelector("#route-title").innerHTML = "From <span style=\"color: " + primary + "\">" + GetNodeName(startDisplayNode) + "</span> to <span style=\"color: " + secondary + "\">" + GetNodeName(endDisplayNode) + "</span>";
     
-        // Select the image container and ensure it's clear
         const imageContainer = routeInfo.querySelector("img");
 
         testimage = "./img/" + GetEdge(startDisplayNode, endDisplayNode).image;
