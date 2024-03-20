@@ -19,7 +19,7 @@
 	</div>
 		<div class="info-container" id="info-container">
 			<div id="node-info-container">
-				<div class="title" id="title">Entrance</div>
+				<div class="title" id="title"></div>
 				<div id="visible-name">
 					<label>Display Name</label>
 					<input type="text" class="form-control" />
@@ -47,7 +47,7 @@
 				<div id="to"></div>
 			</div>
 			<div id="door-info-container">
-                 
+                 <div class="title"></div>
 		    </div>
 			<div class="button-container" id="button-container">
 				<button class="btn btn-primary" id="cancel">Cancel</button>

@@ -95,11 +95,17 @@ function HandleCancel() {
 }
 
 function HandleApply() {
+    console.log(currentState);
     if (currentState === "connection") {
         if (newConnectionSelectedNodes.length !== 2)
             return;
 
         CreateConnection();
+    }
+    else{
+        const nodeId = selectedNode.node_id;
+        const newName = document.querySelector('#visible-name input').value;
+        updateNodeName(nodeId, newName);
     }
 }
 
@@ -179,6 +185,7 @@ function SelectEdge(edge) {
 }
 
 function SelectNode(node) {
+    console.log(node)
     selectedNode = node;
     DisplayNodeInfo();
 
@@ -194,8 +201,8 @@ function DisplayNodeInfo() {
 
     const name = specificInfo.querySelector("#visible-name");
     const nameInput = name.querySelector("input");
-    nameInput.initialValue = 'Hiya';
-    formEvents = nameInput.addEventListener("keyup", HandleInputChange);
+    nameInput.value = GetNodeName(selectedNode);
+
 }
 
 function ResetCanvas() {
@@ -300,6 +307,31 @@ function fetchDatabaseEdges() {
         })
         .catch(error => console.error('Error fetching edges:', error));
 }
+
+function updateNodeName(nodeId, newName) {
+    const payload = { id: nodeId, name: newName };
+    fetch('updateNode.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Node name updated successfully!');
+            const Result = GetNodeFromId(nodeId);
+            Result.name = newName;
+            Result.title = newName;
+            console.log(Result);
+        } else {
+            alert('Failed to update node name: ' + data.message);
+        }
+    })
+    .catch(error => console.error('Error updating node name:', error));
+    ResetSelectedInformation();
+    Frame();
+}
+
 
 function Frame() {
     SetHoveredStates();
@@ -662,6 +694,7 @@ function NewDoorMode() {
     const specificInfo = ResetInformationTo("door");
     document.getElementById("apply").style.display = "none";
     currentState = "new door";
+    specificInfo.querySelector(".title").textContent = "Creating new Door";
 }
 
     // Add function to handle panning
