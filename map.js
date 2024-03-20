@@ -178,7 +178,7 @@ function DrawNode(node, fillColor = 'green') {
 
 function HandleSelection(event) {
     if (isDragging && DistanceMovedSinceDrag() > 3)
-        return;
+        return;   
 
     if (currentState === "connection") {
         if (hoveredNode != null) {
