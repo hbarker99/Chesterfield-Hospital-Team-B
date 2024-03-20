@@ -33,8 +33,7 @@ var nodes = [];
 let edges = [];
 
 SetupEventListeners();
-ResetInformationTo();
-ResetSelectedInformation();
+Reset();
 
 function SetupEventListeners() {
 
@@ -93,8 +92,7 @@ function SetUpStartPos(){
     startY = canvasPos.y + offsetY;
 }
 function HandleCancel() {
-    ResetInformationTo();
-    ResetSelectedInformation();
+    Reset();
 }
 
 function HandleApply() {
@@ -176,7 +174,6 @@ function HandleSelection(event) {
         };
         AddNewNode(newDoor);
 
-        currentState = null;
         return;
     }
 
@@ -201,13 +198,11 @@ function SelectNode(node) {
 }
 
 function DeselectNode() {
-    ResetSelectedInformation();
-    ResetInformationTo();
+    Reset();
 }
 
 function DeselectEdge() {
-    ResetSelectedInformation();
-    ResetInformationTo();
+    Reset();
     hoveredEdge = null;
 }
 
@@ -665,13 +660,19 @@ function DisplayConnectionInformation() {
     toText.textContent = nodeTo ? "To " + GetNodeName(nodeTo) : "";
 }
 
+function Reset() {
+    ResetInformationTo();
+    ResetSelectedInformation();
+    Frame();
+}
+
 function ResetSelectedInformation() {
     newConnectionSelectedNodes = [];
     selectedNode = null;
     selectedEdge = null;
     currentState = null;
 }
-function ResetInformationTo(displaying) {
+function ResetInformationTo(displaying, includeApplyButton = true) {
     document.getElementById("connection-info-container").style.display = "none";
     document.getElementById("node-info-container").style.display = "none";
     document.getElementById("edge-info-container").style.display = "none";
@@ -686,6 +687,10 @@ function ResetInformationTo(displaying) {
         return;
 
     buttons.style.display = "flex";
+
+    if(!includeApplyButton)
+        document.getElementById("apply").style.display = "none";
+
     var displaying = document.getElementById(displaying + "-info-container");
     displaying.style.display = "block";
 
@@ -695,23 +700,22 @@ function ResetInformationTo(displaying) {
 
 function NewDoorMode() {
     ResetSelectedInformation();
-    const specificInfo = ResetInformationTo("door");
-    document.getElementById("apply").style.display = "none";
+    const specificInfo = ResetInformationTo("door", false);
     currentState = "new door";
 }
 
-    // Add function to handle panning
-    function PanCanvas() {
-        offsetX =  startX - canvasPos.x;
-        offsetY = startY - canvasPos.y;
-        ResetCanvas();
-        SetupNodes(); // Redraw all nodes and edges with new pan offset
-        let x = String(-offsetX);
-        let y = String(-offsetY);
-        moveMap(x, y);
-    }
-    function moveMap(x, y) {
-        document.getElementById("map").style.backgroundPosition = x + 'px ' + y + 'px';
-        // $("map").css('background-position', x+'px '+y+'px');
-        Frame();
-    }
+// Add function to handle panning
+function PanCanvas() {
+    offsetX =  startX - canvasPos.x;
+    offsetY = startY - canvasPos.y;
+    ResetCanvas();
+    SetupNodes(); // Redraw all nodes and edges with new pan offset
+    let x = String(-offsetX);
+    let y = String(-offsetY);
+    moveMap(x, y);
+}
+function moveMap(x, y) {
+    document.getElementById("map").style.backgroundPosition = x + 'px ' + y + 'px';
+    // $("map").css('background-position', x+'px '+y+'px');
+    Frame();
+}
