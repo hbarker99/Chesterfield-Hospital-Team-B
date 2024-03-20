@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="button-container">
-                <button id="previousStep"class="btn btn-primary">Back</button>
+                <button id="previousStep" style="visibility: hidden"; class="btn btn-primary">Back</button>
                 <button id="nextStep"class="btn btn-primary">Next</button>
             </div>
         </div>
@@ -42,7 +42,7 @@
 </html>
 
 <script>
-    
+
 const previousStep = document.getElementById('previousStep');
 const nextStep = document.getElementById('nextStep');
 
@@ -51,7 +51,7 @@ previousStep.addEventListener('click', () => {
         if (currentStep > 0) {
             currentStep--; // Move to the previous step
         }
-        
+
         Display(currentStep);
         UpdateArrows(currentStep);
     });
@@ -64,6 +64,7 @@ nextStep.addEventListener('click', () => {
     Display(currentStep);
     UpdateArrows(currentStep);
 });
+
 function UpdateArrows(currentStep){
     if(currentStep === 0){
         document.getElementById('instruction').innerHTML = "Begin facing the same direction as the image.";

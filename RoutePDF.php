@@ -13,6 +13,9 @@ function getStartEndNames($nodeId) {
     $data = $result->fetchArray(SQLITE3_ASSOC);    
     return $data['name'];
 }
+$startPoint = $_SESSION['start_point'];
+$endPoint = $_SESSION['end_point'];
+
 $startName = getStartEndNames($startPoint);
 $endName = getStartEndNames($endPoint);
 
