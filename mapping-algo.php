@@ -138,7 +138,8 @@ else
     FROM steps
     INNER JOIN edges ON steps.edge_id = edges.edge_id
     INNER JOIN node ON edges.end_node_id = node.node_id
-    WHERE steps.path_id = ".$exists['path_id']);
+    WHERE steps.path_id = ".$exists['path_id']."
+    ORDER BY position_in_path");
     
 
     $final_path = [];
@@ -226,14 +227,14 @@ else
 
                         $instruction_text = 'Use the stairs or lift to get to ';
                         if ($end_floor == 0) {
-                            $instruction_text .= 'the "<b>"ground</b> floor.';
+                            $instruction_text .= 'the <b>ground</b> floor.';
                         } else {
-                            $instruction_text .= 'floor "<b>"'.$end_floor.'</b>.';
+                            $instruction_text .= 'floor <b>'.$end_floor.'</b>.';
                         }
                         break;
 
                     case 5:
-                        $instruction_text = 'Go through <b>'.$path[$i]['name'] + '</b>.';
+                        $instruction_text = 'Go through <b>'.$path[$i]['name'].'</b>.';
                         break;
 
                     case 6:

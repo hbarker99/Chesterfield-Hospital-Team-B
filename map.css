@@ -1,0 +1,103 @@
+#map {
+    background-color: white;
+    background-image: url('mapBackground.png');
+
+    background-repeat: no-repeat;
+
+}
+
+body {
+    background-color: var(--primary-light-grey);
+    
+    height: 100dvh;
+    margin: 0;
+}
+
+#toolbar {
+    height: 3rem;
+    background-color: var(--primary-mid-gray);
+    padding: 0 0.5rem;
+    margin: 0.5rem 0;
+}
+
+
+.map-page-container {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+
+    width: 100%;
+    height: 100%;
+}
+
+.map-container {
+    width: calc(100% - 20rem);
+    height: 100%;
+}
+
+#canvas-container {
+    height: calc(100% - 3rem - 1rem);
+}
+
+.affirmative-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.info-container {
+    width: 30rem;
+    padding: 2rem;
+    border: 2px solid black;
+    border-right: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 2rem;
+    font-family: "Frutiger Roman";
+    margin-bottom: 1rem;
+
+    flex: 0 1 0;
+}
+
+#node-info-container {
+    flex: 1 0 0;
+    display: none;
+}
+
+#edge-info-container {
+    flex: 1 0 0;
+    display: none;
+}
+
+#button-container {
+    display: none;
+}
+
+.button-container {
+    flex: 0 1 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+#info-container label {
+    display: block;
+    font-family: "Frutiger Roman";
+    margin-bottom: 0.5rem;
+}
+
+#visible-name input {
+    font-family: "Frutiger Roman";
+    display: block;
+
+    margin-bottom: 2rem;
+
+    font-size: 1rem;
+}
+
+.image-container {
+    margin-bottom: 3rem;
+}
