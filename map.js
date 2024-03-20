@@ -650,46 +650,47 @@ function AngleToDirection(angle) {
     return 4;
 }
 
-    function DisplayConnectionInformation() {
-        const specificInfo = ResetInformationTo("connection");
+function DisplayConnectionInformation() {
+    const specificInfo = ResetInformationTo("connection");
 
-        specificInfo.querySelector(".title").textContent = "Creating new connection";
+    specificInfo.querySelector(".title").textContent = "Creating new connection";
 
-        const nodeFrom = newConnectionSelectedNodes[0];
-        const nodeTo = newConnectionSelectedNodes[1];
+    const nodeFrom = newConnectionSelectedNodes[0];
+    const nodeTo = newConnectionSelectedNodes[1];
 
-        const fromText = specificInfo.querySelector("#from");
-        const toText = specificInfo.querySelector("#to");
+    const fromText = specificInfo.querySelector("#from");
+    const toText = specificInfo.querySelector("#to");
 
-        fromText.textContent = nodeFrom ? "From " + GetNodeName(nodeFrom) : "";
-        toText.textContent = nodeTo ? "To " + GetNodeName(nodeTo) : "";
-    }
+    fromText.textContent = nodeFrom ? "From " + GetNodeName(nodeFrom) : "";
+    toText.textContent = nodeTo ? "To " + GetNodeName(nodeTo) : "";
+}
 
-    function ResetSelectedInformation() {
-        newConnectionSelectedNodes = [];
-        selectedNode = null;
-        selectedEdge = null;
-        currentState = null;
-    }
-    function ResetInformationTo(displaying) {
-        document.getElementById("connection-info-container").style.display = "none";
-        document.getElementById("node-info-container").style.display = "none";
-        document.getElementById("edge-info-container").style.display = "none";
-        document.getElementById("door-info-container").style.display = "none";
+function ResetSelectedInformation() {
+    newConnectionSelectedNodes = [];
+    selectedNode = null;
+    selectedEdge = null;
+    currentState = null;
+}
+function ResetInformationTo(displaying) {
+    document.getElementById("connection-info-container").style.display = "none";
+    document.getElementById("node-info-container").style.display = "none";
+    document.getElementById("edge-info-container").style.display = "none";
+    document.getElementById("door-info-container").style.display = "none";
 
-        const buttons = document.getElementById("button-container");
-        buttons.style.display = "none";
-        document.getElementById("apply").style.display = "block";
+    const buttons = document.getElementById("button-container");
+    buttons.style.display = "none";
+    document.getElementById("apply").style.display = "block";
 
 
-        if (!displaying)
-            return;
+    if (!displaying)
+        return;
 
-        buttons.style.display = "flex";
-        var displaying = document.getElementById(displaying + "-info-container");
-        displaying.style.display = "block";
+    buttons.style.display = "flex";
+    var displaying = document.getElementById(displaying + "-info-container");
+    displaying.style.display = "block";
 
-        return displaying;    }
+    return displaying;
+}
 
 
 function NewDoorMode() {
