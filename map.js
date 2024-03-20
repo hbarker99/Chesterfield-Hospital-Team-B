@@ -117,15 +117,10 @@ function HandleCancel() {
 }
 
 function HandleApply() {
-    if (currentState === "connection") {
-        if (newConnectionSelectedNodes.length !== 2)
-            return;
-
-    }
-    else{
+    if (currentState === "node") {
         const nodeId = selectedNode.node_id;
         const newName = document.querySelector('#visible-name input').value;
-        updateNodeName(nodeId, newName);
+        UpdateNodeName(nodeId, newName);
     }
 }
 
@@ -206,7 +201,7 @@ function HandleSelection(event) {
         return;
     }
 
-    currentState = null;
+    Reset();
 }
 
 function SelectEdge(edge) {
@@ -258,7 +253,7 @@ function DrawConnectedNodes(currentNode) {
     DrawEdges(currentNode);
 
     connectedNodes.forEach(node => {
-        DrawNode(node);
+        DrawNode(node, GetCategoryColour(node.category));
     });
     DrawNode(currentNode, 'gold');
 }
@@ -350,7 +345,7 @@ function fetchDatabaseEdges() {
         .catch(error => console.error('Error fetching edges:', error));
 }
 
-function updateNodeName(nodeId, newName) {
+function UpdateNodeName(nodeId, newName) {
     const payload = { id: nodeId, name: newName };
     fetch('updateNode.php', {
         method: 'POST',
@@ -360,11 +355,12 @@ function updateNodeName(nodeId, newName) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            console.log("Node name updated successfully!");
-            const Result = GetNodeFromId(nodeId);
-            Result.name = newName;
-            Result.title = newName;
-            console.log(Result);
+            const result = GetNodeFromId(nodeId);
+
+            result.name = newName;
+
+            Reset();
+            Frame();
         } else {
             alert('Failed to update node name: ' + data.message);
         }
