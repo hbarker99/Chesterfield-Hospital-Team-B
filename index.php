@@ -23,10 +23,11 @@ require("sessionHandling.php");
 
     <body id="bootstrap-overrides">
         <div class="page-container">
-            <div> <div class="header-container">
-            <h1 class="page-title">Plan your route</h1>
-                <img src="./chesterfield_royal_hospital_logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
-</div>
+            <div> 
+                <div class="header-container">
+                    <h1 class="page-title">Plan your route</h1>
+                    <img src="./chesterfield_royal_hospital_logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
+                </div>
                 <form method="post" action="indexRedirect.php" autocomplete="off">
                     <div class="form-container">
                         <?php if(!isset($_GET['location'])):?>

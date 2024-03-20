@@ -1,14 +1,37 @@
 let json;
-
+let nodes;
+FetchNodesJSON();
 FetchRouteJSON();
 
 
 let currentStep = 0;
 
 
+
 let totalSteps;
+for(var e in nodes){
+    document.write(e.name);
+    console.log(e.name);
+}
 
+/*
+$requestType = $_GET['request_type'];
 
+switch($requestType){
+    case 'fetch_nodes':
+        // Call the function that handles fetch_nodes requests
+        FetchNodesJSON();
+        break;
+    case 'fetch_route_json':
+        // Call the function that handles fetch_route_json requests
+        handleFetchRouteJSONRequest();
+        break;
+    default:
+        // Handle unknown request type
+        console.log("Unknown request type: $requestType");
+        break;
+}
+*/
 function FetchRouteJSON(){
     console.log("fetching JSON");
 
@@ -17,7 +40,7 @@ function FetchRouteJSON(){
 
     console.log('mapping-algo.php?start_node='+start+'&end_node='+end);
 
-    fetch('mapping-algo.php?start_node='+start+'&end_node='+end)
+    fetchWithRetry('mapping-algo.php?start_node='+start+'&end_node='+end, 3)
     .then(process)
     .then(passedData=>{
         json = passedData;
@@ -36,6 +59,18 @@ function FetchRouteJSON(){
 
 }
 
+function fetchWithRetry(url, retries) {
+    return fetch(url)
+    .catch(error => {
+        if (retries === 1) {
+            throw error;
+        }
+        return new Promise(resolve => {
+            setTimeout(() => resolve(fetchWithRetry(url, retries - 1)), 1000);
+        });
+    });
+}
+
 function Display(currentStep) {
     document.getElementById('instruction').innerHTML = json[currentStep].instruction;
     document.getElementById('image-id').src = './img/' + json[currentStep].image;
@@ -46,7 +81,6 @@ function Display(currentStep) {
     if (direction != 'forward'){
         setTimeout(() => arrowElement.classList.add(direction), 100);
     }
-
 }
 
 function process(response) {
@@ -57,3 +91,12 @@ function process(response) {
     }
     return response.json();
 }
+
+function FetchNodesJSON(){
+    console.log('fetching nodes');
+    fetchWithRetry('./components/dropdown/data-copy.php', 3)
+    .then(process)
+    .then(nodes_data=>{
+        nodes =  nodes_data;
+    })    
+};
