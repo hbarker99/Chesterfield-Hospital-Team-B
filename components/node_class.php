@@ -5,7 +5,7 @@
 
 class Node
 {
-    public $distance = PHP_INT_MAX;     // Set to max during initialisation
+    public $distance = 100;     // Set to max during initialisation
     public $previous = null;            // Reference to previous node in shortest path
     public $nodeId;                     // A unique ID for the node
     public $neighbours = [];            // Array serving as adjacency list

@@ -1,6 +1,4 @@
 <?php
-include_once("dbString.php");
-
 include_once('./components/database.php');
 
 

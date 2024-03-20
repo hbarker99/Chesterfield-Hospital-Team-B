@@ -11,14 +11,8 @@ function fetchData() {
 }
 
 function locationFill(){
-    $host = 'localhost'; // Replace with hosted server
-    $username = 'root';
-    $password = '';
-    $database = 'arundel';
-    // Create a connection
-    $mysqli = new mysqli($host, $username, $password, $database);
+    $mysqli = new mysqli('localhost', 'root', '', 'arundel');
 
-    // Check connection
     if ($mysqli->connect_error) {
         die('Connection failed: ' . $mysqli->connect_error);
     }
