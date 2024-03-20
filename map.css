@@ -39,14 +39,17 @@ body {
     height: calc(100% - 3rem - 1rem);
 }
 
+.affirmative-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
 .info-container {
     width: 30rem;
-
     padding: 2rem;
-
     border: 2px solid black;
     border-right: none;
-
     display: flex;
     flex-direction: column;
 }
@@ -76,7 +79,7 @@ body {
 .button-container {
     flex: 0 1 0;
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
     gap: 0.5rem;
 }
 
