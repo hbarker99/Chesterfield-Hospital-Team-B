@@ -362,8 +362,19 @@ function DisplayEdgeInfo() {
         const secondary = route === "one" ? secondaryColor : primaryColor;
 
         routeInfo.querySelector("#route-title").innerHTML = "From <span style=\"color: " + primary + "\">" + GetNodeName(startDisplayNode) + "</span> to <span style=\"color: " + secondary + "\">" + GetNodeName(endDisplayNode) + "</span>";
-    })
+    
+        const imageContainer = routeInfo.querySelector("img");
 
+        testimage = "./img/" + GetEdge(startDisplayNode, endDisplayNode).image;
+        imageContainer.alt= "Upload a Image";
+        
+        imageContainer.src = testimage;
+    
+    })
+}
+
+function GetEdge(startNode, endNode) {
+    return edges.find(edge => edge.start_node_id === startNode.node_id && edge.end_node_id === endNode.node_id);
 }
 
 function GetNodeFromId(id) {
@@ -524,7 +535,7 @@ function SetHoveredEdge() {
         const distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
 
         if (distance < 10) {
-            hoveredEdge = edges.find(edge => edge.start_node_id === selectedNode.node_id && edge.end_node_id === endNode.node_id);
+            hoveredEdge = GetEdge(selectedNode, endNode);
         }
     })
 }
