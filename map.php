@@ -24,7 +24,7 @@
 	</div>
 		<div class="info-container" id="info-container">
 			<div id="node-info-container">
-				<div class="title" id="title">Entrance</div>
+				<div class="title" id="title"></div>
 				<div id="visible-name">
 					<label>Display Name</label>
 					<input type="text" class="form-control" />
