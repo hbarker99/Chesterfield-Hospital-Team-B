@@ -9,7 +9,12 @@
 	<div class="map-container">
 		<div id="toolbar">
 			<button class="btn btn-primary" id="new-connection">New Connection</button>
+			<button class="btn btn-primary" style="visibility: hidden">blank</button>
 			<button class="btn btn-primary" id="new-door">New Door</button>
+			<button class="btn btn-primary" id="new-entrance">New Entrance</button>
+			<button class="btn btn-primary" id="new-junction">New Junction</button>
+			<button class="btn btn-primary" id="new-corridor">New Corridor</button>
+			<button class="btn btn-primary" id="new-destination">New Destination</button>
 		</div>
 		<div id="canvas-container">
 			<canvas id="map">
@@ -46,8 +51,8 @@
 				<div id="from"></div>
 				<div id="to"></div>
 			</div>
-			<div id="door-info-container">
-                 <div class="title"></div>
+			<div id="adding-info-container">
+				<div class="title"></div>
 		    </div>
 			<div class="button-container" id="button-container">
 				<button class="btn btn-primary" id="cancel">Cancel</button>

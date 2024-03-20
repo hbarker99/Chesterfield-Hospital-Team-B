@@ -1,5 +1,6 @@
 var canvas, context;
 var currentState, isDragging;
+var currentAddingCategory;
 var activeNodes;
 var hoveredNode, hoveredEdge;
 var selectedNode, selectedEdge;
@@ -75,7 +76,27 @@ function SetupEventListeners() {
     });
 
     document.getElementById('new-door').addEventListener('click', () => {
-        NewDoorMode();
+        AddingActivity(0);
+        Frame();
+    });
+
+    document.getElementById('new-entrance').addEventListener('click', () => {
+        AddingActivity(1);
+        Frame();
+    });
+
+    document.getElementById('new-junction').addEventListener('click', () => {
+        AddingActivity(2);
+        Frame();
+    });
+
+    document.getElementById('new-corridor').addEventListener('click', () => {
+        AddingActivity(5);
+        Frame();
+    });
+
+    document.getElementById('new-destination').addEventListener('click', () => {
+        AddingActivity(4);
         Frame();
     });
 }
@@ -110,7 +131,7 @@ function HandleApply() {
 
 function SetupNodes() {
     nodes.forEach(node => {
-        DrawNode(node);
+        DrawNode(node, GetCategoryColour(node.category));
     });
 }
 
@@ -173,15 +194,15 @@ function HandleSelection(event) {
         return;
     }
 
-    if (currentState === "new door") {
-        const newDoor = {
-            name: "New Door",
-            category: 0,
+    if (currentState === "new node") {
+        const newNode = {
+            name: "",
+            category: currentAddingCategory,
             x: worldPos.x - nodeSize/2,
             y: worldPos.y - nodeSize/2
         };
         Reset();
-        AddNewNode(newDoor);
+        AddNewNode(newNode);
         return;
     }
 
@@ -546,45 +567,74 @@ function AddNewNode(node) {
     });
 }
 
-    function GetNodeName(node) {
+function GetCategoryColour(categoryId) {
+    switch (categoryId) {
+        case 0:
+            return "#ad0000";
 
-        if (node.name)
-            return node.name;
+        case 1:
+            return "#ff0000";
 
-        switch (node.category) {
-            case 0:
-                return "Door";
-                break;
+        case 2:
+            return "#2c42bf";
 
-            case 1:
-                return "Entrance";
-                break;
+        case 3:
+            return "#f0a400";
 
-            case 2:
-                return "Junction";
-                break;
+        case 4:
+            return "#27b300";
 
-            case 3:
-                return "Stairs";
-                break;
+        case 5:
+            return "#94c4ff";
 
-            case 4:
-                return "Destination";
-                break;
-
-            case 5:
-                return "Corridor";
-                break;
-        }
+        default:
+            return "green";
     }
+}
 
+function GetCategoryName(categoryId) {
+    switch (categoryId) {
+        case 0:
+            return "Door";
+            break;
 
-    function NewConnectionMode() {
-        ResetSelectedInformation();
-        DisplayConnectionInformation();
+        case 1:
+            return "Entrance";
+            break;
 
-        currentState = "connection";
+        case 2:
+            return "Junction";
+            break;
+
+        case 3:
+            return "Stairs";
+            break;
+
+        case 4:
+            return "Destination";
+            break;
+
+        case 5:
+            return "Corridor";
+            break;
     }
+}
+
+function GetNodeName(node) {
+
+    if (node.name)
+        return node.name;
+
+    return GetCategoryName(node.category);
+}
+
+
+function NewConnectionMode() {
+    ResetSelectedInformation();
+    DisplayConnectionInformation();
+
+    currentState = "connection";
+}
 
 function CreateConnection() {
     const to = newConnectionSelectedNodes[0];
@@ -707,12 +757,13 @@ function ResetSelectedInformation() {
     selectedNode = null;
     selectedEdge = null;
     currentState = null;
+    currentAddingCategory = null;
 }
 function ResetInformationTo(displaying, includeApplyButton = true) {
     document.getElementById("connection-info-container").style.display = "none";
     document.getElementById("node-info-container").style.display = "none";
     document.getElementById("edge-info-container").style.display = "none";
-    document.getElementById("door-info-container").style.display = "none";
+    document.getElementById("adding-info-container").style.display = "none";
 
     const buttons = document.getElementById("button-container");
     buttons.style.display = "none";
@@ -734,11 +785,13 @@ function ResetInformationTo(displaying, includeApplyButton = true) {
 }
 
 
-function NewDoorMode() {
-    ResetSelectedInformation();
-    const specificInfo = ResetInformationTo("door", false);
-    currentState = "new door";
-    specificInfo.querySelector(".title").textContent = "Creating new Door";
+function AddingActivity(addingCategory) {
+    Reset();
+
+    currentAddingCategory = addingCategory;
+    const specificInfo = ResetInformationTo("adding", false);
+    specificInfo.querySelector(".title").textContent = "New " + GetCategoryName(addingCategory);
+    currentState = "new node";
 }
 
 // Add function to handle panning
