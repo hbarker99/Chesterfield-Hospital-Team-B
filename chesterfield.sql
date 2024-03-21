@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 21, 2024 at 01:06 PM
+-- Generation Time: Mar 21, 2024 at 03:14 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -61,6 +61,50 @@ CREATE TABLE `edges` (
   `accessibility_notes` varchar(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `edges`
+--
+
+INSERT INTO `edges` (`edge_id`, `start_node_id`, `end_node_id`, `distance`, `image`, `direction`, `notes`, `accessibility_notes`) VALUES
+(41, 50, 51, 1, 'edge_55.jpg', 1, NULL, NULL),
+(42, 51, 50, 1, 'edge_54.jpg', 3, NULL, NULL),
+(43, 49, 50, 1, 'edge_6.jpg', 4, NULL, NULL),
+(44, 50, 49, 1, 'edge_56.jpg', 2, NULL, NULL),
+(45, 39, 49, 1, 'edge_7.jpg', 3, NULL, NULL),
+(46, 49, 39, 1, 'edge_5.jpg', 1, NULL, NULL),
+(47, 40, 39, 1, 'edge_13.jpg', 3, NULL, NULL),
+(48, 39, 40, 1, 'edge_9.jpg', 1, NULL, NULL),
+(49, 41, 40, 1, 'edge_17.jpg', 3, NULL, NULL),
+(50, 40, 41, 1, 'edge_15.jpg', 1, NULL, NULL),
+(51, 41, 43, 1, 'edge_18.jpg', 1, NULL, NULL),
+(52, 43, 41, 1, 'edge_20.jpg', 3, NULL, NULL),
+(53, 42, 40, 1, 'edge_21.jpg', 4, NULL, NULL),
+(54, 40, 42, 1, 'edge_16.jpg', 2, NULL, NULL),
+(55, 42, 41, 1, 'edge_22.jpg', 4, NULL, NULL),
+(56, 41, 42, 1, 'edge_19.jpg', 2, NULL, NULL),
+(57, 45, 42, 1, 'edge_26.jpg', 4, NULL, NULL),
+(58, 42, 45, 1, 'edge_23.jpg', 1, NULL, NULL),
+(59, 44, 42, 1, 'edge_31.jpg', 1, NULL, NULL),
+(60, 42, 44, 1, 'edge_28.jpg', 3, NULL, NULL),
+(61, 46, 42, 1, 'edge_34.jpg', 4, NULL, NULL),
+(62, 42, 46, 1, 'edge_25.jpg', 4, NULL, NULL),
+(63, 46, 45, 1, 'edge_29.jpg', 4, NULL, NULL),
+(64, 45, 46, 1, 'edge_34.jpg', 2, NULL, NULL),
+(65, 46, 44, 1, 'edge_36.jpg', 4, NULL, NULL),
+(66, 44, 46, 1, 'edge_33.jpg', 4, NULL, NULL),
+(67, 48, 46, 1, 'edge_38.jpg', 1, NULL, NULL),
+(68, 46, 48, 1, 'edge_37.jpg', 2, NULL, NULL),
+(69, 52, 45, 1, 'edge_27.jpg', 3, NULL, NULL),
+(70, 45, 52, 1, 'edge_27.jpg', 1, NULL, NULL),
+(73, 53, 54, 1, 'edge_2.jpg', 3, NULL, NULL),
+(74, 54, 53, 1, 'edge_1.jpg', 1, NULL, NULL),
+(77, 53, 49, 1, 'edge_3.jpg', 4, NULL, NULL),
+(78, 49, 53, 1, 'edge_4.jpg', 2, NULL, NULL),
+(79, 44, 45, 1, 'edge_32.jpg', 1, NULL, NULL),
+(80, 45, 44, 1, 'edge_24.jpg', 3, NULL, NULL),
+(93, 57, 48, 1, 'edge_40.jpg', 4, NULL, NULL),
+(94, 48, 57, 1, 'edge_39.jpg', 4, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -76,6 +120,28 @@ CREATE TABLE `node` (
   `x` int(11) NOT NULL,
   `y` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `node`
+--
+
+INSERT INTO `node` (`node_id`, `name`, `category`, `is_outside`, `floor`, `x`, `y`) VALUES
+(39, 'Arundel Main Entrance', 2, 0, 0, 274, 694),
+(40, '', 1, 0, 0, 268, 458),
+(41, '', 1, 0, 0, 274, 343),
+(42, '', 1, 0, 0, 701, 403),
+(43, 'Arundel 10001', 5, 0, 0, 176, 162),
+(44, 'Open IT Area', 5, 0, 0, 875, 565),
+(45, '', 1, 0, 0, 789, 347),
+(46, '', 1, 0, 0, 1052, 417),
+(48, '', 6, 0, 0, 1314, 408),
+(49, '', 3, 0, 0, 271, 816),
+(50, '', 3, 0, 0, -102, 828),
+(51, 'Arundel Street Car Park', 5, 0, 0, -108, 381),
+(52, 'Toilets', 5, 0, 0, 786, 257),
+(53, '', 3, 0, 0, 1058, 798),
+(54, 'Eyre Street Car Park', 5, 0, 0, 1052, 1055),
+(57, 'Fire Exit', 2, 0, 0, 1318, 65);
 
 -- --------------------------------------------------------
 
@@ -94,13 +160,10 @@ CREATE TABLE `path` (
 --
 
 INSERT INTO `path` (`path_id`, `start_node_id`, `end_node_id`) VALUES
-(16, 3, 11),
-(18, 22, 0),
-(19, 0, 11),
-(20, 0, 3),
-(21, 0, 22),
-(22, 0, 21),
-(23, 11, 21);
+(7, 54, 44),
+(8, 39, 44),
+(9, 39, 52),
+(10, 39, 51);
 
 -- --------------------------------------------------------
 
@@ -120,38 +183,22 @@ CREATE TABLE `steps` (
 --
 
 INSERT INTO `steps` (`step_id`, `path_id`, `edge_id`, `position_in_path`) VALUES
-(25, 19, 1, 0),
-(26, 19, 3, 1),
-(27, 19, 5, 2),
-(28, 19, 9, 3),
-(29, 19, 16, 4),
-(30, 19, 24, 5),
-(31, 20, 1, 0),
-(32, 20, 3, 1),
-(33, 20, 5, 2),
-(34, 21, 1, 0),
-(35, 21, 3, 1),
-(36, 21, 6, 2),
-(37, 21, 55, 3),
-(38, 22, 1, 0),
-(39, 22, 3, 1),
-(40, 22, 5, 2),
-(41, 22, 8, 3),
-(42, 22, 12, 4),
-(43, 22, 42, 5),
-(44, 22, 44, 6),
-(45, 22, 45, 7),
-(46, 22, 48, 8),
-(47, 22, 51, 9),
-(48, 23, 31, 0),
-(49, 23, 21, 1),
-(50, 23, 14, 2),
-(51, 23, 12, 3),
-(52, 23, 42, 4),
-(53, 23, 44, 5),
-(54, 23, 45, 6),
-(55, 23, 48, 7),
-(56, 23, 51, 8);
+(29, 7, 74, 0),
+(30, 7, 77, 1),
+(31, 7, 46, 2),
+(32, 7, 48, 3),
+(33, 7, 54, 4),
+(34, 7, 60, 5),
+(35, 8, 48, 0),
+(36, 8, 54, 1),
+(37, 8, 60, 2),
+(38, 9, 48, 0),
+(39, 9, 54, 1),
+(40, 9, 58, 2),
+(41, 9, 70, 3),
+(42, 10, 45, 0),
+(43, 10, 43, 1),
+(44, 10, 41, 2);
 
 --
 -- Indexes for dumped tables
@@ -178,6 +225,19 @@ ALTER TABLE `node`
   ADD PRIMARY KEY (`node_id`);
 
 --
+-- Indexes for table `path`
+--
+ALTER TABLE `path`
+  ADD PRIMARY KEY (`path_id`),
+  ADD UNIQUE KEY `path_id` (`path_id`);
+
+--
+-- Indexes for table `steps`
+--
+ALTER TABLE `steps`
+  ADD PRIMARY KEY (`step_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -185,13 +245,25 @@ ALTER TABLE `node`
 -- AUTO_INCREMENT for table `edges`
 --
 ALTER TABLE `edges`
-  MODIFY `edge_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `edge_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT for table `node`
 --
 ALTER TABLE `node`
-  MODIFY `node_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `node_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+
+--
+-- AUTO_INCREMENT for table `path`
+--
+ALTER TABLE `path`
+  MODIFY `path_id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `steps`
+--
+ALTER TABLE `steps`
+  MODIFY `step_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

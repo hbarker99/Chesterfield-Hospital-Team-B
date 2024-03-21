@@ -875,16 +875,15 @@ function CreateConnection() {
             return response.json();
         })
         .then(json => {
-
             const alternate = {
-                edge_id: json.id + 1,
+                edge_id: json.id,
                 start_node_id: to.node_id,
                 end_node_id: from.node_id,
                 distance: 1,
                 direction: (edge.direction + 2) % 4
             }
 
-            edge.edge_id = json.id;
+            edge.edge_id = json.id - 1;
 
             edges.push(edge);
             edges.push(alternate);
