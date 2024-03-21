@@ -420,6 +420,8 @@ function UpdateImages() {
         else
             edge = GetEdge(selectedEdge.end_node_id, selectedEdge.start_node_id);
 
+        console.log(edge);
+
         UploadImage(file).then((response) => {
             const edgePayload = {
                 edge_id: edge.edge_id,
@@ -865,28 +867,35 @@ function CreateConnection() {
         },
         body: JSON.stringify(edge),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
 
-        const alternate = {
-            start_node_id: to.node_id,
-            end_node_id: from.node_id,
-            distance: 1,
-            direction: (edge.direction + 2) % 4
-        }
+            return response.json();
+        })
+        .then(json => {
 
-        edges.push(edge);
-        edges.push(alternate);
+            const alternate = {
+                edge_id: json.id + 1,
+                start_node_id: to.node_id,
+                end_node_id: from.node_id,
+                distance: 1,
+                direction: (edge.direction + 2) % 4
+            }
+
+            edge.edge_id = json.id;
+
+            edges.push(edge);
+            edges.push(alternate);
         
-        SelectEdge(edge);
-        Frame();
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        alert('Network or server error occurred');
-    });
+            SelectEdge(edge);
+            Frame();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Network or server error occurred');
+        });
 }
 
 function GetDirection(startNodeId, endNodeId) {
@@ -969,6 +978,7 @@ function ResetSelectedInformation() {
     selectedEdge = null;
     currentState = null;
     currentAddingCategory = null;
+    imageUploadInputs = [];
 }
 function ResetInformationTo(displaying, includeApplyButton = true, includeDeleteButton = true) {
     document.getElementById("connection-info-container").style.display = "none";

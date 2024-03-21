@@ -42,11 +42,10 @@ $result = $db->query("INSERT INTO Edges (start_node_id, end_node_id, distance, d
 $result = $db->query("INSERT INTO Edges (start_node_id, end_node_id, distance, direction) VALUES ($end_node_id, $start_node_id, $distance, $direction)");
 
 if ($result) {
-    echo json_encode(["id" => $conn->lastInsertRowID()]);
+    echo json_encode(["id" => $db->insert_id]);
 } else {
     echo json_encode(["error" => "Failed to create edge"]);
 }
 
-$stmt->close();
 $db->close();
 ?>
