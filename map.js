@@ -106,6 +106,15 @@ function SetupEventListeners() {
         AddingActivity(4);
         Frame();
     });
+
+    const routeOne = document.getElementById('route-one');
+    const routeTwo = document.getElementById('route-two');
+
+    const routeOneFileUpload = routeOne.querySelector('input');
+    const routeTwoFileUpload = routeTwo.querySelector('input');
+
+    routeOne.querySelector('button').addEventListener("click", () => routeOneFileUpload.click());
+    routeTwo.querySelector('button').addEventListener("click", () => routeTwoFileUpload.click());
 }
 
 function HandleDelete() {
@@ -374,10 +383,8 @@ function DisplayEdgeInfo() {
 
         const image = GetEdgeImagePath(startDisplayNode, endDisplayNode);
 
-        const imageUploadInput = routeInfo.querySelector('#image-edge-upload');
         const uploadButton = routeInfo.querySelector("button");
 
-        uploadButton.addEventListener("click", () => imageUploadInput.click())
 
         if (image) {
             imageContainer.src = image;
@@ -412,7 +419,7 @@ function UpdateImages() {
         else
             edge = GetEdge(selectedEdge.end_node_id, selectedEdge.start_node_id);
 
-        UploadImage(file).then(() => {
+        UploadImage(file).then((response) => {
             const edgePayload = {
                 edge_id: edge.edge_id,
                 image_name: file.name
@@ -421,7 +428,11 @@ function UpdateImages() {
             fetch("updateEdge.php", {
                 method: "POST",
                 body: JSON.stringify(edgePayload)
-            }).then(response => console.log(response.text()));
+            }).then(response => {
+                edge.image = file.name;
+                Reset();
+                Frame();
+            });
         })
     })
 }
