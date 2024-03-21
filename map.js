@@ -186,7 +186,7 @@ function DrawNode(node, fillColor = 'green') {
     context.rect(node.x - offsetX, node.y - offsetY, nodeSize, nodeSize);
     context.fillStyle = fillColor;
     context.fill();
-    context.lineWidth = 3;
+    context.lineWidth = 2;
     context.strokeStyle = '#003300';
     context.stroke();
 }
@@ -783,22 +783,22 @@ function AddNewNode(node) {
 function GetCategoryColour(categoryId) {
     switch (categoryId) {
         case 0:
-            return "#ad0000";
+            return "#41B6E6";
 
         case 1:
-            return "#ff0000";
+            return "#0072CE";
 
         case 2:
-            return "#2c42bf";
+            return "#009639";
 
         case 3:
-            return "#f0a400";
+            return "#78BE20";
 
         case 4:
-            return "#27b300";
+            return "#AE2573";
 
         case 5:
-            return "#94c4ff";
+            return "#FFFFFF";
 
         default:
             return "green";
