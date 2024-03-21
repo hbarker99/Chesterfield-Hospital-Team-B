@@ -353,7 +353,7 @@ function GetConnectedNodes(currentNode) {
 function DisplayEdgeInfo() {
     const specificInfo = ResetInformationTo('edge');
 
-    routes = ["one", "two"];
+    const routes = ["one", "two"];
 
     routes.forEach(route => {
         const routeInfo = specificInfo.querySelector("#route-" + route);
