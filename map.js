@@ -239,6 +239,7 @@ function HandleSelection(event) {
             x: worldPos.x - nodeSize/2,
             y: worldPos.y - nodeSize/2
         };
+        console.log(newNode)
         Reset();
         AddNewNode(newNode);
         return;
@@ -523,13 +524,13 @@ function fetchDatabaseNodes() {
             recievedNodes = recievedNodes.map(node => {
                 return {
                     name: node.name,
-                    category: parseInt(node.category),
+                    category: parseInt(node.category) - 1,
                     x: parseInt(node.x),
                     y: parseInt(node.y),
                     node_id: parseInt(node.node_id)
                 }
             });
-
+            console.log(recievedNodes);
             recievedNodes.forEach(node => nodes.push(node));
             SetupNodes();
         })
@@ -553,7 +554,6 @@ function fetchDatabaseEdges() {
                     accessibility_notes: edge.accessibility_notes
                 }
             });
-            console.log('Edges:', edges);
         })
         .catch(error => console.error('Error fetching edges:', error));
 }
@@ -738,6 +738,8 @@ function HighlightEdge(startNode, endNode) {
 }
 
 function AddNewNode(node) {
+    node.category += 1;
+    
     fetch('addNode.php', {
         method: 'POST',
         headers: {
@@ -760,7 +762,7 @@ function AddNewNode(node) {
             const newNode = {
                 node_id: data.id,
                 name: node.name,
-                category: node.category,
+                category: node.category - 1,
                 x: node.x,
                 y: node.y
             };

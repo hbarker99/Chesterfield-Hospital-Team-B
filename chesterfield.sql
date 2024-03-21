@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 21, 2024 at 12:24 PM
+-- Generation Time: Mar 21, 2024 at 01:06 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -169,65 +169,29 @@ ALTER TABLE `category`
 -- Indexes for table `edges`
 --
 ALTER TABLE `edges`
-  ADD PRIMARY KEY (`edge_id`),
-  ADD KEY `edge_id` (`edge_id`),
-  ADD KEY `direction` (`direction`),
-  ADD KEY `edges_ibfk_2` (`end_node_id`),
-  ADD KEY `edges_ibfk_1` (`start_node_id`);
+  ADD PRIMARY KEY (`edge_id`);
 
 --
 -- Indexes for table `node`
 --
 ALTER TABLE `node`
-  ADD PRIMARY KEY (`node_id`),
-  ADD KEY `node_id` (`node_id`);
-
---
--- Indexes for table `path`
---
-ALTER TABLE `path`
-  ADD PRIMARY KEY (`path_id`),
-  ADD KEY `start_node_id` (`start_node_id`),
-  ADD KEY `end_node_id` (`end_node_id`);
-
---
--- Indexes for table `steps`
---
-ALTER TABLE `steps`
-  ADD PRIMARY KEY (`step_id`),
-  ADD KEY `path_id` (`path_id`);
+  ADD PRIMARY KEY (`node_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `category`
+-- AUTO_INCREMENT for table `edges`
 --
-ALTER TABLE `category`
-  MODIFY `category_id` tinyint(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+ALTER TABLE `edges`
+  MODIFY `edge_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `path`
+-- AUTO_INCREMENT for table `node`
 --
-ALTER TABLE `path`
-  MODIFY `path_id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
-
---
--- AUTO_INCREMENT for table `steps`
---
-ALTER TABLE `steps`
-  MODIFY `step_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `steps`
---
-ALTER TABLE `steps`
-  ADD CONSTRAINT `steps_ibfk_1` FOREIGN KEY (`path_id`) REFERENCES `path` (`path_id`) ON DELETE CASCADE;
+ALTER TABLE `node`
+  MODIFY `node_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
