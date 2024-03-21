@@ -16,6 +16,8 @@ var offsetY = 0;
 var primaryColor = 'red';
 var secondaryColor = 'blue';
 
+var imageUploadInputs = [];
+
 SetupCanvas();
 SizeCanvas();
 
@@ -149,6 +151,10 @@ function HandleApply() {
         const nodeId = selectedNode.node_id;
         const newName = document.querySelector('#visible-name input').value;
         UpdateNodeName(nodeId, newName);
+    }
+
+    else if (currentState === "edge") {
+        UpdateImages();
     }
 }
 
@@ -364,17 +370,103 @@ function DisplayEdgeInfo() {
         routeInfo.querySelector("#route-title").innerHTML = "From <span style=\"color: " + primary + "\">" + GetNodeName(startDisplayNode) + "</span> to <span style=\"color: " + secondary + "\">" + GetNodeName(endDisplayNode) + "</span>";
     
         const imageContainer = routeInfo.querySelector("img");
+        imageContainer.style.display = "block";
 
-        testimage = "./img/" + GetEdge(startDisplayNode, endDisplayNode).image;
-        imageContainer.alt= "Upload a Image";
-        
-        imageContainer.src = testimage;
+        const image = GetEdgeImagePath(startDisplayNode, endDisplayNode);
+
+        const imageUploadInput = routeInfo.querySelector('#image-edge-upload');
+        const uploadButton = routeInfo.querySelector("button");
+
+        uploadButton.addEventListener("click", () => imageUploadInput.click())
+
+        if (image) {
+            imageContainer.src = image;
+            uploadButton.textContent = "Change";
+        }
+        else {
+            imageContainer.style.display = "none";
+            uploadButton.textContent = "Upload";
+
+        }
+        SetupImageChangeListeners(routeInfo);
     
     })
 }
 
-function GetEdge(startNode, endNode) {
-    return edges.find(edge => edge.start_node_id === startNode.node_id && edge.end_node_id === endNode.node_id);
+function UpdateImages() {
+
+    imageUploadInputs.forEach(imageUploadElement => {
+        if (imageUploadElement.files.length == 0)
+            return;
+
+        const file = imageUploadElement.files[0];
+
+        const parentId = imageUploadElement.parentElement.parentElement.id;
+        const routeOne = parentId.includes("one");
+
+        let edge;
+
+        if (routeOne)
+            edge = selectedEdge;
+
+        else
+            edge = GetEdge(selectedEdge.end_node_id, selectedEdge.start_node_id);
+
+        UploadImage(file).then(() => {
+            const edgePayload = {
+                edge_id: edge.edge_id,
+                image_name: file.name
+            };
+            
+            fetch("updateEdge.php", {
+                method: "POST",
+                body: JSON.stringify(edgePayload)
+            }).then(response => console.log(response.text()));
+        })
+    })
+}
+
+function UploadImage(file) {
+    var data = new FormData();
+    data.append('uploading', file);
+
+    return fetch("uploadImage.php", {
+        method: "POST",
+        body: data
+    })
+        .then((response) => {
+            if (!response.ok)
+                throw new Error("File failed to upload");
+
+            return response;
+    })
+}
+
+function SetupImageChangeListeners(routeInfo) {
+    const imageUploadInput = routeInfo.querySelector('#image-edge-upload');
+
+    imageUploadInput.addEventListener('change', PreviewImage);
+    imageUploadInputs.push(imageUploadInput);
+}
+function PreviewImage(event) {
+    const file = this.files[0];
+    const imageDisplay = this.parentElement.querySelector("img");
+    imageDisplay.src = URL.createObjectURL(file);
+    imageDisplay.style.display = "block";
+}
+
+function GetEdgeImagePath(startNode, endNode) {
+    const edge = GetEdge(startNode.node_id, endNode.node_id);
+
+    if (edge.image)
+        return "./img/" + edge.image;
+
+    else
+        return null;
+}
+
+function GetEdge(startNodeId, endNodeId) {
+    return edges.find(edge => edge.start_node_id === startNodeId && edge.end_node_id === endNodeId);
 }
 
 function GetNodeFromId(id) {
@@ -535,7 +627,7 @@ function SetHoveredEdge() {
         const distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
 
         if (distance < 10) {
-            hoveredEdge = GetEdge(selectedNode, endNode);
+            hoveredEdge = GetEdge(selectedNode.node_id, endNode.node_id);
         }
     })
 }

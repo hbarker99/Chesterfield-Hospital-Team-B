@@ -34,14 +34,16 @@
 				<div id="route-one">
 					<div class="title" id="route-title">From a to b</div>
 					<div class="image-container">
-						<label>Image</label>
+						<input type="file"  id="image-edge-upload" style="display: none">
+						<button class="btn btn-upload btn-primary ">Upload</button>
 						<img src="./img/edge_1.jpg" width="200" height="200"/>
 					</div>
 				</div>
 				<div id="route-two">
 					<div class="title" id="route-title">From b to a</div>
 					<div class="image-container">
-						<label>Image</label>
+						<input type="file"  id="image-edge-upload" style="display: none">
+						<button class="btn btn-upload btn-primary">Upload</button>
 						<img src="./img/edge_1.jpg" width="200" height="200"/>
 					</div>
 				</div>

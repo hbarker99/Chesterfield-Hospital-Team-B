@@ -86,7 +86,6 @@ body {
 #info-container label {
     display: block;
     font-family: "Frutiger Roman";
-    margin-bottom: 0.5rem;
 }
 
 #visible-name input {
@@ -100,4 +99,10 @@ body {
 
 .image-container {
     margin-bottom: 3rem;
+}
+
+#bootstrap-overrides .btn-upload {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    margin: 0 0 1rem 0;
 }
