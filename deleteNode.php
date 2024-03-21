@@ -14,35 +14,28 @@ if (json_last_error() !== JSON_ERROR_NONE) { //Testing
     exit;
 }
 
-if (!$params) {  //Testing
+if (!$params) { 
     echo json_encode(["error" => "Invalid JSON"]);
     exit;
 }
 
-$name = $params->name ?? 'default_name';
-$category = $params->category ?? 0; 
-$x = $params->x ?? 0; 
-$y = $params->y ?? 0; 
+$node_id = $params->node_id;
 
-error_log("Received name: $name, category: $category, x: $x, y: $y"); // Testing
-
-if ($x <= 0 || $y <= 0 || $category < 0) { //Testing
+if ($node_id < 0) {
     echo json_encode(["error" => "Invalid input values lala"]);
     exit;
 }
 
-$stmt = $conn->prepare("INSERT INTO Node (name, category, x, y) VALUES (:name, :category, :x, :y)");
+$stmt = $conn->prepare("DELETE FROM Node WHERE node_id=:node_id");
 
-$stmt->bindValue(':name', $name, SQLITE3_TEXT);
-$stmt->bindValue(':category', $category, SQLITE3_INTEGER);
-$stmt->bindValue(':x', $x, SQLITE3_INTEGER);
-$stmt->bindValue(':y', $y, SQLITE3_INTEGER);
+$stmt->bindValue(':node_id', $node_id, SQLITE3_INTEGER);
 
 if ($stmt->execute()) {
-    echo json_encode(["id" => $conn->lastInsertRowID()]);
+    echo json_encode("Success");
 } else {
     echo json_encode(["error" => "Failed to add node"]);
 }
+
 
 $stmt->close();
 $conn->close();

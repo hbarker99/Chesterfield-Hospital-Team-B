@@ -11,17 +11,14 @@
     --primary-dark-grey: #425563;
     --primary-mid-grey: #768692;
     --primary-light-grey: #E8EDEE;
-
+    --primary-red: #DA291C;
     --secondary-blue-1: #CCE3F5;
     --secondary-blue-2: #E5F1FA;
     --secondary-grey-1: #EDF1F1;
     --secondary-grey-2: #F6F8F8;
     --secondary-yellow-1: #FEF9CC;
     --secondary-yellow-2: #FEFCE5;
-}
-
-#bootstrap-overrides body {
-    font-family: "Frutiger Roman",
+    --secondary-red: #AD2116;
 }
 
 #bootstrap-overrides .modal-title {
@@ -44,17 +41,27 @@
 }
 
 #bootstrap-overrides .btn-primary {
-    background-color: var(--primary-green);
-    border-radius: 0;
+    background-color: rgb(0, 94, 184);
+
     color: white;
-    border: 0.063rem solid black;
     border-radius: 0.25rem;
-    box-shadow: 0 0.25rem 0 #00401e;
-    font-size: 1rem
+    border-color: transparent;
+    font-size: 1.125rem;
+    font-weight: 700 !important;
+    line-height: 1.5;
+    border: 0 !important;
+    text-decoration: none !important;
+    outline: 0;
+    border-radius: 30px;
+    transition: .3s;
 }
 
+#bootstrap-overrides .btn-danger {
+    background-color: var(--primary-red);
+} 
+
 #bootstrap-overrides .btn-secondary {
-    background-color: var(--primary-mid-grey);
+    background-color: var(--primary-dark-blue);
     border-radius: 0;
     color: white;
     border: 0.063rem solid black;
@@ -74,13 +81,16 @@
 
 #bootstrap-overrides .btn:focus {
     background-image: none;
-    color: black;
-    background-color: var(--primary-yellow);
+    color: white;
+    background-color: var(--primary-dark-blue);
 }
 
 #bootstrap-overrides .form-control {
-    border-radius: 0;
+    
     border: 0.125rem solid var(--primary-dark-grey);
+    padding: 12px 70px 12px 30px;
+    border-radius: 30px;
+    box-shadow: 0 0 0 1px #959595;
 }
 
 #bootstrap-overrides .error {
@@ -89,11 +99,13 @@
 
 #bootstrap-overrides .form-control:focus {
     border: 0.125rem solid black;
-    outline: 0.25rem solid var(--primary-yellow)
+    outline: 0.25rem solid var(--primary-dark-blue)
 }
 
 #bootstrap-overrides .page-title {
-    margin-bottom: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
 }
 
 #bootstrap-overrides .page-container {
@@ -118,6 +130,27 @@
     width: 100%;
     white-space: nowrap;
     color: black;
-    line-height: 3.75rem; 
+    line-height: 3.75rem;
     background-color: var(--primary-light-grey);
+    background-color: #f0f2f4;
   }
+
+  .logo {
+    display: inline; /* Ensures the logo is inline with the link */
+    margin-left: auto; /* Pushes the logo to the right */
+    max-width: 100%; /* Limits the logo width to the container width */
+    max-height: 100%; /* Limits the logo height to the container height */
+    object-fit: contain; /* Preserves aspect ratio and fits the entire image */
+}
+
+.h1, .h2, .h3, body, .a, label, div{
+    font-family: "Frutiger Roman";
+}
+
+.a{
+    font-weight: inherit;
+    line-height: 1.5;
+    color: #005eb8;
+    text-decoration: underline;
+    transition: .3s;
+}

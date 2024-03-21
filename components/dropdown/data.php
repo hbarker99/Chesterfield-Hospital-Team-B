@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 function fetchData() {
     if (isset($_SESSION['location_data'])) {
         return $_SESSION['location_data'];
@@ -12,12 +11,15 @@ function fetchData() {
 }
 
 function locationFill(){
-    $db = new SQLite3("../../database.db");
-    $stmt = $db->prepare('SELECT * FROM Node WHERE category=5 OR category=2');
-    $result = $stmt->execute();
-    $rows_array = [];
-    while ($row=$result->fetchArray())
-    {
+    $mysqli = new mysqli('localhost', 'root', '', 'arundel');
+
+    if ($mysqli->connect_error) {
+        die('Connection failed: ' . $mysqli->connect_error);
+    }
+
+    $query = 'SELECT * FROM node WHERE category = 5 or category = 2';
+    $result = $mysqli->query($query);
+    while ($row = $result->fetch_assoc()) {
         $rows_array[]=$row;
     }
     return $rows_array;

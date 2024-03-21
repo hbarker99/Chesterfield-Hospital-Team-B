@@ -6,13 +6,20 @@ include("dbString.php");
 
 // Function to get the names of the start node and end node
 function getStartEndNames($nodeId) {
-    $db = new SQLite3(get_string());
-    $stmt = $db->prepare('SELECT name FROM Node WHERE node_id=:nodeId');
-    $stmt->bindParam(':nodeId', $nodeId, SQLITE3_INTEGER);
-    $result = $stmt->execute();
-    $data = $result->fetchArray(SQLITE3_ASSOC);    
+    $db = new mysqli('localhost', 'root', '', 'arundel');
+
+    // Check connection
+    if ($db->connect_error) {
+        die('Connection failed: ' . $mysqli->connect_error);
+    }    
+    
+    $result = $db->query('SELECT name FROM Node WHERE node_id='.$nodeId);
+    $data = $result->fetch_array();    
     return $data['name'];
 }
+$startPoint = $_SESSION['start_point'];
+$endPoint = $_SESSION['end_point'];
+
 $startName = getStartEndNames($startPoint);
 $endName = getStartEndNames($endPoint);
 

@@ -1,24 +1,3 @@
-<?php 
-include("sessionHandling.php");
-include("mapping-algo.php");
-
-
-if(isset($_POST['next'])){
-    if($_SESSION['current_step'] < count($final_path) - 1) {
-        $_SESSION['current_step']++;
-    }
-} else if (isset($_POST['previous'])){
-    
-    if($_SESSION['current_step'] > 0) {
-        $_SESSION['current_step']--;
-    }
-}
-
-if (!isset($_SESSION['show_instructions'])) {
-    $_SESSION['show_instructions'] = true;
-}
-?>
-
 <!doctype html>
 <html lang="en">
     <head>
@@ -27,6 +6,7 @@ if (!isset($_SESSION['show_instructions'])) {
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Chesterfield Group B</title>
+        <script src="route.js"></script>
     </head>
 
     <body id="bootstrap-overrides">
@@ -35,12 +15,11 @@ if (!isset($_SESSION['show_instructions'])) {
                 <a href="index.php" class="back-btn">Pick another route</a>
             </div>
             <div class="image-box">
-                <img src="./img/<?php echo $final_path[$_SESSION['current_step']]['image'] ?>" />
+                <img id="image-id" src="" />
                 <div class="direction-container">
                     <div class="direction-arrow" id="arrow"></div>
                 </div>
             </div>
-
 
             <div class="info-box-container">
                 <div class="info-box">
@@ -48,38 +27,58 @@ if (!isset($_SESSION['show_instructions'])) {
                         <div class="arrow down"></div>
                     </div>
                     <div class="instruction-container">
-                        <div class="instruction-highlight"></div>
-                        <?php if($_SESSION['current_step'] == count($final_path) - 1) {?>
-                            <div class="instruction-text">You have reached the <b><?php echo $final_path[$_SESSION['current_step']]['name'];?></b>.</div>
-                        <?php } elseif($_SESSION['current_step'] == 0) { ?>
-                            <div class="instruction-text">Begin facing the same direction as the image. <?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
-                        <?php } else { ?>
-                            <div class="instruction-text"><?php echo $final_path[$_SESSION['current_step']]['instruction'];?></div>
-                        <?php } ?>
+                        <div class="instruction-text" id="instruction"></div>
                     </div>
-                    <?php if($accessibilityCheck== 'on') : ?>
-                        <div class="accessibility-notes">
-                            <?php echo $final_path[$_SESSION['current_step']]['accessibility_notes'];?>
-                        </div>
-                    <?php endif ?>
+                        <div class="accessibility-notes" id="accessibility-notes"></div>
                 </div>
             </div>
-            <form method="post">
-                <div class="button-container">
-                    <input <?php if($_SESSION['current_step'] == 0) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="previous" value="Back" />
-                    <input <?php if($_SESSION['current_step'] == count($final_path) - 1) echo " style='visibility: hidden';"; ?> type="submit" class="btn btn-primary" name="next" value="Next" />
-                </div>
-            </form>
+            <div class="button-container">
+                <button id="previousStep" style="visibility: hidden"; class="btn btn-primary">Back</button>
+                <button id="nextStep"class="btn btn-primary">Next</button>
+            </div>
         </div>
     </body>
 
 </html>
 
 <script>
-var element = document.getElementById("arrow");
-var direction = '<?php echo $final_path[$_SESSION['current_step']]['direction'];?>';
-if (direction != 'forward'){
-    setTimeout(() => element.classList.add(direction), 100);
+
+const previousStep = document.getElementById('previousStep');
+const nextStep = document.getElementById('nextStep');
+
+
+previousStep.addEventListener('click', () => {
+        if (currentStep > 0) {
+            currentStep--; // Move to the previous step
+        }
+
+        Display(currentStep);
+        UpdateArrows(currentStep);
+    });
+
+nextStep.addEventListener('click', () => {
+    if (currentStep < totalSteps - 1) {
+        currentStep++; // Move to the next step
+    }
+
+    Display(currentStep);
+    UpdateArrows(currentStep);
+});
+
+function UpdateArrows(currentStep){
+    if(currentStep === 0){
+        document.getElementById('instruction').innerHTML = "Begin facing the same direction as the image.";
+        previousStep.style.visibility = "hidden";
+    }
+    else if (currentStep === totalSteps-1){
+        document.getElementById('instruction').innerHTML = "You have reached your destination.";
+        nextStep.style.visibility = "hidden";
+    }
+    else
+    {
+        previousStep.style.visibility = "visible";
+        nextStep.style.visibility = "visible";
+    }
 }
 
 function ToggleVisibility() {
