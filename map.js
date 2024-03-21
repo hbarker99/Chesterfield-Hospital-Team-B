@@ -13,8 +13,8 @@ var mouseDown = false;
 
 var offsetX = 0;
 var offsetY = 0;
-var primaryColor = 'red';
-var secondaryColor = 'blue';
+var primaryColor = '#AE2573';
+var secondaryColor = '#78BE20';
 
 var imageUploadInputs = [];
 
@@ -931,7 +931,7 @@ function GetDirection(startNodeId, endNodeId) {
         theta = Math.atan2(dy / dx);
 
     thetaDeg = theta / Math.PI;
-    return AngleToDirection(theta);
+    return AngleToDirection(thetaDeg);
     
 }
 
