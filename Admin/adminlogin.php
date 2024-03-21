@@ -16,7 +16,7 @@ while ($row = $result->fetchArray()) {
 
 if (isset($_POST['login'])) {
     if ($users != null) {
-        header("Location: admincrud.php");
+        header("Location: ../map.php");
     } else {
         echo '<script>alert("Wrong Username or Password")</script>';
     }
