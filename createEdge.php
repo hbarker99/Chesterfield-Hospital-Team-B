@@ -38,8 +38,6 @@ if ($start_node_id <= 0 || $end_node_id <= 0) { //Testing
 
 $result = $db->query("INSERT INTO Edges (start_node_id, end_node_id, distance, direction) VALUES ($start_node_id, $end_node_id, $distance, $direction)");
 
-
-
 $result = $db->query("INSERT INTO Edges (start_node_id, end_node_id, distance, direction) VALUES ($end_node_id, $start_node_id, $distance, $directionAlt)");
 
 if ($result) {

@@ -53,7 +53,6 @@ previousStep.addEventListener('click', () => {
         }
 
         Display(currentStep);
-        UpdateArrows(currentStep);
     });
 
 nextStep.addEventListener('click', () => {
@@ -61,25 +60,8 @@ nextStep.addEventListener('click', () => {
         currentStep++; // Move to the next step
     }
     
-    UpdateArrows(currentStep);
     Display(currentStep);
 });
-
-function UpdateArrows(currentStep){
-    if(currentStep === 0){
-        document.getElementById('instruction').innerHTML = "Begin facing the same direction as the image.";
-        previousStep.style.visibility = "hidden";
-    }
-    else if (currentStep === totalSteps-1){
-        document.getElementById('instruction').innerHTML = "You have reached your destination.";
-        nextStep.style.display = "none";
-    }
-    else
-    {
-        previousStep.style.visibility = "visible";
-        nextStep.style.display = "block";
-    }
-}
 
 function ToggleVisibility() {
     var element = document.getElementById("toggle-visibility");
