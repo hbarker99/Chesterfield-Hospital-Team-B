@@ -1,9 +1,10 @@
 <?php
-function startLocation() {
-    $db = new SQLite3(get_string());
-    $stmt = $db->prepare('SELECT name FROM Node WHERE node_id=:nodeId');
-    $stmt->bindParam(':nodeId', $_GET['location'], SQLITE3_INTEGER);
-    $result = $stmt->execute();
-    $data = $result->fetchArray(SQLITE3_ASSOC);    
+function startLocation($mysqli) {
+    
+    $stmt = $mysqli->prepare('SELECT name FROM Node WHERE node_id=?');
+    $stmt->bind_param('i', $_GET['location']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = $result->fetch_assoc();
     return $data['name'];
 }
