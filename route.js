@@ -75,9 +75,8 @@ function Display(currentStep) {
     if (currentStep > 0)
         arrowElement.classList.remove(['left'], ['right']);
 
-    if (direction != 'forward'){
+    if (direction != 'forward')
         setTimeout(() => arrowElement.classList.add(direction), 100);
-    }
 }
 
 function process(response) {
