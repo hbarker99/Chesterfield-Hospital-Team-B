@@ -29,6 +29,7 @@ $start_node_id = $params->start_node_id;
 $end_node_id = $params->end_node_id;
 $distance = $params->distance ?? 0;
 $direction = $params->direction ?? 0;
+$directionAlt = $direction + 2 % 4;
 
 if ($start_node_id <= 0 || $end_node_id <= 0) { //Testing
     echo json_encode(["error" => "Invalid input values lala"]);
@@ -39,7 +40,7 @@ $result = $db->query("INSERT INTO Edges (start_node_id, end_node_id, distance, d
 
 
 
-$result = $db->query("INSERT INTO Edges (start_node_id, end_node_id, distance, direction) VALUES ($end_node_id, $start_node_id, $distance, $direction)");
+$result = $db->query("INSERT INTO Edges (start_node_id, end_node_id, distance, direction) VALUES ($end_node_id, $start_node_id, $distance, $directionAlt)");
 
 if ($result) {
     echo json_encode(["id" => $db->insert_id]);

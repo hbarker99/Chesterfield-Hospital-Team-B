@@ -901,8 +901,8 @@ function GetDirection(startNodeId, endNodeId) {
     const start = GetNodeFromId(startNodeId);
     const end = GetNodeFromId(endNodeId);
 
-    const dx = end.x - start.x;
-    const dy = end.y - start.y;
+    const dx = start.x - end.x;
+    const dy = start.y - end.y;
 
     let theta;
 
@@ -926,15 +926,17 @@ function GetDirection(startNodeId, endNodeId) {
             theta = 180;
     }
 
-    else
-        theta = Math.atan2(dy / dx);
+    else 
+        theta = Math.atan2(dy, dx);
 
-    thetaDeg = theta / Math.PI;
+    thetaDeg = -theta * (180 / Math.PI);
+
     return AngleToDirection(thetaDeg);
     
 }
 
 function AngleToDirection(angle) {
+    console.log(angle);
     if (angle > 135)
         return 4;
 
