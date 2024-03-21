@@ -1,4 +1,5 @@
 <head>
+	<title>Map Editor</title>
 	<link rel="stylesheet" href="style.css"/>
 	<link rel="stylesheet" href="map.css"/>
 </head>
