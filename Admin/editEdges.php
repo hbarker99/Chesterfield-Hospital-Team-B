@@ -164,5 +164,4 @@ if (isset($_POST['updateEdges'])) {
         <a href="admincrud.php">Back to Locations</a>
     </main>
 </body>
-
 </html>
