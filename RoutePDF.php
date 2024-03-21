@@ -1,3 +1,6 @@
+<head>
+	<title>Your PDF Route</title>
+</head>
 <?php 
 include('./PDF/fpdf186/fpdf.php');
 include("sessionHandling.php");
@@ -10,7 +13,7 @@ function getStartEndNames($nodeId) {
 
     // Check connection
     if ($db->connect_error) {
-        die('Connection failed: ' . $mysqli->connect_error);
+        die('Connection failed: ' . $db->connect_error);
     }    
     
     $result = $db->query('SELECT name FROM Node WHERE node_id='.$nodeId);
