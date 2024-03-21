@@ -1,7 +1,12 @@
 <?php
 header('Content-Type: application/json');
 
-$conn = new SQLite3("databasemap.db");
+$db = new mysqli('localhost', 'root', '', 'chesterfield');
+
+// Check connection
+if ($db->connect_error) {
+    die('Connection failed: ' . $mysqli->connect_error);
+}    
 
 $json = file_get_contents('php://input');
 error_log("Raw POST data: $json"); //Testing
@@ -12,13 +17,10 @@ $response = [];
 
 if (!empty($data->id) && isset($data->name)) {
 
-    $stmt = $conn->prepare("UPDATE Node SET name = :name WHERE node_id = :id");
+    $success = $db->query("UPDATE node SET name = '$data->name' WHERE node_id = $data->id");
 
- 
-    $stmt->bindValue(':id', $data->id, SQLITE3_INTEGER);
-    $stmt->bindValue(':name', $data->name, SQLITE3_TEXT);
 
-    if ($stmt->execute()) {
+    if ($success) {
         $response = ['success' => true, 'message' => 'Node name updated successfully.'];
     } else {
         $response = ['success' => false, 'message' => 'Failed to update node name.'];
@@ -28,6 +30,6 @@ if (!empty($data->id) && isset($data->name)) {
 }
 
 
-$conn->close();
+$db->close();
 
 echo json_encode($response);

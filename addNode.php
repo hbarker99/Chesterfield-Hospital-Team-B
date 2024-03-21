@@ -3,7 +3,12 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 header('Content-Type: application/json');
 
-$conn = new SQLite3("databasemap.db");
+$db = new mysqli('localhost', 'root', '', 'chesterfield');
+
+// Check connection
+if ($db->connect_error) {
+    die('Connection failed: ' . $mysqli->connect_error);
+}    
 
 $json = file_get_contents('php://input');
 error_log("Raw POST data: $json"); //Testing
@@ -31,19 +36,14 @@ if ($x <= 0 || $y <= 0 || $category < 0) { //Testing
     exit;
 }
 
-$stmt = $conn->prepare("INSERT INTO Node (name, category, x, y) VALUES (:name, :category, :x, :y)");
-
-$stmt->bindValue(':name', $name, SQLITE3_TEXT);
-$stmt->bindValue(':category', $category, SQLITE3_INTEGER);
-$stmt->bindValue(':x', $x, SQLITE3_INTEGER);
-$stmt->bindValue(':y', $y, SQLITE3_INTEGER);
+$stmt = $db->prepare("INSERT INTO Node (name, category, x, y) VALUES ('".$name."', ".$category.", ".$x.", ".$y.")");
 
 if ($stmt->execute()) {
-    echo json_encode(["id" => $conn->lastInsertRowID()]);
+    echo json_encode(["id" => $db->insert_id]);
 } else {
     echo json_encode(["error" => "Failed to add node"]);
 }
 
 $stmt->close();
-$conn->close();
+$db->close();
 ?>

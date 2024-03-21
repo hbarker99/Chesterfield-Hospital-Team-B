@@ -6,7 +6,7 @@ include("dbString.php");
 
 // Function to get the names of the start node and end node
 function getStartEndNames($nodeId) {
-    $db = new mysqli('localhost', 'root', '', 'arundel');
+    $db = new mysqli('localhost', 'root', '', 'chesterfield');
 
     // Check connection
     if ($db->connect_error) {

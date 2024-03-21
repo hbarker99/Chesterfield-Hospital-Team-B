@@ -11,7 +11,7 @@ function fetchData() {
 }
 
 function locationFill(){
-    $mysqli = new mysqli('localhost', 'root', '', 'arundel');
+    $mysqli = new mysqli('localhost', 'root', '', 'chesterfield');
 
     if ($mysqli->connect_error) {
         die('Connection failed: ' . $mysqli->connect_error);

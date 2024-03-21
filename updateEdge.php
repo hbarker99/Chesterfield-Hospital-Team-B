@@ -1,7 +1,13 @@
 <?php
 header('Content-Type: application/json');
 
-$conn = new SQLite3("databasemap.db");
+$db = new mysqli('localhost', 'root', '', 'chesterfield');
+
+// Check connection
+if ($db->connect_error) {
+    die('Connection failed: ' . $mysqli->connect_error);
+}    
+
 
 $json = file_get_contents('php://input');
 error_log("Raw POST data: $json"); //Testing
@@ -11,16 +17,15 @@ $data = json_decode($json);
 $response = [];
 
 var_dump($data);
+$edge_id = $data->edge_id;
+$image_name = $data->image_name;
 
-if (!empty($data->edge_id) && isset($data->image_name)) {
+if (!empty($edge_id) && isset($image_name)) {
 
-    $stmt = $conn->prepare("UPDATE Edges SET image = :image_name WHERE edge_id = :edge_id");
+    $success = $db->query("UPDATE Edges SET image = '$image_name' WHERE edge_id = $edge_id");
 
- 
-    $stmt->bindValue(':edge_id', $data->edge_id, SQLITE3_INTEGER);
-    $stmt->bindValue(':image_name', $data->image_name, SQLITE3_TEXT);
 
-    if ($stmt->execute()) {
+    if ($success) {
         $response = ['success' => true, 'message' => 'Edge updated successfully.'];
     } else {
         $response = ['error' => false, 'message' => 'Failed to update edge.'];
@@ -30,6 +35,6 @@ if (!empty($data->edge_id) && isset($data->image_name)) {
 }
 
 
-$conn->close();
+$db->close();
 
 echo json_encode($response);

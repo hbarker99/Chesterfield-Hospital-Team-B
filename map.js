@@ -519,6 +519,17 @@ function fetchDatabaseNodes() {
     fetch('getNodes.php')
         .then(response => response.json())
         .then(recievedNodes => {
+
+            recievedNodes = recievedNodes.map(node => {
+                return {
+                    name: node.name,
+                    category: parseInt(node.category),
+                    x: parseInt(node.x),
+                    y: parseInt(node.y),
+                    node_id: parseInt(node.node_id)
+                }
+            });
+
             recievedNodes.forEach(node => nodes.push(node));
             SetupNodes();
         })
@@ -531,7 +542,17 @@ function fetchDatabaseEdges() {
     fetch('getEdges.php')
         .then(response => response.json())
         .then(data => {
-            edges = data;
+            edges = data.map(edge => {
+                return {
+                    edge_id: parseInt(edge.edge_id),
+                    start_node_id: parseInt(edge.start_node_id),
+                    end_node_id: parseInt(edge.end_node_id),
+                    distance: parseInt(edge.distance),
+                    image: edge.image,
+                    notes: edge.notes,
+                    accessibility_notes: edge.accessibility_notes
+                }
+            });
             console.log('Edges:', edges);
         })
         .catch(error => console.error('Error fetching edges:', error));
