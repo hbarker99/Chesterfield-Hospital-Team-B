@@ -86,6 +86,7 @@ body {
 #info-container label {
     display: block;
     font-family: "Frutiger Roman";
+    margin-bottom: 0.75rem;
 }
 
 #visible-name input {
