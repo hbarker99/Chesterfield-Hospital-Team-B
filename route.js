@@ -49,8 +49,6 @@ function FetchRouteJSON(){
     )
     .catch(error => {
         console.error('Error fetching JSON', error);
-        // Redirect to the custom error page
-        //window.location.href = './error.html';
     });
 
 }
@@ -74,6 +72,9 @@ function Display(currentStep) {
 
     var arrowElement = document.getElementById("arrow");
     var direction = json[currentStep].direction;
+    if (currentStep > 0)
+        arrowElement.classList.remove(['left'], ['right']);
+
     if (direction != 'forward'){
         setTimeout(() => arrowElement.classList.add(direction), 100);
     }
@@ -89,7 +90,6 @@ function process(response) {
 }
 
 function FetchNodesJSON(){
-    console.log('fetching nodes');
     fetchWithRetry('./components/dropdown/data-copy.php', 3)
     .then(process)
     .then(nodes_data=>{
