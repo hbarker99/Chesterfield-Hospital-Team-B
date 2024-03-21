@@ -1,14 +1,14 @@
 <?php
 
-function checkAdminExist($username)
+function checkAdminExist($email)
 {
     $db = new SQLite3("admin_database.db");
     if (!$db)
         return false;
 
-    $sql = 'SELECT username FROM Login WHERE username = :username';
+    $sql = 'SELECT email FROM Login WHERE email = :email';
     $stmt = $db->prepare($sql); // Prepare the SQL statement
-    $stmt->bindParam(':username', $username, SQLITE3_TEXT);
+    $stmt->bindParam(':email', $email, SQLITE3_TEXT);
 
     // Execute the SQL statement
     $res = $stmt->execute();
@@ -16,24 +16,24 @@ function checkAdminExist($username)
     // Fetching array
     if ($stmt) {
         $row = $res->fetchArray(SQLITE3_NUM);
-        if (!empty($row)) { // If the row is not empty, admin with provided username exists
+        if (!empty($row)) { // If the row is not empty, admin with provided email exists
             return true;
         }
     }
     
-    return false; // Admin with provided username does not exist
+    return false; // Admin with provided email does not exist
 }
  
-function resetPassword($username, $password)
+function resetPassword($email, $password)
 {
     $db = new SQLite3("admin_database.db");
     if (!$db)
         return false;
 
-    $sql = 'UPDATE Login SET password = :password WHERE username = :username';
+    $sql = 'UPDATE Login SET password = :password WHERE email = :email';
     $stmt = $db->prepare($sql); // Prepare the SQL statement
     $stmt->bindParam(':password', $password, SQLITE3_TEXT);
-    $stmt->bindParam(':username', $username, SQLITE3_TEXT);
+    $stmt->bindParam(':email', $email, SQLITE3_TEXT);
 
     // Execute the SQL statement
     $result = $stmt->execute();
@@ -48,18 +48,18 @@ function resetPassword($username, $password)
 
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
+    $email = $_POST['email'];
     $newPassword = $_POST['new_password'];
 
-    if (checkAdminExist($username)) {
+    if (checkAdminExist($email)) {
         // Reset the password
-        if (resetPassword($username, $newPassword)) {
-            echo "Password for admin $username has been successfully reset.";
+        if (resetPassword($email, $newPassword)) {
+            echo "Password for admin $email has been successfully reset.";
         } else {
-            echo "Failed to reset password. Please try again.";
+            echo "Failed to reset password.Please try again.";
         }
     } else {
-        echo "Admin with username $username does not exist.";
+        echo "Admin with email id $email not exist.";
     }
 }
 
@@ -77,9 +77,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <h2>Reset Admin Password</h2>
     <form method="post">
-        <label for="username">Admin Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="new_password">New Password:</label>
+        <label for="email">Enter your emailid:</label>
+        <input type="text" id="email" name="email" required><br><br>
+        <label for="new_password">Enter your New Password:</label>
         <input type="password" id="new_password" name="new_password" required><br><br>
         <input type="submit" value="Reset Password">
     </form>
