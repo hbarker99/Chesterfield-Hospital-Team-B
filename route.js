@@ -62,7 +62,7 @@ function fetchWithRetry(url, retries) {
             throw error;
         }
         return new Promise(resolve => {
-            setTimeout(() => resolve(fetchWithRetry(url, retries - 1)), 1000);
+            setTimeout(() => resolve(fetchWithRetry(url, retries - 1)), 100);
         });
     });
 }
@@ -73,7 +73,7 @@ function Display(currentStep) {
     document.getElementById('accessibility-notes').textContent = json[currentStep].accessibility_notes || null;
 
     var arrowElement = document.getElementById("arrow");
-    var direction = json.direction;
+    var direction = json[currentStep].direction;
     if (direction != 'forward'){
         setTimeout(() => arrowElement.classList.add(direction), 100);
     }

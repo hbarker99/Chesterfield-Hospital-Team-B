@@ -17,11 +17,8 @@ $endPoint = $_GET['end_node'] ?? $_SESSION['end_point'];
 
 function check_for_precalculated_path($startPoint, $endPoint)
 {
-    
-    // Create a connection
     $db = new mysqli('localhost', 'root', '', 'chesterfield');
 
-    // Check connection
     if ($db->connect_error) {
         die('Connection failed: ' . $mysqli->connect_error);
     }

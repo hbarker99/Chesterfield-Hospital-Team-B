@@ -60,9 +60,9 @@ nextStep.addEventListener('click', () => {
     if (currentStep < totalSteps - 1) {
         currentStep++; // Move to the next step
     }
-
-    Display(currentStep);
+    
     UpdateArrows(currentStep);
+    Display(currentStep);
 });
 
 function UpdateArrows(currentStep){
@@ -72,12 +72,12 @@ function UpdateArrows(currentStep){
     }
     else if (currentStep === totalSteps-1){
         document.getElementById('instruction').innerHTML = "You have reached your destination.";
-        nextStep.style.visibility = "hidden";
+        nextStep.style.display = "none";
     }
     else
     {
         previousStep.style.visibility = "visible";
-        nextStep.style.visibility = "visible";
+        nextStep.style.display = "block";
     }
 }
 
