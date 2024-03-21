@@ -31,7 +31,7 @@ $y = $params->y ?? 0;
 
 error_log("Received name: $name, category: $category, x: $x, y: $y"); // Testing
 
-if ($x <= 0 || $y <= 0 || $category < 0) { //Testing
+if ($category < 0) { //Testing
     echo json_encode(["error" => "Invalid input values lala"]);
     exit;
 }
