@@ -347,7 +347,7 @@ function GetConnectedNodes(currentNode) {
 function DisplayEdgeInfo() {
     const specificInfo = ResetInformationTo('edge');
 
-    routes = ["one", "two"];
+    const routes = ["one", "two"];
 
     routes.forEach(route => {
         const routeInfo = specificInfo.querySelector("#route-" + route);
@@ -361,17 +361,33 @@ function DisplayEdgeInfo() {
         const primary = route === "one" ? primaryColor : secondaryColor;
         const secondary = route === "one" ? secondaryColor : primaryColor;
 
-        routeInfo.querySelector("#route-title").innerHTML = "From <span style=\"color: " + primary + "\">" + GetNodeName(startDisplayNode) + "</span> to <span style=\"color: " + secondary + "\">" + GetNodeName(endDisplayNode) + "</span>";
-    
-        const imageContainer = routeInfo.querySelector("img");
+        const imageLabel = routeInfo.querySelector(".image-container label");
+        const imageElement = routeInfo.querySelector(".image-container img");
 
-        testimage = "./img/" + GetEdge(startDisplayNode, endDisplayNode).image;
-        imageContainer.alt= "Upload a Image";
+        const edge = GetEdge(startDisplayNode, endDisplayNode);
+
+        if (edge.image && edge.image !== "null" && edge.image.trim() !== "") {
+            
+            if (!imageElement) {
+                const newImageElement = document.createElement("img");
+                newImageElement.src = "./img/" + edge.image;
+                routeInfo.querySelector(".image-container").appendChild(newImageElement);
+            } else {
+                imageElement.src = "./img/" + edge.image;
+                imageElement.style.display = "";
+            }
+            imageLabel.textContent = "Image";
+        } else {
         
-        imageContainer.src = testimage;
-    
-    })
+            if (imageElement) {
+                imageElement.parentElement.removeChild(imageElement);
+            }
+            imageLabel.textContent = "Image not available";
+        }
+        routeInfo.querySelector("#route-title").innerHTML = "From <span style=\"color: " + primary + "\">" + GetNodeName(startDisplayNode) + "</span> to <span style=\"color: " + secondary + "\">" + GetNodeName(endDisplayNode) + "</span>";
+    });
 }
+
 
 function GetEdge(startNode, endNode) {
     return edges.find(edge => edge.start_node_id === startNode.node_id && edge.end_node_id === endNode.node_id);
