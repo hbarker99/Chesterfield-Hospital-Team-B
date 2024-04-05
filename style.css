@@ -138,7 +138,7 @@
   .logo {
     display: inline; /* Ensures the logo is inline with the link */
     margin-left: auto; /* Pushes the logo to the right */
-    max-width: 100%; /* Limits the logo width to the container width */
+    max-width: 50%; /* Limits the logo width to the container width */
     max-height: 100%; /* Limits the logo height to the container height */
     object-fit: contain; /* Preserves aspect ratio and fits the entire image */
 }

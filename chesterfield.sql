@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 21, 2024 at 03:14 PM
+-- Generation Time: Apr 05, 2024 at 04:27 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -71,11 +71,11 @@ INSERT INTO `edges` (`edge_id`, `start_node_id`, `end_node_id`, `distance`, `ima
 (43, 49, 50, 1, 'edge_6.jpg', 4, NULL, NULL),
 (44, 50, 49, 1, 'edge_56.jpg', 2, NULL, NULL),
 (45, 39, 49, 1, 'edge_7.jpg', 3, NULL, NULL),
-(46, 49, 39, 1, 'edge_5.jpg', 1, NULL, NULL),
+(46, 49, 39, 1, 'edge_5.jpg', 1, 'Arundel entrance can now be seen.', NULL),
 (47, 40, 39, 1, 'edge_13.jpg', 3, NULL, NULL),
-(48, 39, 40, 1, 'edge_9.jpg', 1, NULL, NULL),
+(48, 39, 40, 1, 'edge_9.jpg', 1, 'Continuing through the main entrance, the next point is the double doors ahead.', NULL),
 (49, 41, 40, 1, 'edge_17.jpg', 3, NULL, NULL),
-(50, 40, 41, 1, 'edge_15.jpg', 1, NULL, NULL),
+(50, 40, 41, 1, 'edge_15.jpg', 1, 'Double doors ahead - Arundel 10001.', NULL),
 (51, 41, 43, 1, 'edge_18.jpg', 1, NULL, NULL),
 (52, 43, 41, 1, 'edge_20.jpg', 3, NULL, NULL),
 (53, 42, 40, 1, 'edge_21.jpg', 4, NULL, NULL),
@@ -87,7 +87,7 @@ INSERT INTO `edges` (`edge_id`, `start_node_id`, `end_node_id`, `distance`, `ima
 (59, 44, 42, 1, 'edge_31.jpg', 1, NULL, NULL),
 (60, 42, 44, 1, 'edge_28.jpg', 3, NULL, NULL),
 (61, 46, 42, 1, 'edge_34.jpg', 4, NULL, NULL),
-(62, 42, 46, 1, 'edge_25.jpg', 4, NULL, NULL),
+(62, 42, 46, 1, 'edge_25.jpg', 2, NULL, NULL),
 (63, 46, 45, 1, 'edge_29.jpg', 4, NULL, NULL),
 (64, 45, 46, 1, 'edge_34.jpg', 2, NULL, NULL),
 (65, 46, 44, 1, 'edge_36.jpg', 4, NULL, NULL),
@@ -97,13 +97,15 @@ INSERT INTO `edges` (`edge_id`, `start_node_id`, `end_node_id`, `distance`, `ima
 (69, 52, 45, 1, 'edge_27.jpg', 3, NULL, NULL),
 (70, 45, 52, 1, 'edge_27.jpg', 1, NULL, NULL),
 (73, 53, 54, 1, 'edge_2.jpg', 3, NULL, NULL),
-(74, 54, 53, 1, 'edge_1.jpg', 1, NULL, NULL),
-(77, 53, 49, 1, 'edge_3.jpg', 4, NULL, NULL),
+(74, 54, 53, 1, 'edge_1.jpg', 1, 'Bridge can be seen ahead and pub on left corner.', NULL),
+(77, 53, 49, 1, 'edge_3.jpg', 4, 'Follow path with car parking spaces.', NULL),
 (78, 49, 53, 1, 'edge_4.jpg', 2, NULL, NULL),
 (79, 44, 45, 1, 'edge_32.jpg', 1, NULL, NULL),
 (80, 45, 44, 1, 'edge_24.jpg', 3, NULL, NULL),
-(93, 57, 48, 1, 'edge_40.jpg', 4, NULL, NULL),
-(94, 48, 57, 1, 'edge_39.jpg', 4, NULL, NULL);
+(93, 57, 48, 1, 'edge_40.jpg', 3, NULL, NULL),
+(94, 48, 57, 1, 'edge_39.jpg', 1, NULL, NULL),
+(95, 59, 57, 1, '', 4, NULL, NULL),
+(96, 57, 59, 1, '', 4, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -141,7 +143,8 @@ INSERT INTO `node` (`node_id`, `name`, `category`, `is_outside`, `floor`, `x`, `
 (52, 'Toilets', 5, 0, 0, 786, 257),
 (53, '', 3, 0, 0, 1058, 798),
 (54, 'Eyre Street Car Park', 5, 0, 0, 1052, 1055),
-(57, 'Fire Exit', 2, 0, 0, 1318, 65);
+(57, 'Fire Exit', 2, 0, 0, 1318, 65),
+(59, 'Ward', 5, 0, 0, 1300, -142);
 
 -- --------------------------------------------------------
 
@@ -163,7 +166,16 @@ INSERT INTO `path` (`path_id`, `start_node_id`, `end_node_id`) VALUES
 (7, 54, 44),
 (8, 39, 44),
 (9, 39, 52),
-(10, 39, 51);
+(10, 39, 51),
+(11, 39, 57),
+(12, 57, 39),
+(13, 39, 54),
+(14, 57, 51),
+(15, 52, 43),
+(16, 54, 39),
+(17, 54, 43),
+(18, 57, 43),
+(19, 39, 43);
 
 -- --------------------------------------------------------
 
@@ -198,7 +210,49 @@ INSERT INTO `steps` (`step_id`, `path_id`, `edge_id`, `position_in_path`) VALUES
 (41, 9, 70, 3),
 (42, 10, 45, 0),
 (43, 10, 43, 1),
-(44, 10, 41, 2);
+(44, 10, 41, 2),
+(45, 11, 48, 0),
+(46, 11, 54, 1),
+(47, 11, 62, 2),
+(48, 11, 68, 3),
+(49, 11, 94, 4),
+(50, 12, 93, 0),
+(51, 12, 67, 1),
+(52, 12, 61, 2),
+(53, 12, 53, 3),
+(54, 12, 47, 4),
+(55, 13, 45, 0),
+(56, 13, 78, 1),
+(57, 13, 73, 2),
+(58, 14, 93, 0),
+(59, 14, 67, 1),
+(60, 14, 61, 2),
+(61, 14, 53, 3),
+(62, 14, 47, 4),
+(63, 14, 45, 5),
+(64, 14, 43, 6),
+(65, 14, 41, 7),
+(66, 15, 69, 0),
+(67, 15, 57, 1),
+(68, 15, 55, 2),
+(69, 15, 51, 3),
+(70, 16, 74, 0),
+(71, 16, 77, 1),
+(72, 16, 46, 2),
+(73, 17, 74, 0),
+(74, 17, 77, 1),
+(75, 17, 46, 2),
+(76, 17, 48, 3),
+(77, 17, 50, 4),
+(78, 17, 51, 5),
+(79, 18, 93, 0),
+(80, 18, 67, 1),
+(81, 18, 61, 2),
+(82, 18, 55, 3),
+(83, 18, 51, 4),
+(84, 19, 48, 0),
+(85, 19, 50, 1),
+(86, 19, 51, 2);
 
 --
 -- Indexes for dumped tables
@@ -245,25 +299,25 @@ ALTER TABLE `steps`
 -- AUTO_INCREMENT for table `edges`
 --
 ALTER TABLE `edges`
-  MODIFY `edge_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `edge_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `node`
 --
 ALTER TABLE `node`
-  MODIFY `node_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `node_id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `path`
 --
 ALTER TABLE `path`
-  MODIFY `path_id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `path_id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `steps`
 --
 ALTER TABLE `steps`
-  MODIFY `step_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `step_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
