@@ -25,10 +25,10 @@
 	</div>
 		<div class="info-container" id="info-container">
 			<div id="node-info-container">
-				<div class="title" id="title"></div>
+				<div class="title" id="title" style="min-width:fit-content;"></div>
 				<div id="visible-name">
 					<label>Display Name</label>
-					<input type="text" class="form-control" />
+					<input type="text" class="form-control" style="min-width:100%";/>
 				</div>
 			</div>
 			<div id="edge-info-container">
