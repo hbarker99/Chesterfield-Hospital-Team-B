@@ -1,4 +1,5 @@
 let json;
+const apiRoute = '../api/' 
 //let nodes;
 //FetchNodesJSON();
 FetchRouteJSON();
@@ -34,7 +35,7 @@ function FetchRouteJSON(){
     const start = sessionStorage.getItem("startPoint");
     const end = sessionStorage.getItem("endPoint");
 
-    fetchWithRetry('mapping-algo.php?start_node='+start+'&end_node='+end, 3)
+    fetchWithRetry(apiRoute + 'mapping-algo.php?start_node='+start+'&end_node='+end, 3)
     .then(process)
     .then(passedData=>{
         json = passedData;
@@ -64,7 +65,7 @@ function fetchWithRetry(url, retries) {
 
 function Display(currentStep) {
     const instruction = document.getElementById('instruction');
-    document.getElementById('image-id').src = '../../img/' + json[currentStep].image;
+    document.getElementById('image-id').src = '../../../img/' + json[currentStep].image;
     document.getElementById('accessibility-notes').textContent = json[currentStep].accessibility_notes || null;
     instruction.innerHTML = json[currentStep].instruction;
 

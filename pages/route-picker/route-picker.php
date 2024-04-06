@@ -1,7 +1,4 @@
 <?php
-include_once('components/database.php');
-
-
 include("components/indexPHP/startLocation.php");
 require("pages/route-picker/session-handling.php");
 

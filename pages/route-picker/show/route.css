@@ -173,7 +173,7 @@
 }
 
 .back-btn:after {
-    background-image: url("../../assets/icons/left-arrow.svg");
+    background-image: url("../../../assets/icons/left-arrow.svg");
     content: "";
     display: inline-block;
     height: 18px;
@@ -199,7 +199,7 @@
     width: 80%;
     height: 80%;
     margin: 10% 0 0 10%;
-    mask-image: url('../../assets/icons/direction-arrow.svg');
+    mask-image: url('../../../assets/icons/direction-arrow.svg');
     transition: transform ease 600ms;
     transform: rotateZ(-90deg);
 }

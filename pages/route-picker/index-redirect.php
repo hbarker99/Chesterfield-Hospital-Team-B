@@ -14,13 +14,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['getRoute'])) {
         // Store POST data in session
         $_SESSION['routeInfo'] = $_POST;
-        header("Location: route.php"); // Redirect to your desired page
+        header("Location: show/route.php"); // Redirect to your desired page
         exit; // Ensure that no other code is executed after redirection
     }
     if (isset($_POST['getRoutePDF'])) {
         // Store POST data in session
         $_SESSION['routeInfo'] = $_POST;
-        header("Location: route-pdf.php"); // Redirect to your desired page
+        header("Location: pdf/route-pdf.php"); // Redirect to your desired page
         exit; // Ensure that no other code is executed after redirection
     } 
 }
