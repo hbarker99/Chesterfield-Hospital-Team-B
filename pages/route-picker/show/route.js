@@ -65,7 +65,7 @@ function fetchWithRetry(url, retries) {
 
 function Display(currentStep) {
     const instruction = document.getElementById('instruction');
-    document.getElementById('image-id').src = '../../../img/' + json[currentStep].image;
+    document.getElementById('image-id').src = '../../../assets/map/' + json[currentStep].image;
     document.getElementById('accessibility-notes').textContent = json[currentStep].accessibility_notes || null;
     instruction.innerHTML = json[currentStep].instruction;
 

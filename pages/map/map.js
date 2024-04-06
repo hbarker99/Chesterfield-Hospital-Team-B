@@ -475,7 +475,7 @@ function GetEdgeImagePath(startNode, endNode) {
     const edge = GetEdge(startNode.node_id, endNode.node_id);
 
     if (edge.image)
-        return "./img/" + edge.image;
+        return "./assets/map/" + edge.image;
 
     else
         return null;

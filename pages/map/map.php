@@ -37,7 +37,7 @@
 					<div class="image-container">
 						<input type="file"  id="image-edge-upload" style="display: none">
 						<button class="btn btn-upload btn-primary ">Upload</button>
-						<img src="img/edge_1.jpg" width="200" height="200"/>
+						<img src="assets/map/edge_1.jpg" width="200" height="200"/>
 					</div>
 				</div>
 				<div id="route-two">
@@ -45,7 +45,7 @@
 					<div class="image-container">
 						<input type="file"  id="image-edge-upload" style="display: none">
 						<button class="btn btn-upload btn-primary">Upload</button>
-						<img src="img/edge_1.jpg" width="200" height="200"/>
+						<img src="assets/map/edge_1.jpg" width="200" height="200"/>
 					</div>
 				</div>
 			</div>
