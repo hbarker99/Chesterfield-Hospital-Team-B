@@ -2,7 +2,7 @@
 	<title>Your PDF Route</title>
 </head>
 <?php 
-include('PDF/fpdf186/fpdf.php');
+include('pdf/fpdf186/fpdf.php');
 include("pages/route-picker/sessionHandling.php");
 include("pages/route-picker/mapping-algo.php");
 
@@ -32,8 +32,8 @@ $pdf->AddPage();
 $pdf->setFont('Arial' ,'', 22);
 
 // NHS logo and Directions header
-//$pdf->Image('./PDF/NHSBlue.jpg', 155, null, 50);
-$pdf->Image('./PDF/CRHNHS.png', 155, null, 50);
+//$pdf->Image('./pdf/NHSBlue.jpg', 155, null, 50);
+$pdf->Image('./pdf/CRHNHS.png', 155, null, 50);
 $pdf->Ln(10);
 $pdf->SetTextColor(0,94,184);
 $pdf->MultiCell(0,10,'Directions for your visit' , 0, 'L');
