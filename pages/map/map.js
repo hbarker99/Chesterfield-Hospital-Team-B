@@ -1,4 +1,4 @@
-const currentLocation = 'pages/map/';
+const apiRoute = 'pages/map/api/';
 
 var canvas, context;
 var currentState, isDragging;
@@ -282,7 +282,7 @@ function DeselectEdge() {
 
 function DeleteEdge(edge, requiresReset) {
 
-    fetch(currentLocation + 'deleteEdge.php', {
+    fetch(apiRoute + 'delete-edge.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(edge)
@@ -306,7 +306,7 @@ function DeleteNode(node) {
 
     GetNodeEdges().forEach(edge => DeleteEdge(edge, false));
 
-    fetch(currentLocation + 'deleteNode.php', {
+    fetch(apiRoute + 'delete-node.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(selectedNode)
@@ -430,7 +430,7 @@ function UpdateImages() {
                 image_name: file.name
             };
             
-            fetch(currentLocation + "updateEdge.php", {
+            fetch(apiRoute + "update-edge.php", {
                 method: "POST",
                 body: JSON.stringify(edgePayload)
             }).then(response => {
@@ -446,7 +446,7 @@ function UploadImage(file) {
     var data = new FormData();
     data.append('uploading', file);
 
-    return fetch(currentLocation + "uploadImage.php", {
+    return fetch(apiRoute + "upload-image.php", {
         method: "POST",
         body: data
     })
@@ -521,7 +521,7 @@ function GetNodeAtLocation(location, activeNodes = nodes) {
 }
 
 function fetchDatabaseNodes() {
-    fetch(currentLocation + 'getNodes.php')
+    fetch(apiRoute + 'get-nodes.php')
         .then(response => response.json())
         .then(recievedNodes => {
 
@@ -544,7 +544,7 @@ function fetchDatabaseNodes() {
 }
 
 function fetchDatabaseEdges() {
-    fetch(currentLocation + 'getEdges.php')
+    fetch(apiRoute + 'get-edges.php')
         .then(response => response.json())
         .then(data => {
             edges = data.map(edge => {
@@ -564,7 +564,7 @@ function fetchDatabaseEdges() {
 
 function UpdateNodeName(nodeId, newName) {
     const payload = { id: nodeId, name: newName };
-    fetch(currentLocation + 'updateNode.php', {
+    fetch(apiRoute + 'update-node.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -744,7 +744,7 @@ function HighlightEdge(startNode, endNode) {
 function AddNewNode(node) {
     node.category += 1;
     
-    fetch(currentLocation + 'addNode.php', {
+    fetch(apiRoute + 'add-node.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -862,7 +862,7 @@ function CreateConnection() {
         direction: GetDirection(from.node_id, to.node_id)
     };
 
-    fetch(currentLocation + 'createEdge.php', {
+    fetch(apiRoute + 'create-edge.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
