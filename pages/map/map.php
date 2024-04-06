@@ -1,7 +1,7 @@
 <head>
 	<title>Map Editor</title>
 	<link rel="stylesheet" href="style.css"/>
-	<link rel="stylesheet" href="map.css"/>
+	<link rel="stylesheet" href="pages/map/map.css"/>
 </head>
 
 <body>
@@ -37,7 +37,7 @@
 					<div class="image-container">
 						<input type="file"  id="image-edge-upload" style="display: none">
 						<button class="btn btn-upload btn-primary ">Upload</button>
-						<img src="./img/edge_1.jpg" width="200" height="200"/>
+						<img src="img/edge_1.jpg" width="200" height="200"/>
 					</div>
 				</div>
 				<div id="route-two">
@@ -45,7 +45,7 @@
 					<div class="image-container">
 						<input type="file"  id="image-edge-upload" style="display: none">
 						<button class="btn btn-upload btn-primary">Upload</button>
-						<img src="./img/edge_1.jpg" width="200" height="200"/>
+						<img src="img/edge_1.jpg" width="200" height="200"/>
 					</div>
 				</div>
 			</div>
@@ -71,4 +71,4 @@
 
 </body>
 
-<script src="map.js"></script>
+<script src="pages/map/map.js"></script>
