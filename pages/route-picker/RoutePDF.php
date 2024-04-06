@@ -2,10 +2,9 @@
 	<title>Your PDF Route</title>
 </head>
 <?php 
-include('./PDF/fpdf186/fpdf.php');
-include("sessionHandling.php");
-include("mapping-algo.php");
-include("dbString.php");
+include('PDF/fpdf186/fpdf.php');
+include("pages/route-picker/sessionHandling.php");
+include("pages/route-picker/mapping-algo.php");
 
 // Function to get the names of the start node and end node
 function getStartEndNames($nodeId) {

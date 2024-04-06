@@ -1,9 +1,9 @@
 <?php
-include_once('./components/database.php');
+include_once('components/database.php');
 
 
-include("./components/indexPHP/startLocation.php");
-require("sessionHandling.php");
+include("components/indexPHP/startLocation.php");
+require("pages/route-picker/sessionHandling.php");
 
 ?>
 
@@ -12,9 +12,9 @@ require("sessionHandling.php");
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Route Picker - Chesterfield Group B</title>
+        <title>Route Picker</title>
         <link rel="stylesheet" href="style.css"/>
-        <link rel="stylesheet" href="route-picker.css"/>
+        <link rel="stylesheet" href="pages/route-picker/route-picker.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         
     </head>
@@ -24,9 +24,9 @@ require("sessionHandling.php");
             <div> 
                 <div class="header-container">
                     <h1 class="page-title">Plan Your Route</h1>
-                    <img src="./chesterfield_royal_hospital_logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
+                    <img src="../../assets/images/chesterfield_royal_hospital_logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
                 </div>
-                <form method="post" action="indexRedirect.php" autocomplete="off">
+                <form method="post" action="pages/route-picker/indexRedirect.php" autocomplete="off">
                     <div class="form-container">
                         <?php if(!isset($_GET['location'])):?>
                         <div class="location-input form-item">

@@ -1,7 +1,7 @@
 <?php
-require_once("./components/database.php");
-require("./components/node_class.php");
-require("./components/dijkstra_class.php");
+require_once("../../components/database.php");
+require("../../components/node_class.php");
+require("../../components/dijkstra_class.php");
 
 
 $startPoint = $_GET['start_node'] ?? $_SESSION['start_point'];

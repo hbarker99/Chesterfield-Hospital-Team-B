@@ -34,8 +34,6 @@ function FetchRouteJSON(){
     const start = sessionStorage.getItem("startPoint");
     const end = sessionStorage.getItem("endPoint");
 
-    console.log('mapping-algo.php?start_node='+start+'&end_node='+end);
-
     fetchWithRetry('mapping-algo.php?start_node='+start+'&end_node='+end, 3)
     .then(process)
     .then(passedData=>{
@@ -66,7 +64,7 @@ function fetchWithRetry(url, retries) {
 
 function Display(currentStep) {
     const instruction = document.getElementById('instruction');
-    document.getElementById('image-id').src = './img/' + json[currentStep].image;
+    document.getElementById('image-id').src = '../../img/' + json[currentStep].image;
     document.getElementById('accessibility-notes').textContent = json[currentStep].accessibility_notes || null;
     instruction.innerHTML = json[currentStep].instruction;
 
@@ -101,7 +99,7 @@ function process(response) {
 }
 
 function FetchNodesJSON(){
-    fetchWithRetry('./components/dropdown/data-copy.php', 3)
+    fetchWithRetry('../../components/dropdown/data-copy.php', 3)
     .then(process)
     .then(nodes_data=>{
         nodes =  nodes_data;
