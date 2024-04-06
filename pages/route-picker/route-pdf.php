@@ -3,7 +3,7 @@
 </head>
 <?php 
 include('pdf/fpdf186/fpdf.php');
-include("pages/route-picker/sessionHandling.php");
+include("pages/route-picker/session-handling.php");
 include("pages/route-picker/mapping-algo.php");
 
 // Function to get the names of the start node and end node

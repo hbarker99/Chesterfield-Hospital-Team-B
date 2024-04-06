@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['getRoutePDF'])) {
         // Store POST data in session
         $_SESSION['routeInfo'] = $_POST;
-        header("Location: routePDF.php"); // Redirect to your desired page
+        header("Location: route-pdf.php"); // Redirect to your desired page
         exit; // Ensure that no other code is executed after redirection
     } 
 }

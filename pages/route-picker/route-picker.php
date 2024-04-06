@@ -3,7 +3,7 @@ include_once('components/database.php');
 
 
 include("components/indexPHP/startLocation.php");
-require("pages/route-picker/sessionHandling.php");
+require("pages/route-picker/session-handling.php");
 
 ?>
 
@@ -26,7 +26,7 @@ require("pages/route-picker/sessionHandling.php");
                     <h1 class="page-title">Plan Your Route</h1>
                     <img src="../../assets/images/chesterfield_royal_hospital_logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
                 </div>
-                <form method="post" action="pages/route-picker/indexRedirect.php" autocomplete="off">
+                <form method="post" action="pages/route-picker/index-redirect.php" autocomplete="off">
                     <div class="form-container">
                         <?php if(!isset($_GET['location'])):?>
                         <div class="location-input form-item">
@@ -101,8 +101,8 @@ form.addEventListener(
 
         sessionStorage.setItem("startPoint", start);
         sessionStorage.setItem("endPoint", end);
-        console.log("Sart");
-        await fetch("saveRouteInfo.php", {
+
+        await fetch("save-route-info.php", {
             body: JSON.stringify({start_point: start, end_point: end })
         }).then(() => {console.log("Fin");});
         console.log(sessionStorage.getItem("startPoint"));
