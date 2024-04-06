@@ -1,5 +1,5 @@
 <?php
-include("components/indexPHP/startLocation.php");
+include("components/index-php/start-location.php");
 require("pages/route-picker/session-handling.php");
 
 ?>
