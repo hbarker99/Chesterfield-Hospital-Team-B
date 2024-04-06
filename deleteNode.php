@@ -3,7 +3,12 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 header('Content-Type: application/json');
 
-$conn = new SQLite3("databasemap.db");
+$db = new mysqli('localhost', 'root', '', 'chesterfield');
+
+// Check connection
+if ($db->connect_error) {
+    die('Connection failed: ' . $mysqli->connect_error);
+}    
 
 $json = file_get_contents('php://input');
 error_log("Raw POST data: $json"); //Testing
@@ -26,17 +31,14 @@ if ($node_id < 0) {
     exit;
 }
 
-$stmt = $conn->prepare("DELETE FROM Node WHERE node_id=:node_id");
+$success = $db->query("DELETE FROM node WHERE node_id=$node_id");
 
-$stmt->bindValue(':node_id', $node_id, SQLITE3_INTEGER);
-
-if ($stmt->execute()) {
+if ($success) {
     echo json_encode("Success");
 } else {
     echo json_encode(["error" => "Failed to add node"]);
 }
 
 
-$stmt->close();
-$conn->close();
+$db->close();
 ?>

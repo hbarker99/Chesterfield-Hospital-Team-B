@@ -13,8 +13,8 @@ var mouseDown = false;
 
 var offsetX = 0;
 var offsetY = 0;
-var primaryColor = 'red';
-var secondaryColor = 'blue';
+var primaryColor = '#AE2573';
+var secondaryColor = '#78BE20';
 
 var imageUploadInputs = [];
 
@@ -186,7 +186,7 @@ function DrawNode(node, fillColor = 'green') {
     context.rect(node.x - offsetX, node.y - offsetY, nodeSize, nodeSize);
     context.fillStyle = fillColor;
     context.fill();
-    context.lineWidth = 3;
+    context.lineWidth = 2;
     context.strokeStyle = '#003300';
     context.stroke();
 }
@@ -239,6 +239,7 @@ function HandleSelection(event) {
             x: worldPos.x - nodeSize/2,
             y: worldPos.y - nodeSize/2
         };
+        console.log(newNode)
         Reset();
         AddNewNode(newNode);
         return;
@@ -419,6 +420,8 @@ function UpdateImages() {
         else
             edge = GetEdge(selectedEdge.end_node_id, selectedEdge.start_node_id);
 
+        console.log(edge);
+
         UploadImage(file).then((response) => {
             const edgePayload = {
                 edge_id: edge.edge_id,
@@ -519,6 +522,17 @@ function fetchDatabaseNodes() {
     fetch('getNodes.php')
         .then(response => response.json())
         .then(recievedNodes => {
+
+            recievedNodes = recievedNodes.map(node => {
+                return {
+                    name: node.name,
+                    category: parseInt(node.category) - 1,
+                    x: parseInt(node.x),
+                    y: parseInt(node.y),
+                    node_id: parseInt(node.node_id)
+                }
+            });
+            console.log(recievedNodes);
             recievedNodes.forEach(node => nodes.push(node));
             SetupNodes();
         })
@@ -531,8 +545,17 @@ function fetchDatabaseEdges() {
     fetch('getEdges.php')
         .then(response => response.json())
         .then(data => {
-            edges = data;
-            console.log('Edges:', edges);
+            edges = data.map(edge => {
+                return {
+                    edge_id: parseInt(edge.edge_id),
+                    start_node_id: parseInt(edge.start_node_id),
+                    end_node_id: parseInt(edge.end_node_id),
+                    distance: parseInt(edge.distance),
+                    image: edge.image,
+                    notes: edge.notes,
+                    accessibility_notes: edge.accessibility_notes
+                }
+            });
         })
         .catch(error => console.error('Error fetching edges:', error));
 }
@@ -717,6 +740,8 @@ function HighlightEdge(startNode, endNode) {
 }
 
 function AddNewNode(node) {
+    node.category += 1;
+    
     fetch('addNode.php', {
         method: 'POST',
         headers: {
@@ -739,7 +764,7 @@ function AddNewNode(node) {
             const newNode = {
                 node_id: data.id,
                 name: node.name,
-                category: node.category,
+                category: node.category - 1,
                 x: node.x,
                 y: node.y
             };
@@ -758,22 +783,22 @@ function AddNewNode(node) {
 function GetCategoryColour(categoryId) {
     switch (categoryId) {
         case 0:
-            return "#ad0000";
+            return "#41B6E6";
 
         case 1:
-            return "#ff0000";
+            return "#0072CE";
 
         case 2:
-            return "#2c42bf";
+            return "#009639";
 
         case 3:
-            return "#f0a400";
+            return "#78BE20";
 
         case 4:
-            return "#27b300";
+            return "#AE2573";
 
         case 5:
-            return "#94c4ff";
+            return "#FFFFFF";
 
         default:
             return "green";
@@ -842,36 +867,42 @@ function CreateConnection() {
         },
         body: JSON.stringify(edge),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
 
-        const alternate = {
-            start_node_id: to.node_id,
-            end_node_id: from.node_id,
-            distance: 1,
-            direction: (edge.direction + 2) % 4
-        }
+            return response.json();
+        })
+        .then(json => {
+            const alternate = {
+                edge_id: json.id,
+                start_node_id: to.node_id,
+                end_node_id: from.node_id,
+                distance: 1,
+                direction: (edge.direction + 2) % 4
+            }
 
-        edges.push(edge);
-        edges.push(alternate);
+            edge.edge_id = json.id - 1;
+
+            edges.push(edge);
+            edges.push(alternate);
         
-        SelectEdge(edge);
-        Frame();
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        alert('Network or server error occurred');
-    });
+            SelectEdge(edge);
+            Frame();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Network or server error occurred');
+        });
 }
 
 function GetDirection(startNodeId, endNodeId) {
     const start = GetNodeFromId(startNodeId);
     const end = GetNodeFromId(endNodeId);
 
-    const dx = end.x - start.x;
-    const dy = end.y - start.y;
+    const dx = start.x - end.x;
+    const dy = start.y - end.y;
 
     let theta;
 
@@ -895,15 +926,17 @@ function GetDirection(startNodeId, endNodeId) {
             theta = 180;
     }
 
-    else
-        theta = Math.atan2(dy / dx);
+    else 
+        theta = Math.atan2(dy, dx);
 
-    thetaDeg = theta / Math.PI;
-    return AngleToDirection(theta);
+    thetaDeg = -theta * (180 / Math.PI);
+
+    return AngleToDirection(thetaDeg);
     
 }
 
 function AngleToDirection(angle) {
+    console.log(angle);
     if (angle > 135)
         return 4;
 
@@ -946,6 +979,7 @@ function ResetSelectedInformation() {
     selectedEdge = null;
     currentState = null;
     currentAddingCategory = null;
+    imageUploadInputs = [];
 }
 function ResetInformationTo(displaying, includeApplyButton = true, includeDeleteButton = true) {
     document.getElementById("connection-info-container").style.display = "none";

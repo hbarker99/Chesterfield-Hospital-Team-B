@@ -3,16 +3,22 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL); 
 header('Content-Type: application/json');
 
-$conn = new SQLite3("databasemap.db");
+$db = new mysqli('localhost', 'root', '', 'chesterfield');
 
-$results = $conn->query("SELECT name, category, x, y, node_id FROM Node");
+// Check connection
+if ($db->connect_error) {
+    die('Connection failed: ' . $mysqli->connect_error);
+}    
+
+$results = $db->query("SELECT name, category, x, y, node_id FROM node");
 
 $nodes = [];
-while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+while ($row = $results->fetch_assoc()) {
+
     $nodes[] = $row;
 }
 
 echo json_encode($nodes);
 
-$conn->close();
+$db->close();
 ?>

@@ -17,11 +17,8 @@ $endPoint = $_GET['end_node'] ?? $_SESSION['end_point'];
 
 function check_for_precalculated_path($startPoint, $endPoint)
 {
-    
-    // Create a connection
-    $db = new mysqli('localhost', 'root', '', 'arundel');
+    $db = new mysqli('localhost', 'root', '', 'chesterfield');
 
-    // Check connection
     if ($db->connect_error) {
         die('Connection failed: ' . $mysqli->connect_error);
     }
@@ -41,7 +38,7 @@ if($exists == null)
     {
         $node_query = "SELECT node_id FROM Node";
         // Create a connection
-        $db = new mysqli('localhost', 'root', '', 'arundel');
+        $db = new mysqli('localhost', 'root', '', 'chesterfield');
 
         // Check connection
         if ($db->connect_error) {
@@ -63,7 +60,7 @@ if($exists == null)
 
     
     {
-        $db = new mysqli('localhost', 'root', '', 'arundel');
+        $db = new mysqli('localhost', 'root', '', 'chesterfield');
 
         if ($db->connect_error) {
             die('Connection failed: ' . $mysqli->connect_error);
@@ -127,7 +124,7 @@ else
 {
     // path already exists in database, use that instead
     // query steps table with path_id to build edge array
-    $db = new mysqli('localhost', 'root', '', 'arundel');
+    $db = new mysqli('localhost', 'root', '', 'chesterfield');
 
     if ($db->connect_error) {
         die('Connection failed: ' . $mysqli->connect_error);

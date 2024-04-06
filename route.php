@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="route.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Chesterfield Group B</title>
+        <title>Route - Chesterfield Group B</title>
         <script src="route.js"></script>
     </head>
 
@@ -53,33 +53,15 @@ previousStep.addEventListener('click', () => {
         }
 
         Display(currentStep);
-        UpdateArrows(currentStep);
     });
 
 nextStep.addEventListener('click', () => {
     if (currentStep < totalSteps - 1) {
         currentStep++; // Move to the next step
     }
-
+    
     Display(currentStep);
-    UpdateArrows(currentStep);
 });
-
-function UpdateArrows(currentStep){
-    if(currentStep === 0){
-        document.getElementById('instruction').innerHTML = "Begin facing the same direction as the image.";
-        previousStep.style.visibility = "hidden";
-    }
-    else if (currentStep === totalSteps-1){
-        document.getElementById('instruction').innerHTML = "You have reached your destination.";
-        nextStep.style.visibility = "hidden";
-    }
-    else
-    {
-        previousStep.style.visibility = "visible";
-        nextStep.style.visibility = "visible";
-    }
-}
 
 function ToggleVisibility() {
     var element = document.getElementById("toggle-visibility");

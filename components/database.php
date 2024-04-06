@@ -3,7 +3,7 @@
 $host = 'localhost'; // Replace with hosted server
 $username = 'root';
 $password = '';
-$database = 'arundel';
+$database = 'chesterfield';
 // Create a connection
 $mysqli = new mysqli($host, $username, $password, $database);
 

@@ -3,15 +3,21 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 header('Content-Type: application/json');
 
-$conn = new SQLite3("databasemap.db");
+$db = new mysqli('localhost', 'root', '', 'chesterfield');
 
-$results = $conn->query("SELECT * FROM edges");
+// Check connection
+if ($db->connect_error) {
+    die('Connection failed: ' . $mysqli->connect_error);
+}    
+
+
+$results = $db->query("SELECT * FROM edges");
 
 $edges = [];
-while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+while ($row = $results->fetch_assoc()) {
     $edges[] = $row;
 }
 
 echo json_encode($edges);
 
-$conn->close();
+$db->close();

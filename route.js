@@ -40,7 +40,6 @@ function FetchRouteJSON(){
     .then(process)
     .then(passedData=>{
         json = passedData;
-        UpdateArrows(0);
         Display(0);
 
         totalSteps = json.length;
@@ -49,8 +48,6 @@ function FetchRouteJSON(){
     )
     .catch(error => {
         console.error('Error fetching JSON', error);
-        // Redirect to the custom error page
-        //window.location.href = './error.html';
     });
 
 }
@@ -62,21 +59,36 @@ function fetchWithRetry(url, retries) {
             throw error;
         }
         return new Promise(resolve => {
-            setTimeout(() => resolve(fetchWithRetry(url, retries - 1)), 1000);
+            setTimeout(() => resolve(fetchWithRetry(url, retries - 1)), 100);
         });
     });
 }
 
 function Display(currentStep) {
-    document.getElementById('instruction').innerHTML = json[currentStep].instruction;
+    const instruction = document.getElementById('instruction');
     document.getElementById('image-id').src = './img/' + json[currentStep].image;
     document.getElementById('accessibility-notes').textContent = json[currentStep].accessibility_notes || null;
+    instruction.innerHTML = json[currentStep].instruction;
+
+    if (currentStep === 0) {
+        previousStep.style.visibility = "hidden";
+    }
+    else if (currentStep === totalSteps - 1) {
+        document.getElementById('instruction').textContent = "You have reached your destination.";
+        nextStep.style.display = "none";
+    }
+    else {
+        previousStep.style.visibility = "visible";
+        nextStep.style.display = "block";
+    }
 
     var arrowElement = document.getElementById("arrow");
-    var direction = json.direction;
-    if (direction != 'forward'){
+    var direction = json[currentStep].direction;
+    if (currentStep > 0)
+        arrowElement.classList.remove(['left'], ['right']);
+
+    if (direction != 'forward')
         setTimeout(() => arrowElement.classList.add(direction), 100);
-    }
 }
 
 function process(response) {
@@ -89,7 +101,6 @@ function process(response) {
 }
 
 function FetchNodesJSON(){
-    console.log('fetching nodes');
     fetchWithRetry('./components/dropdown/data-copy.php', 3)
     .then(process)
     .then(nodes_data=>{

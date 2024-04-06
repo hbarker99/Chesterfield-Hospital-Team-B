@@ -3,7 +3,13 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 header('Content-Type: application/json');
 
-$conn = new SQLite3("databasemap.db");
+$db = new mysqli('localhost', 'root', '', 'chesterfield');
+
+// Check connection
+if ($db->connect_error) {
+    die('Connection failed: ' . $mysqli->connect_error);
+}    
+
 
 $json = file_get_contents('php://input');
 error_log("Raw POST data: $json"); //Testing
@@ -23,35 +29,22 @@ $start_node_id = $params->start_node_id;
 $end_node_id = $params->end_node_id;
 $distance = $params->distance ?? 0;
 $direction = $params->direction ?? 0;
+$directionAlt = $direction + 2 % 4;
 
 if ($start_node_id <= 0 || $end_node_id <= 0) { //Testing
     echo json_encode(["error" => "Invalid input values lala"]);
     exit;
 }
 
-$stmt = $conn->prepare("INSERT INTO Edges (start_node_id, end_node_id, distance, direction) VALUES (:start_node_id, :end_node_id, :distance, :direction)");
+$result = $db->query("INSERT INTO Edges (start_node_id, end_node_id, distance, direction) VALUES ($start_node_id, $end_node_id, $distance, $direction)");
 
-$stmt->bindValue(':start_node_id', $start_node_id, SQLITE3_INTEGER);
-$stmt->bindValue(':end_node_id', $end_node_id, SQLITE3_INTEGER);
-$stmt->bindValue(':distance', $distance, SQLITE3_INTEGER);
-$stmt->bindValue(':direction', $direction, SQLITE3_INTEGER);
+$result = $db->query("INSERT INTO Edges (start_node_id, end_node_id, distance, direction) VALUES ($end_node_id, $start_node_id, $distance, $directionAlt)");
 
-$stmt->execute();
-
-
-$stmt = $conn->prepare("INSERT INTO Edges (start_node_id, end_node_id, distance, direction) VALUES (:start_node_id, :end_node_id, :distance, :direction)");
-
-$stmt->bindValue(':start_node_id', $end_node_id, SQLITE3_INTEGER);
-$stmt->bindValue(':end_node_id', $start_node_id, SQLITE3_INTEGER);
-$stmt->bindValue(':distance', $distance, SQLITE3_INTEGER);
-$stmt->bindValue(':direction', (($direction + 2) % 4), SQLITE3_INTEGER);
-
-if ($stmt->execute()) {
-    echo json_encode(["id" => $conn->lastInsertRowID()]);
+if ($result) {
+    echo json_encode(["id" => $db->insert_id]);
 } else {
     echo json_encode(["error" => "Failed to create edge"]);
 }
 
-$stmt->close();
-$conn->close();
+$db->close();
 ?>
