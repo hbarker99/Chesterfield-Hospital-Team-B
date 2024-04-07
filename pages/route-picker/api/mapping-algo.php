@@ -2,7 +2,7 @@
 require_once("database.php");
 require("node-class.php");
 require("dijkstra-class.php");
-
+require("../../../components/db_config.php");
 
 $startPoint = $_GET['start_node'] ?? $_SESSION['start_point'];
 $endPoint = $_GET['end_node'] ?? $_SESSION['end_point'];
@@ -17,10 +17,10 @@ $endPoint = $_GET['end_node'] ?? $_SESSION['end_point'];
 
 function check_for_precalculated_path($startPoint, $endPoint)
 {
-    $db = new mysqli('localhost', 'root', '', 'chesterfield');
+    $db = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
     if ($db->connect_error) {
-        die('Connection failed: ' . $mysqli->connect_error);
+        die('Connection failed: ' . $db->connect_error);
     }
     $stmt = $db->query("SELECT path_id FROM Path WHERE (start_node_id = $startPoint) AND (end_node_id = $endPoint)");
     $data = $stmt->fetch_assoc();
@@ -37,10 +37,8 @@ if($exists == null)
     // NODE SELECT 
     {
         $node_query = "SELECT node_id FROM Node";
-        // Create a connection
-        $db = new mysqli('localhost', 'root', '', 'chesterfield');
+        $db = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-        // Check connection
         if ($db->connect_error) {
             die('Connection failed: ' . $mysqli->connect_error);
         }
@@ -60,12 +58,11 @@ if($exists == null)
 
     
     {
-        $db = new mysqli('localhost', 'root', '', 'chesterfield');
+        $db = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
         if ($db->connect_error) {
             die('Connection failed: ' . $mysqli->connect_error);
         }
-
         $result = $db->query('SELECT edge_id, start_node_id, end_node_id, distance FROM Edges');
         //$sql = "SELECT edge_id, start_node_id, end_node_id, distance FROM Edges";
         
@@ -124,7 +121,7 @@ else
 {
     // path already exists in database, use that instead
     // query steps table with path_id to build edge array
-    $db = new mysqli('localhost', 'root', '', 'chesterfield');
+    $db = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
     if ($db->connect_error) {
         die('Connection failed: ' . $mysqli->connect_error);

@@ -21,7 +21,7 @@ require("pages/route-picker/session-handling.php");
             <div> 
                 <div class="header-container">
                     <h1 class="page-title">Plan Your Route</h1>
-                    <img src="../../assets/images/chesterfield_royal_hospital_logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
+                    <img src="./assets/images/Chesterfield_Royal_Hospital_Logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
                 </div>
                 <form method="post" action="pages/route-picker/index-redirect.php" autocomplete="off">
                     <div class="form-container">

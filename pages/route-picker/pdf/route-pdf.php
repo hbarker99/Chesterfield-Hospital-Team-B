@@ -5,15 +5,15 @@
 include("../../../pdf/fpdf186/fpdf.php");
 include("../session-handling.php");
 include("../api/mapping-algo.php");
+require("../../../components/db_config.php");
 
 // Function to get the names of the start node and end node
 function getStartEndNames($nodeId) {
-    $db = new mysqli('localhost', 'root', '', 'chesterfield');
+    $db = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-    // Check connection
     if ($db->connect_error) {
         die('Connection failed: ' . $db->connect_error);
-    }    
+    }
     
     $result = $db->query('SELECT name FROM Node WHERE node_id='.$nodeId);
     $data = $result->fetch_array();    

@@ -3,13 +3,12 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 header('Content-Type: application/json');
 
-$db = new mysqli('localhost', 'root', '', 'chesterfield');
+require("../../../components/db_config.php");
+$db = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-// Check connection
 if ($db->connect_error) {
-    die('Connection failed: ' . $mysqli->connect_error);
-}    
-
+    die('Connection failed: ' . $db->connect_error);
+}
 
 $results = $db->query("SELECT * FROM edges");
 
