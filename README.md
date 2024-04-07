@@ -36,8 +36,8 @@ Make sure you have the latest version of XAMPP installed with the phpmyadmin mod
 
 You need to set up the correct config in XAMPP.
 In the Apache module
-1. Open the Apache httpd.conf file. Navigate to where the 'DocumentRoot' is set. Set it to the top level folder of where you have saved this repository. Set the Directory in the line below to the same folder.
-2. Open the php.ini file. Uncomment the 'extension=sqlite3' line by removing the semi colon at the front. If there is no semi colon then there is no need to change it.
+1. In XAMPP select the 'Config' button and open the Apache (httpd.conf) file. Navigate to where the 'DocumentRoot' is set. Set it to the top level folder of where you have saved this repository. Set the Directory in the line below to the same folder.
+2. In XAMPP select the 'Config' button and open the PHP (php.ini) file. Uncomment the 'extension=sqlite3' line by removing the semi-colon at the front. If there is no semi-colon then there is no need to change it.
 
 To set up the SQL DB
 1. Start the apache module and the SQL module. 
