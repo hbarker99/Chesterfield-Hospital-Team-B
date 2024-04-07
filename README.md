@@ -32,6 +32,26 @@
 
 ### Set Up
 
+Make sure you have the latest version of XAMPP installed with the phpmyadmin module included.
+
+You need to set up the correct config in XAMPP.
+In the Apache module
+1. Open the Apache httpd.conf file. Navigate to where the 'DocumentRoot' is set. Set it to the top level folder of where you have saved this repository. Set the Directory in the line below to the same folder.
+2. Open the php.ini file. Uncomment the 'extension=sqlite3' line by removing the semi colon at the front. If there is no semi colon then there is no need to change it.
+
+To set up the SQL DB
+1. Start the apache module and the SQL module. 
+2. Select the 'Admin' button in the SQL module row.
+3. In the toolbar at the top select import.
+4. Select choose file and navigate to where you have saved this repository > db-schemas and select the file 'chesterfield.sql'
+5. Scroll to the bottom of the page and select the 'Import' button
+
+Check the app is running by going to
+1. http://localhost/
+2. http://localhost/map (should direct you to http://localhost/admin)
+3. Enter the test credentials username: Test      password: 1234
+4. You should now see a map with multi coloured squares.
+
 #### Accessing the Website
 
 There are multiple ways to access the site:
