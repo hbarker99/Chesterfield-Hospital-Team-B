@@ -1,5 +1,6 @@
 <?php
 session_start();
+require($_SERVER['DOCUMENT_ROOT'] . '/components/db_config.php');
 function fetchData() {
     if (isset($_SESSION['location_data'])) {
         return $_SESSION['location_data'];
@@ -11,12 +12,11 @@ function fetchData() {
 }
 
 function locationFill(){
-    $mysqli = new mysqli('localhost', 'root', '', 'chesterfield');
-
+    $mysqli = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    
     if ($mysqli->connect_error) {
         die('Connection failed: ' . $mysqli->connect_error);
     }
-
     $query = 'SELECT * FROM node WHERE category = 5 or category = 2';
     $result = $mysqli->query($query);
     while ($row = $result->fetch_assoc()) {

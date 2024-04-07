@@ -1,0 +1,5 @@
+# Block direct access to db_config.php
+<Files "db_config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
