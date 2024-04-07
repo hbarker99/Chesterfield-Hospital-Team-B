@@ -45,7 +45,7 @@
         <div class="error-icon">⚠</div>
         <div class="error-message">Oops! Something went wrong.</div>
         <br>
-        <button onclick="window.location.href = './index.php';" class="btn btn-primary">Choose a route</button>
+        <button onclick="window.location.href = '/';" class="btn btn-primary">Choose a route</button>
 
         <!-- You can add more details or instructions here -->
     </div>
