@@ -39,9 +39,9 @@ In the Apache module
 1. In XAMPP select the 'Config' button and open the Apache (httpd.conf) file. Navigate to where the 'DocumentRoot' is set. Set it to the top level folder of where you have saved this repository. Set the Directory in the line below to the same folder.
 2. In XAMPP select the 'Config' button and open the PHP (php.ini) file. Uncomment the 'extension=sqlite3' line by removing the semi-colon at the front. If there is no semi-colon then there is no need to change it.
 
-To set up the SQL DB
-1. Start the apache module and the SQL module. 
-2. Select the 'Admin' button in the SQL module row.
+To set up the MySQL DB
+1. Start the apache module and the MySQL module. 
+2. Select the 'Admin' button in the MySQL module row.
 3. In the toolbar at the top select import.
 4. Select choose file and navigate to where you have saved this repository > db-schemas and select the file 'chesterfield.sql'
 5. Scroll to the bottom of the page and select the 'Import' button
