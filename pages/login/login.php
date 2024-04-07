@@ -1,5 +1,4 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . "/user.php");
 $db = new SQLite3($_SERVER['DOCUMENT_ROOT'] . "/pages/login/admin_database.db");
 $stmt = $db->prepare('SELECT username, password FROM Login WHERE username=:username AND password=:password');
 

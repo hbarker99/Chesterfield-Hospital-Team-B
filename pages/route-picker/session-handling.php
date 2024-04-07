@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 // Check if the session data exists and is not empty
 if(isset($_SESSION['routeInfo']) && !empty($_SESSION['routeInfo'])) {
     // Retrieve the POST data stored in the session

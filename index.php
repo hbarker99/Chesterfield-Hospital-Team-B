@@ -1,5 +1,6 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/user.php');
+session_start();
+
 $requestUrl = isset($_GET['url']) ? $_GET['url'] : '';
 
 
@@ -17,7 +18,7 @@ $requiresAuth = [
 ];
 
 if (array_key_exists($requestUrl, $routes)) {
-    if (array_key_exists($requestUrl, $requiresAuth) && $_SESSION['user'] == NULL) {
+    if (array_key_exists($requestUrl, $requiresAuth) && (!isset($_SESSION['user']) || empty($_SESSION['user']))) {
         header("Location: /admin");
         exit;
     }
