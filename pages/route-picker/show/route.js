@@ -1,7 +1,5 @@
 let json;
-const apiRoute = '../api/' 
-//let nodes;
-//FetchNodesJSON();
+const apiRoute = '/pages/route-picker/api/'
 FetchRouteJSON();
 
 
@@ -11,24 +9,6 @@ let currentStep = 0;
 
 let totalSteps;
 
-/*
-$requestType = $_GET['request_type'];
-
-switch($requestType){
-    case 'fetch_nodes':
-        // Call the function that handles fetch_nodes requests
-        FetchNodesJSON();
-        break;
-    case 'fetch_route_json':
-        // Call the function that handles fetch_route_json requests
-        handleFetchRouteJSONRequest();
-        break;
-    default:
-        // Handle unknown request type
-        console.log("Unknown request type: $requestType");
-        break;
-}
-*/
 function FetchRouteJSON(){
     console.log("fetching JSON");
 
@@ -65,7 +45,7 @@ function fetchWithRetry(url, retries) {
 
 function Display(currentStep) {
     const instruction = document.getElementById('instruction');
-    document.getElementById('image-id').src = '../../../assets/map/' + json[currentStep].image;
+    document.getElementById('image-id').src = '/assets/map/' + json[currentStep].image;
     document.getElementById('accessibility-notes').textContent = json[currentStep].accessibility_notes || null;
     instruction.innerHTML = json[currentStep].instruction;
 
@@ -92,7 +72,6 @@ function Display(currentStep) {
 
 function process(response) {
     if(!response.ok){
-        //window.location.href = './error.html';
         throw new Error(response.error)
 
     }
@@ -100,7 +79,7 @@ function process(response) {
 }
 
 function FetchNodesJSON(){
-    fetchWithRetry('../../components/dropdown/data-copy.php', 3)
+    fetchWithRetry('/components/dropdown/data-copy.php', 3)
     .then(process)
     .then(nodes_data=>{
         nodes =  nodes_data;

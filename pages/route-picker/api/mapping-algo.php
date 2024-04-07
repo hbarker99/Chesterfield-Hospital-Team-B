@@ -1,8 +1,8 @@
 <?php
-require_once("database.php");
-require("node-class.php");
-require("dijkstra-class.php");
-require("../../../components/db_config.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/pages/route-picker/api/database.php");
+require($_SERVER['DOCUMENT_ROOT'] . "/pages/route-picker/api/node-class.php");
+require($_SERVER['DOCUMENT_ROOT'] . "/pages/route-picker/api/dijkstra-class.php");
+require($_SERVER['DOCUMENT_ROOT'] . "/components/db_config.php");
 
 $startPoint = $_GET['start_node'] ?? $_SESSION['start_point'];
 $endPoint = $_GET['end_node'] ?? $_SESSION['end_point'];

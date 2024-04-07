@@ -1,4 +1,4 @@
-const apiRoute = 'api/';
+const apiRoute = '/pages/map/api/';
 
 var canvas, context;
 var currentState, isDragging;
@@ -20,14 +20,10 @@ var secondaryColor = '#78BE20';
 
 var imageUploadInputs = [];
 
-SetupCanvas();
-SizeCanvas();
-
 fetchDatabaseNodes();
 fetchDatabaseEdges();
 
-var canvasLeft = canvas.offsetLeft + canvas.clientLeft;
-var canvasTop = canvas.offsetTop + canvas.clientTop;
+var canvasLeft, canvasTop;
 
 let startX, startY;
 let offsetStartX, offsetStartY;
@@ -37,8 +33,13 @@ const edgeSize = 6;
 var nodes = [];
 let edges = [];
 
-SetupEventListeners();
-Reset();
+window.onload = () => {
+    SetupCanvas();
+    SizeCanvas();
+
+    SetupEventListeners();
+    Reset();
+}
 
 function SetupEventListeners() {
 
@@ -241,7 +242,6 @@ function HandleSelection(event) {
             x: worldPos.x - nodeSize/2,
             y: worldPos.y - nodeSize/2
         };
-        console.log(newNode)
         Reset();
         AddNewNode(newNode);
         return;
@@ -422,8 +422,6 @@ function UpdateImages() {
         else
             edge = GetEdge(selectedEdge.end_node_id, selectedEdge.start_node_id);
 
-        console.log(edge);
-
         UploadImage(file).then((response) => {
             const edgePayload = {
                 edge_id: edge.edge_id,
@@ -453,7 +451,6 @@ function UploadImage(file) {
         .then((response) => {
             if (!response.ok)
                 throw new Error("File failed to upload");
-            console.log("Correct")
             return response;
     })
 }
@@ -475,7 +472,7 @@ function GetEdgeImagePath(startNode, endNode) {
     const edge = GetEdge(startNode.node_id, endNode.node_id);
 
     if (edge.image)
-        return "../../assets/map/" + edge.image;
+        return "/assets/map/" + edge.image;
 
     else
         return null;
@@ -487,10 +484,6 @@ function GetEdge(startNodeId, endNodeId) {
 
 function GetNodeFromId(id) {
     return nodes.find(node => node.node_id === id);
-}
-
-function HandleInputChange(event) {
-
 }
 
 function SetupCanvas() {
@@ -509,6 +502,8 @@ function SizeCanvas() {
     canvas.style.height = canvasContainer.offsetHeight;
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
+    canvasTop = canvas.offsetTop + canvas.clientTop;
+    canvasLeft = canvas.offsetLeft + canvas.clientLeft;
 }
 
 function GetNodeAtLocation(location, activeNodes = nodes) {
@@ -534,9 +529,8 @@ function fetchDatabaseNodes() {
                     node_id: parseInt(node.node_id)
                 }
             });
-            console.log(recievedNodes);
             recievedNodes.forEach(node => nodes.push(node));
-            SetupNodes();
+            Reset();
         })
         .catch(error => {
             console.error('Error fetching nodes:', error);
@@ -603,6 +597,9 @@ function SetCursor() {
 }
 
 function SetHoveredStates() {
+    if (worldPos === undefined)
+        return;
+
     if (currentState === "edge")
         activeNodes = [
             GetNodeFromId(selectedEdge.start_node_id),
@@ -762,7 +759,6 @@ function AddNewNode(node) {
             console.error('Error:', data.error);
             alert('Error: ' + data.error);
         } else {
-            console.log('Success:', data);
             const newNode = {
                 node_id: data.id,
                 name: node.name,
@@ -938,7 +934,6 @@ function GetDirection(startNodeId, endNodeId) {
 }
 
 function AngleToDirection(angle) {
-    console.log(angle);
     if (angle > 135)
         return 4;
 

@@ -1,18 +1,18 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" href="../../../style.css"/>
-        <link rel="stylesheet" href="route.css"/>
+        <link rel="stylesheet" href="/style.css"/>
+        <link rel="stylesheet" href="/pages/route-picker/show/route.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Route - Chesterfield Group B</title>
-        <script src="route.js"></script>
+        <script src="/pages/route-picker/show/route.js"></script>
     </head>
 
     <body id="bootstrap-overrides">
         <div class="route-container">
             <div class="header-container">
-                <a href="../../../index.php" class="back-btn">Pick another route</a>
+                <a href="/" class="back-btn">Pick another route</a>
             </div>
             <div class="image-box">
                 <img id="image-id" src="" />

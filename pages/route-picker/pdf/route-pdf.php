@@ -2,10 +2,10 @@
 	<title>Your PDF Route</title>
 </head>
 <?php 
-include("../../../pdf/fpdf186/fpdf.php");
-include("../session-handling.php");
-include("../api/mapping-algo.php");
-require("../../../components/db_config.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/pdf/fpdf186/fpdf.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/pages/route-picker/session-handling.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/pages/route-picker/api/mapping-algo.php");
+require($_SERVER['DOCUMENT_ROOT'] . "/components/db_config.php");
 
 // Function to get the names of the start node and end node
 function getStartEndNames($nodeId) {
@@ -32,8 +32,7 @@ $pdf->AddPage();
 $pdf->setFont('Arial' ,'', 22);
 
 // NHS logo and Directions header
-//$pdf->Image('./pdf/NHSBlue.jpg', 155, null, 50);
-$pdf->Image('../../../pdf/CRHNHS.png', 155, null, 50);
+$pdf->Image($_SERVER['DOCUMENT_ROOT'] . '/pdf/CRHNHS.png', 155, null, 50);
 $pdf->Ln(10);
 $pdf->SetTextColor(0,94,184);
 $pdf->MultiCell(0,10,'Directions for your visit' , 0, 'L');

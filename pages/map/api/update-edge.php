@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-require("../../../components/db_config.php");
+require($_SERVER['DOCUMENT_ROOT'] . "/components/db_config.php");
 $db = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
 if ($db->connect_error) {

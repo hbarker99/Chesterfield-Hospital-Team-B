@@ -5,5 +5,5 @@
     <div class="dropdown-content"></div>
 </div>
 
-<script src="components/dropdown/dropdown.js"></script>
-<link rel="stylesheet" href="components/dropdown/dropdown.css"/>
+<script src="/components/dropdown/dropdown.js"></script>
+<link rel="stylesheet" href="/components/dropdown/dropdown.css"/>

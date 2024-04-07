@@ -1,6 +1,6 @@
 <?php
 session_start();
-require('../db_config.php');
+require($_SERVER['DOCUMENT_ROOT'] . '/components/db_config.php');
 function fetchData() {
     if (isset($_SESSION['location_data'])) {
         return $_SESSION['location_data'];

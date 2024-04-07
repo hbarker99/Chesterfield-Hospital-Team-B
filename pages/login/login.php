@@ -16,7 +16,7 @@ while ($row = $result->fetchArray()) {
 
 if (isset($_POST['login'])) {
     if ($users != null) {
-        header("Location: ../map/map.php");
+        header("Location: /map");
     } else {
         echo '<script>alert("Wrong Username or Password")</script>';
     }
@@ -30,7 +30,7 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chesterfield Royal Hospital Admin Login</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="/pages/login/login.css">
 </head>
 
 <body>
@@ -50,7 +50,7 @@ if (isset($_POST['login'])) {
 
                 <div class="form-actions">
                     <input type="submit" value="Login" name="login" id="login" />
-                    <a href="./forgot_password.php">Forgot Password?</a>
+                    <a href="/pages/login/forgot/forgot_password.php">Forgot Password?</a>
                 </div>
             </form>
         </div>

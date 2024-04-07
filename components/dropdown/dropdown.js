@@ -12,7 +12,7 @@ document.querySelectorAll('.clear-button').forEach(clearButton => {
 function Search(e) {
     var searchValue = e.type === 'keyup' ? this.value : '';
     var dropdownContent = this.parentNode.querySelector('.dropdown-content');
-    fetch('components/dropdown/data.php?search=' + searchValue)
+    fetch('/components/dropdown/data.php?search=' + searchValue)
         .then(response => response.json())
         .then(data => {
             currentlySelected = GetRouteDropdowns().map(x => x.value);

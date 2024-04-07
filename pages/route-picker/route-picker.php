@@ -1,6 +1,6 @@
 <?php
-include("components/index-php/start-location.php");
-require("pages/route-picker/session-handling.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/components/index-php/start-location.php");
+require($_SERVER['DOCUMENT_ROOT'] . "/pages/route-picker/session-handling.php");
 
 ?>
 
@@ -10,8 +10,8 @@ require("pages/route-picker/session-handling.php");
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Route Picker</title>
-        <link rel="stylesheet" href="style.css"/>
-        <link rel="stylesheet" href="pages/route-picker/route-picker.css"/>
+        <link rel="stylesheet" href="/style.css"/>
+        <link rel="stylesheet" href="/pages/route-picker/route-picker.css"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         
     </head>
@@ -21,14 +21,14 @@ require("pages/route-picker/session-handling.php");
             <div> 
                 <div class="header-container">
                     <h1 class="page-title">Plan Your Route</h1>
-                    <img src="./assets/images/Chesterfield_Royal_Hospital_Logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
+                    <img src="/assets/images/Chesterfield_Royal_Hospital_Logo.svg" alt="Chesterfield Royal Hospital Logo" class="logo">
                 </div>
-                <form method="post" action="pages/route-picker/index-redirect.php" autocomplete="off">
+                <form method="post" action="/pages/route-picker/index-redirect.php" autocomplete="off">
                     <div class="form-container">
                         <?php if(!isset($_GET['location'])):?>
                         <div class="location-input form-item">
                             <label>Choose where you are</label>
-                            <?php $DropdownId = 1; include './components/dropdown/dropdown.php'; ?>
+                            <?php $DropdownId = 1; include($_SERVER['DOCUMENT_ROOT'] . '/components/dropdown/dropdown.php'); ?>
                             <?php if (isset($_GET['location'])):?>
                             <input type="hidden" id="startPoint" name="startPoint" value="<?php echo $_GET['location']; ?>">
                             <?php else:?>
@@ -38,7 +38,7 @@ require("pages/route-picker/session-handling.php");
                         <?php endif;?>
                         <div class="location-input form-item">
                             <label>Choose where you want to go</label>
-                            <?php $DropdownId = 2;include './components/dropdown/dropdown.php'; ?>
+                            <?php $DropdownId = 2; include($_SERVER['DOCUMENT_ROOT'] . '/components/dropdown/dropdown.php'); ?>
                             <input type="hidden" id="endPoint" name="endPoint" required>
                         </div>
                 
@@ -58,7 +58,7 @@ require("pages/route-picker/session-handling.php");
                 </form>
             </div>
         </div>
-        <?php require ("footer.php"); ?>
+        <?php require ($_SERVER['DOCUMENT_ROOT'] . "/footer.php"); ?>
     </body>
 </html>
 
